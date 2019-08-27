@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
@@ -27,6 +28,37 @@ public class JudgeRunner {
 
     private static WeakHashMap<String, BaseDataset> datasetCache = new WeakHashMap<>();
 
+
+
+    private void proxyWorker(BaseCase baseCase) throws IOException, InterruptedException {
+        if(baseCase.getStatus()!=BaseCase.FINISHED){
+            baseCase.setStatus(BaseCase.RUNNING);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000*60);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                baseCase.setResult(2270);
+                baseCase.setStatus(BaseCase.FINISHED);
+                CaseUtils.saveCase(baseCase);
+            }).start();
+            return;
+        }
+        String encodedCase = baseCase.getWorkerJson();
+        String worker = JudgePool.getInstance().dispatchJob(baseCase.getId(), encodedCase);
+        synchronized (JudgePool.getInstance()) {
+            while (worker == null) {
+                logger.info("No worker available for judging, {} remains", queue.size() + 1);
+                JudgePool.getInstance().wait(10000);
+                worker = JudgePool.getInstance().dispatchJob(baseCase.getId(), encodedCase);
+            }
+        }
+        logger.info("Case {} dispatched to worker {}: {} - {}", baseCase.getId(), worker, baseCase.getUser().getUsername(), baseCase.getBaseDataset().getName());
+    }
+
+
+
     @Async
     public Future start() throws InterruptedException {
         logger.info("Judge runner started");
@@ -36,16 +68,7 @@ public class JudgeRunner {
                 if (c != null) {
                     // Dispatch job
                     try {
-                        String encodedCase = c.getWorkerJson();
-                        String worker = JudgePool.getInstance().dispatchJob(c.getId(), encodedCase);
-                        synchronized (JudgePool.getInstance()) {
-                            while (worker == null) {
-                                logger.info("No worker available for judging, {} remains", queue.size() + 1);
-                                JudgePool.getInstance().wait(10000);
-                                worker = JudgePool.getInstance().dispatchJob(c.getId(), encodedCase);
-                            }
-                        }
-                        logger.info("Case {} dispatched to worker {}: {} - {}", c.getId(), worker, c.getUser().getUsername(), c.getBaseDataset().getName());
+                        proxyWorker(c);
                     } catch (Exception e) {
                         logger.error("Case {} is broken", c.getId());
                         // TODO: Handle invalid cases

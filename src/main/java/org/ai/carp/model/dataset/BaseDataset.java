@@ -9,6 +9,7 @@ public abstract class BaseDataset {
     public static final int CARP = 0;
     public static final int ISE = 1;
     public static final int IMP = 2;
+    public static final int NCS = 3;
 
     @Id
     protected String id;

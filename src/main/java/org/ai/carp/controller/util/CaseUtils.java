@@ -2,10 +2,7 @@ package org.ai.carp.controller.util;
 
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
-import org.ai.carp.model.judge.BaseCase;
-import org.ai.carp.model.judge.CARPCase;
-import org.ai.carp.model.judge.IMPCase;
-import org.ai.carp.model.judge.ISECase;
+import org.ai.carp.model.judge.*;
 import org.ai.carp.model.user.User;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -51,6 +48,8 @@ public class CaseUtils {
                 return Database.getInstance().getIseCases().save((ISECase) baseCase);
             case BaseDataset.IMP:
                 return Database.getInstance().getImpCases().save((IMPCase) baseCase);
+            case BaseDataset.NCS:
+                return Database.getInstance().getNcsCases().save((NCSCase) baseCase);
             default:
         }
         return baseCase;

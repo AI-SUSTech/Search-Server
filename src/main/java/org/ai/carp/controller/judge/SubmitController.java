@@ -25,13 +25,13 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/judge/submit")
+@RequestMapping("/api/v1/judge/submit")
 public class SubmitController {
 
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
-        if (new Date().getTime() >= 1544803200000L) {
+        if (new Date().getTime() >= new Date(2019,8,27,22, 30).getTime()){//1544803200000L) {
             throw new InvalidRequestException("Deadline has passed!");
         }
         if (StringUtils.isEmpty(postCase.data)) {
