@@ -28,6 +28,8 @@ public class QueryTopController {
 
     public static final int COUNT_LEADERBOARD = 20;
 
+
+    // todo add ncs case
     @GetMapping
     public QueryTopResult get(@RequestParam("dataset") String did, HttpSession session) {
         User user = UserUtils.getUser(session, User.MAX);

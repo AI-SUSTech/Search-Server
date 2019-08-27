@@ -64,6 +64,10 @@ public class CaseUtils {
         if (optionalISECase.isPresent()) {
             return optionalISECase.get();
         }
+        Optional<NCSCase> optionalNCSCase = Database.getInstance().getNcsCases().findById(cid);
+        if (optionalNCSCase.isPresent()) {
+            return optionalNCSCase.get();
+        }
         Optional<IMPCase> optionalIMPCase = Database.getInstance().getImpCases().findById(cid);
         return optionalIMPCase.orElse(null);
     }

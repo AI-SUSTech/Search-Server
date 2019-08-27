@@ -26,6 +26,7 @@ public class QuerySelfBestController {
 
     public static final int COUNT_BEST = 10;
 
+    // todo add ncs case
     @GetMapping
     public QuerySelfBestResult get(@RequestParam("dataset") String did, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);

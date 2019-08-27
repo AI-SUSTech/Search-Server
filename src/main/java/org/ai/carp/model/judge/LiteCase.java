@@ -45,6 +45,8 @@ public class LiteCase {
                 return Database.getInstance().getIseCases().findById(fullId).orElse(null);
             case BaseDataset.IMP:
                 return Database.getInstance().getImpCases().findById(fullId).orElse(null);
+            case BaseDataset.NCS:
+                return Database.getInstance().getNcsCases().findById(fullId).orElse(null);
             default:
                 return null;
         }

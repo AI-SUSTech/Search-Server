@@ -35,7 +35,7 @@ public class JudgeRunner {
             baseCase.setStatus(BaseCase.RUNNING);
             new Thread(() -> {
                 try {
-                    Thread.sleep(1000*60);
+                    Thread.sleep(1000*6);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
