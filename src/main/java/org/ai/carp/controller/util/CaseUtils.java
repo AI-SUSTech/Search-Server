@@ -1,7 +1,8 @@
 package org.ai.carp.controller.util;
 
+import org.ai.carp.service.BaseFunction;
 import org.ai.carp.model.Database;
-import org.ai.carp.model.dataset.BaseDataset;
+import org.ai.carp.service.FunctionFactory;
 import org.ai.carp.model.judge.*;
 import org.ai.carp.model.user.User;
 import org.springframework.ui.Model;
@@ -41,18 +42,27 @@ public class CaseUtils {
     }
 
     public static BaseCase saveCase(BaseCase baseCase) {
-        switch (baseCase.getType()) {
-            case BaseDataset.CARP:
-                return Database.getInstance().getCarpCases().save((CARPCase) baseCase);
-            case BaseDataset.ISE:
-                return Database.getInstance().getIseCases().save((ISECase) baseCase);
-            case BaseDataset.IMP:
-                return Database.getInstance().getImpCases().save((IMPCase) baseCase);
-            case BaseDataset.NCS:
-                return Database.getInstance().getNcsCases().save((NCSCase) baseCase);
-            default:
+
+        BaseFunction baseFunction = null;
+        try {
+            baseFunction = FunctionFactory.getCaseFunction(baseCase.getType());
+            return baseFunction.save(baseCase);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return baseCase;
+//        switch (baseCase.getType()) {
+//            case BaseDataset.CARP:
+//                return Database.getInstance().getCarpCases().save((CARPCase) baseCase);
+//            case BaseDataset.ISE:
+//                return Database.getInstance().getIseCases().save((ISECase) baseCase);
+//            case BaseDataset.IMP:
+//                return Database.getInstance().getImpCases().save((IMPCase) baseCase);
+//            case BaseDataset.NCS:
+//                return Database.getInstance().getNcsCases().save((NCSCase) baseCase);
+//            default:
+//        }
+//        return baseCase;
     }
 
     public static BaseCase findById(String cid) {

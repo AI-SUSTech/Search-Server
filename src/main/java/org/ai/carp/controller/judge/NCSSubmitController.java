@@ -6,6 +6,9 @@ import org.ai.carp.controller.util.ArchiveUtils;
 import org.ai.carp.controller.util.CaseUtils;
 import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.Database;
+import org.ai.carp.service.BaseFunction;
+import org.ai.carp.service.FunctionFactory;
+import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.judge.*;
 import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
@@ -43,10 +46,14 @@ public class NCSSubmitController {
             throw new PermissionDeniedException("You have reached daily limits on submission!");
         }
         Binary archive = ArchiveUtils.convertSubmission((String) postCase.data, "test.txt");
-        BaseCase baseCase;
-
-        baseCase = Database.getInstance().getNcsCases().insert(new NCSCase(user, archive));
-
+        // todo should use other methos to mark it is ncs
+        BaseFunction caseBaseFunction;
+        try {
+            caseBaseFunction = FunctionFactory.getCaseFunction(BaseDataset.NCS);
+        } catch (Exception e) {
+            throw new PermissionDeniedException(e.getMessage());
+        }
+        BaseCase baseCase = caseBaseFunction.insert(user, null, archive);
         Database.getInstance().getLiteCases().insert(new LiteCase(baseCase));
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);

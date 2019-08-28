@@ -2,15 +2,12 @@ package org.ai.carp.controller.websocket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.ai.carp.controller.util.CARPUtils;
 import org.ai.carp.controller.util.CaseUtils;
-import org.ai.carp.controller.util.ISEUtils;
+import org.ai.carp.service.BaseFunction;
 import org.ai.carp.model.Database;
-import org.ai.carp.model.dataset.BaseDataset;
+import org.ai.carp.service.FunctionFactory;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.judge.CARPCase;
-import org.ai.carp.model.judge.IMPCase;
-import org.ai.carp.model.judge.ISECase;
 import org.ai.carp.runner.JudgePool;
 import org.ai.carp.runner.JudgeRunnerWatchdog;
 import org.ai.carp.runner.JudgeWorker;
@@ -48,7 +45,6 @@ public class WebsocketHandler extends TextWebSocketHandler {
         this.judgeRunnerWatchdog = judgeRunnerWatchdog;
     }
 
-    // todo add ncs case
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -123,21 +119,23 @@ public class WebsocketHandler extends TextWebSocketHandler {
                     baseCase.setErrOverflow(rootNode.get("stderr_overflow").asBoolean());
                     baseCase.setExitcode(rootNode.get("exitcode").asInt());
                     try {
-                        switch (baseCase.getType()) {
-                            case BaseDataset.CARP:
-                                CARPUtils.checkResult((CARPCase)baseCase);
-                                break;
-                            case BaseDataset.ISE:
-                                ISEUtils.checkResult((ISECase)baseCase);
-                                break;
-                            case BaseDataset.IMP:
-                                baseCase.setValid(rootNode.get("valid").asBoolean());
-                                baseCase.setReason(rootNode.get("reason").asText());
-                                ((IMPCase)baseCase).setInfluence(rootNode.get("influence").asDouble());
-                                break;
-                            default:
-                                logger.error("Invalid case type: {}", baseCase.getType());
-                        }
+                        BaseFunction baseFunction = FunctionFactory.getCaseFunction(baseCase.getType());
+                        baseFunction.afterGetResult(baseCase, rootNode);
+//                        switch (baseCase.getType()) {
+//                            case BaseDataset.CARP:
+//                                CARPUtils.checkResult((CARPCase)baseCase);
+//                                break;
+//                            case BaseDataset.ISE:
+//                                ISEUtils.checkResult((ISECase)baseCase);
+//                                break;
+//                            case BaseDataset.IMP:
+//                                baseCase.setValid(rootNode.get("valid").asBoolean());
+//                                baseCase.setReason(rootNode.get("reason").asText());
+//                                ((IMPCase)baseCase).setInfluence(rootNode.get("influence").asDouble());
+//                                break;
+//                            default:
+//                                logger.error("Invalid case type: {}", baseCase.getType());
+//                        }
                     } catch (Exception e) {
                         logger.error("Error evaluating solution!", e);
                         baseCase.setStatus(BaseCase.ERROR);

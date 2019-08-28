@@ -6,11 +6,10 @@ import org.ai.carp.controller.util.ArchiveUtils;
 import org.ai.carp.controller.util.CaseUtils;
 import org.ai.carp.controller.util.DatasetUtils;
 import org.ai.carp.controller.util.UserUtils;
+import org.ai.carp.service.BaseFunction;
 import org.ai.carp.model.Database;
+import org.ai.carp.service.FunctionFactory;
 import org.ai.carp.model.dataset.BaseDataset;
-import org.ai.carp.model.dataset.CARPDataset;
-import org.ai.carp.model.dataset.IMPDataset;
-import org.ai.carp.model.dataset.ISEDataset;
 import org.ai.carp.model.judge.*;
 import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
@@ -32,6 +31,8 @@ public class SubmitController {
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
+
+        //noinspection deprecation
         if (new Date().getTime() >= new Date(2019,8,27,22, 30).getTime()){//1544803200000L) {
             throw new InvalidRequestException("Deadline has passed!");
         }
@@ -51,19 +52,26 @@ public class SubmitController {
         }
         Binary archive = ArchiveUtils.convertSubmission(postCase.data, dataset.getEntry());
         BaseCase baseCase;
-        switch (dataset.getType()) {
-            case BaseDataset.CARP:
-                baseCase = Database.getInstance().getCarpCases().insert(new CARPCase(user, (CARPDataset)dataset, archive));
-                break;
-            case BaseDataset.ISE:
-                baseCase = Database.getInstance().getIseCases().insert(new ISECase(user, (ISEDataset)dataset, archive));
-                break;
-            case BaseDataset.IMP:
-                baseCase = Database.getInstance().getImpCases().insert(new IMPCase(user, (IMPDataset)dataset, archive));
-                break;
-            default:
-                throw new InvalidRequestException("Invalid dataset type!");
+
+        try {
+            BaseFunction baseFunction = FunctionFactory.getCaseFunction(dataset.getType());
+            baseCase = baseFunction.insert(user, dataset, archive);
+        } catch (Exception e) {
+            throw new InvalidRequestException("Invalid dataset type!");
         }
+//        switch (dataset.getType()) {
+//            case BaseDataset.CARP:
+//                baseCase = Database.getInstance().getCarpCases().insert(new CARPCase(user, (CARPDataset)dataset, archive));
+//                break;
+//            case BaseDataset.ISE:
+//                baseCase = Database.getInstance().getIseCases().insert(new ISECase(user, (ISEDataset)dataset, archive));
+//                break;
+//            case BaseDataset.IMP:
+//                baseCase = Database.getInstance().getImpCases().insert(new IMPCase(user, (IMPDataset)dataset, archive));
+//                break;
+//            default:
+//                throw new InvalidRequestException("Invalid dataset type!");
+//        }
         Database.getInstance().getLiteCases().insert(new LiteCase(baseCase));
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
