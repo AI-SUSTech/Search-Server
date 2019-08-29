@@ -1,7 +1,7 @@
 package org.ai.carp;
 
 import org.ai.carp.model.Database;
-import org.ai.carp.model.dataset.CARPDataset;
+import org.ai.carp.model.dataset.NCSDataset;
 import org.ai.carp.model.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class NCSSetup {
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
         addUsers();
-//        addDatasets();
+        addDatasets();
     }
 
     private static void addUsers() {
@@ -79,13 +79,13 @@ public class NCSSetup {
 
     private static void addDatasets() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classLoader.getResourceAsStream("datasets_carp.csv");
+        InputStream is = classLoader.getResourceAsStream("datasets_ncs.csv");
         if (is == null) {
-            logger.error("datasets_carp.csv not found");
+            logger.error("datasets_ncs.csv not found");
             return;
         }
         Scanner scanner = new Scanner(is);
-        Map<String, CARPDataset> map = new HashMap<>();
+        Map<String, NCSDataset> map = new HashMap<>();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             line = line.replaceAll("\r", "");
@@ -93,28 +93,28 @@ public class NCSSetup {
             if (StringUtils.isEmpty(splitted[0])) {
                 continue;
             }
-            map.put(splitted[0], new CARPDataset(splitted[0], Integer.valueOf(splitted[1])
+            map.put(splitted[0], new NCSDataset(splitted[0], Integer.valueOf(splitted[1])
                     , Integer.valueOf(splitted[2]), Integer.valueOf(splitted[3]), ""));
         }
         try {
-            File datasets = new File(classLoader.getResource("datasets_carp").toURI());
-            File[] list = datasets.listFiles((dir, name) -> name.endsWith(".dat"));
+            File datasets = new File(classLoader.getResource("datasets_ncs").toURI());
+            File[] list = datasets.listFiles((dir, name) -> name.endsWith(".txt"));
             for (File f : list) {
                 try {
-                    String name = f.getName().replaceAll(".dat", "");
-                    if (Database.getInstance().getCarpDatasets().findDatasetByName(name) != null) {
+                    String name = f.getName().replaceAll(".txt", "");
+                    if (Database.getInstance().getNcsDatasets().findDatasetByName(name) != null) {
                         continue;
                     }
-                    String content = new Scanner(f).useDelimiter("\\Z").next().replace("\r", "");
-                    CARPDataset dataset = map.get(name);
+                    NCSDataset dataset = map.get(name);
                     if (dataset == null) {
                         logger.error("Definition not found for {}", name);
                         continue;
                     }
+                    String content = new Scanner(f).useDelimiter("\\Z").next().replace("\r", "");
                     dataset.setData(content);
                     dataset.setEnabled(true);
                     dataset.setSubmittable(true);
-                    dataset = Database.getInstance().getCarpDatasets().insert(dataset);
+                    dataset = Database.getInstance().getNcsDatasets().insert(dataset);
                     logger.info(dataset.toString());
                 } catch (FileNotFoundException e) {
                     logger.error("Failed to read dataset {}", f.getName(), e);

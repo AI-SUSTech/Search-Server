@@ -3,6 +3,7 @@ package org.ai.carp.model;
 import org.ai.carp.model.dataset.CARPDatasetRepository;
 import org.ai.carp.model.dataset.IMPDatasetRepository;
 import org.ai.carp.model.dataset.ISEDatasetRepository;
+import org.ai.carp.model.dataset.NCSDatasetRepository;
 import org.ai.carp.model.judge.*;
 import org.ai.carp.model.user.UserRepository;
 import org.slf4j.Logger;
@@ -30,6 +31,10 @@ public class Database {
     private IMPCaseRepository impCases;
     private LiteCaseRepository liteCases;
 
+    //ncs
+    private NCSCaseRepository nscCases;
+    private NCSDatasetRepository ncsDatasets;
+
     public NCSCaseRepository getNcsCases() {
         return nscCases;
     }
@@ -39,8 +44,15 @@ public class Database {
         this.nscCases = nscCases;
     }
 
-    //ncs
-    private NCSCaseRepository nscCases;
+    public NCSDatasetRepository getNcsDatasets() {
+        return ncsDatasets;
+    }
+
+    @Autowired
+    public void setNcsDatasets(NCSDatasetRepository ncsDatasets) {
+        this.ncsDatasets = ncsDatasets;
+    }
+
 
 
 
