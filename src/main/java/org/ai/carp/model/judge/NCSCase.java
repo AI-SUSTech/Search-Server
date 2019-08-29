@@ -75,4 +75,8 @@ public class NCSCase extends BaseCase {
     public BaseDataset getDataset() {
         return dataset;
     }
+
+    public String getDatasetName() {
+        return dataset.getName();
+    }
 }
