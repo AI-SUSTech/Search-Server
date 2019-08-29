@@ -45,5 +45,10 @@ public class NCSFunction implements BaseFunction {
         return null;
     }
 
+    @Override
+    public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
+        return null;
+    }
+
 
 }

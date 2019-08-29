@@ -27,7 +27,6 @@ import java.util.Date;
 @RequestMapping("/api/v1/judge/submit")
 public class SubmitController {
 
-    // todo add ncs case
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);

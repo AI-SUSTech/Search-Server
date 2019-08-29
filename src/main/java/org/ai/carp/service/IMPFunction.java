@@ -53,4 +53,13 @@ public class IMPFunction implements BaseFunction {
                     .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
         return baseCases;
     }
+
+    @Override
+    public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
+        return Database.getInstance().getImpCases()
+                .findIMPCasesByDatasetAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
+                        (IMPDataset)dataset, BaseCase.FINISHED, true)
+                .stream().filter(c -> c.getUser().getType() > User.ADMIN)
+                .map(c -> (BaseCase)c).collect(Collectors.toList());
+    }
 }

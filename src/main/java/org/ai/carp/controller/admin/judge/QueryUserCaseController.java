@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// todo add ncs case
 @RestController
 public class QueryUserCaseController {
 

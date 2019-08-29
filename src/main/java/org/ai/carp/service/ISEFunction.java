@@ -54,5 +54,14 @@ public class ISEFunction implements BaseFunction {
         return baseCases;
     }
 
+    @Override
+    public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
+        return Database.getInstance().getIseCases()
+                .findISECasesByDatasetAndStatusAndValidOrderByTimeAscSubmitTimeAsc(
+                        (ISEDataset)dataset, BaseCase.FINISHED, true)
+                .stream().filter(c -> c.getUser().getType() > User.ADMIN)
+                .map(c -> (BaseCase)c).collect(Collectors.toList());
+    }
+
 
 }

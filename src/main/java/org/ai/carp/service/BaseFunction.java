@@ -18,4 +18,6 @@ public interface BaseFunction {
     List<BaseCase> getBestResult(User user, BaseDataset dataset);
 
     List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset);
+
+    List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset);
 }

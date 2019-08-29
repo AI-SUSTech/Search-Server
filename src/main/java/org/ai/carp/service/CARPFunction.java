@@ -56,4 +56,13 @@ public class CARPFunction implements BaseFunction {
         return baseCases;
     }
 
+    @Override
+    public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
+        return Database.getInstance().getCarpCases()
+                .findCARPCasesByDatasetAndStatusAndValidOrderByCostAscTimeAscSubmitTimeAsc(
+                        (CARPDataset)dataset, BaseCase.FINISHED, true)
+                .stream().filter(c -> c.getUser().getType() > User.ADMIN)
+                .map(c -> (BaseCase)c).collect(Collectors.toList());
+    }
+
 }
