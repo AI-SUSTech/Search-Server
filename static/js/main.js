@@ -402,6 +402,8 @@
 		  	typeName = "ISE";
 		  } else if (typeCode === 2) {
 		  	typeName = "IMP";
+		  }else if (typeCode === 3) {
+			  typeName = "NCS";
 		  }
 	      SelectHtml += "<option value='" + dataset_list[i]["id"] + "'>" + typeName + ": " + dataset_list[i]["name"] + "</option>";
 	    }
@@ -423,7 +425,9 @@
                 typeName = "ISE";
             } else if (typeCode === 2) {
                 typeName = "IMP";
-            }
+            }else if (typeCode === 3) {
+				typeName = "NCS";
+			}
 	      SelectHtml += "<option value='" + dataset_list[i]["id"] + "'>" + typeName + ": " + dataset_list[i]["name"] + "</option>";
 	    }
 	    $("#dataset_option1").empty();

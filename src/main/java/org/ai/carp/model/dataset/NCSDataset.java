@@ -25,6 +25,6 @@ public class NCSDataset extends BaseDataset{
 
     @Override
     public String getEntry() {
-        return "parameter";
+        return "test.txt";
     }
 }

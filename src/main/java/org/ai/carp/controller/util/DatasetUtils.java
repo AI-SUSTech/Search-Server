@@ -2,10 +2,7 @@ package org.ai.carp.controller.util;
 
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.model.Database;
-import org.ai.carp.model.dataset.BaseDataset;
-import org.ai.carp.model.dataset.CARPDataset;
-import org.ai.carp.model.dataset.IMPDataset;
-import org.ai.carp.model.dataset.ISEDataset;
+import org.ai.carp.model.dataset.*;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
@@ -32,6 +29,10 @@ public class DatasetUtils {
         if (optionalISEDataset.isPresent()) {
             return optionalISEDataset.get();
         }
+        Optional<NCSDataset> optionalNCSDataset = Database.getInstance().getNcsDatasets().findById(did);
+        if (optionalNCSDataset.isPresent()) {
+            return optionalNCSDataset.get();
+        }
         Optional<IMPDataset> optionalIMPDataset = Database.getInstance().getImpDatasets().findById(did);
         return optionalIMPDataset.orElse(null);
     }
@@ -47,6 +48,10 @@ public class DatasetUtils {
         }
         IMPDataset impDataset = Database.getInstance().getImpDatasets().findDatasetByName(name);
         if (impDataset != null) {
+            return impDataset;
+        }
+        NCSDataset ncsDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
+        if (ncsDataset != null) {
             return impDataset;
         }
         return null;

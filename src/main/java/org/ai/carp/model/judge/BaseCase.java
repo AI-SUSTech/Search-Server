@@ -149,6 +149,9 @@ public abstract class BaseCase {
         if (this instanceof IMPCase) {
             return ((IMPCase) this).getDataset();
         }
+        if (this instanceof NCSCase) {
+            return ((NCSCase) this).getDataset();
+        }
         return null;
     }
 

@@ -3,8 +3,12 @@ package org.ai.carp.model.judge;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ai.carp.model.dataset.BaseDataset;
+import org.ai.carp.model.dataset.ISEDataset;
+import org.ai.carp.model.dataset.NCSDataset;
 import org.ai.carp.model.user.User;
 import org.bson.types.Binary;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
@@ -15,9 +19,14 @@ import java.util.zip.ZipOutputStream;
 public class NCSCase extends BaseCase {
 
     double result;
+    // Submission
+    @DBRef
+    @Indexed
+    private NCSDataset dataset;
 
-    public NCSCase(User user, Binary archive) {
+    public NCSCase(User user, BaseDataset dataset, Binary archive) {
         super(user, archive);
+        this.dataset = (NCSDataset) dataset;
     }
 
     @Override
@@ -53,5 +62,9 @@ public class NCSCase extends BaseCase {
     @Override
     protected void writeData(ZipOutputStream zos) throws IOException {
 
+    }
+
+    public BaseDataset getDataset() {
+        return dataset;
     }
 }

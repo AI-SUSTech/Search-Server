@@ -4,6 +4,7 @@ import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.exceptions.PermissionDeniedException;
 import org.ai.carp.controller.util.ArchiveUtils;
 import org.ai.carp.controller.util.CaseUtils;
+import org.ai.carp.controller.util.DatasetUtils;
 import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.Database;
 import org.ai.carp.service.BaseFunction;
@@ -34,26 +35,26 @@ public class NCSSubmitController {
         if (StringUtils.isEmpty(postCase.data)) {
             throw new InvalidRequestException("No data!");
         }
-//        BaseDataset dataset = DatasetUtils.apiGetById(postCase.dataset);
-//        if (!dataset.isEnabled()) {
-//            throw new PermissionDeniedException("Dataset is disabled!");
-//        }
-//        if ((!dataset.isSubmittable() || dataset.isFinalJudge()) && user.getType() > User.ADMIN) {
-//            throw new PermissionDeniedException("Dataset is not submittable!");
-//        }
+        BaseDataset dataset = DatasetUtils.apiGetById(postCase.dataset);
+        if (!dataset.isEnabled()) {
+            throw new PermissionDeniedException("Dataset is disabled!");
+        }
+        if ((!dataset.isSubmittable() || dataset.isFinalJudge()) && user.getType() > User.ADMIN) {
+            throw new PermissionDeniedException("Dataset is not submittable!");
+        }
         if (user.getType() == User.USER &&
                 CaseUtils.countPreviousDay(user) >= CARPCase.DAILY_LIMIT) {
             throw new PermissionDeniedException("You have reached daily limits on submission!");
         }
-        Binary archive = ArchiveUtils.convertSubmission((String) postCase.data, "test.txt");
+        Binary archive = ArchiveUtils.convertSubmission((String) postCase.data, dataset.getEntry());
         // todo should use other methos to mark it is ncs
         BaseFunction caseBaseFunction;
         try {
-            caseBaseFunction = FunctionFactory.getCaseFunction(BaseDataset.NCS);
+            caseBaseFunction = FunctionFactory.getCaseFunction(dataset.getType());
         } catch (Exception e) {
             throw new PermissionDeniedException(e.getMessage());
         }
-        BaseCase baseCase = caseBaseFunction.insert(user, null, archive);
+        BaseCase baseCase = caseBaseFunction.insert(user, dataset, archive);
         Database.getInstance().getLiteCases().insert(new LiteCase(baseCase));
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
