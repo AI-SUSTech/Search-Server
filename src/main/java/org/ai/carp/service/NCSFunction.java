@@ -36,7 +36,9 @@ public class NCSFunction implements BaseFunction {
 
     @Override
     public void afterGetResult(BaseCase baseCase, JsonNode rootNode) {
-
+        baseCase.setValid(rootNode.get("valid").asBoolean());
+        baseCase.setReason(rootNode.get("reason").asText());
+        baseCase.setResult(rootNode.get("influence").asDouble());
     }
 
     @Override

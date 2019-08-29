@@ -1,6 +1,7 @@
 package org.ai.carp.model.judge;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.ISEDataset;
@@ -36,7 +37,7 @@ public class NCSCase extends BaseCase {
 
     @Override
     public void setDataset(BaseDataset dataset) {
-
+        this.dataset = (NCSDataset) dataset;
     }
 
     @Override
@@ -51,7 +52,14 @@ public class NCSCase extends BaseCase {
 
     @Override
     protected String buildConfig() throws JsonProcessingException {
-        return null;
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.put("entry", "test.txt");
+        node.put("parameters", "-i $network -s $seeds -m $model -t $time");
+        node.put("time", dataset.getTime());
+        node.put("memory", dataset.getMemory());
+        node.put("cpu", dataset.getCpu());
+        return mapper.writeValueAsString(node);
     }
 
     @Override

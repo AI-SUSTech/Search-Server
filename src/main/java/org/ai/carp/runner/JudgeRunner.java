@@ -31,20 +31,20 @@ public class JudgeRunner {
 
 
     private void proxyWorker(BaseCase baseCase) throws IOException, InterruptedException {
-        if(baseCase.getStatus()!=BaseCase.FINISHED){
-            baseCase.setStatus(BaseCase.RUNNING);
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000*6);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                baseCase.setResult(2270);
-                baseCase.setStatus(BaseCase.FINISHED);
-                CaseUtils.saveCase(baseCase);
-            }).start();
-            return;
-        }
+//        if(baseCase.getStatus()!=BaseCase.FINISHED){
+//            baseCase.setStatus(BaseCase.RUNNING);
+//            new Thread(() -> {
+//                try {
+//                    Thread.sleep(1000*6);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                baseCase.setResult(2270);
+//                baseCase.setStatus(BaseCase.FINISHED);
+//                CaseUtils.saveCase(baseCase);
+//            }).start();
+//            return;
+//        }
         String encodedCase = baseCase.getWorkerJson();
         String worker = JudgePool.getInstance().dispatchJob(baseCase.getId(), encodedCase);
         synchronized (JudgePool.getInstance()) {
