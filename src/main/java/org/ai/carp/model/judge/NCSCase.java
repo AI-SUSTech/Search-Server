@@ -1,6 +1,7 @@
 package org.ai.carp.model.judge;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.ai.carp.model.dataset.BaseDataset;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 
@@ -54,7 +56,7 @@ public class NCSCase extends BaseCase {
     protected String buildConfig() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
-        node.put("entry", "test.txt");
+        node.put("entry", dataset.getEntry());
         node.put("parameters", "-i $network -s $seeds -m $model -t $time");
         node.put("time", dataset.getTime());
         node.put("memory", dataset.getMemory());
@@ -64,12 +66,15 @@ public class NCSCase extends BaseCase {
 
     @Override
     protected void buildDataset(ObjectNode node) {
-
+        node.put("problem_index", dataset.getProblem_index());
     }
 
     @Override
     protected void writeData(ZipOutputStream zos) throws IOException {
-
+        ZipEntry parameter = new ZipEntry("parameter.json");
+        zos.putNextEntry(parameter);
+        zos.write(super.archive.getData());
+        zos.closeEntry();
     }
 
     public BaseDataset getDataset() {

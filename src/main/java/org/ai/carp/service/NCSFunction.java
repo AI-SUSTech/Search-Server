@@ -2,11 +2,13 @@ package org.ai.carp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.ai.carp.controller.judge.QuerySelfBestController;
+import org.ai.carp.controller.util.ParameterFileUtils;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.NCSDataset;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.judge.NCSCase;
+import org.ai.carp.model.judge.NCSParameter;
 import org.ai.carp.model.user.User;
 import org.bson.types.Binary;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +31,8 @@ public class NCSFunction implements BaseFunction {
      */
     @Override
     public BaseCase insert(User user, BaseDataset dataset, Binary archive) {
+        NCSParameter ncsParameter = ParameterFileUtils.checkSubmitPara(user, archive.getData());
+        // todo store ncsParameter to database
         return Database.getInstance()
                 .getNcsCases()
                 .insert(new NCSCase(user, dataset, archive));

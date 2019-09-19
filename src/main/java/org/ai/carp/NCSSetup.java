@@ -93,36 +93,54 @@ public class NCSSetup {
             if (StringUtils.isEmpty(splitted[0])) {
                 continue;
             }
-            map.put(splitted[0], new NCSDataset(splitted[0], Integer.valueOf(splitted[1])
-                    , Integer.valueOf(splitted[2]), Integer.valueOf(splitted[3]), ""));
+            map.put(splitted[1], new NCSDataset(String.format("F%s-%s", splitted[0], splitted[1]),
+                    Integer.valueOf(splitted[2]),
+                    Integer.valueOf(splitted[3]),
+                    Integer.valueOf(splitted[4]),
+                    Integer.valueOf(splitted[5]))
+            );
         }
-        try {
-            File datasets = new File(classLoader.getResource("datasets_ncs").toURI());
-            File[] list = datasets.listFiles((dir, name) -> name.endsWith(".txt"));
-            for (File f : list) {
-                try {
-                    String name = f.getName().replaceAll(".txt", "");
-                    if (Database.getInstance().getNcsDatasets().findDatasetByName(name) != null) {
-                        continue;
-                    }
-                    NCSDataset dataset = map.get(name);
-                    if (dataset == null) {
-                        logger.error("Definition not found for {}", name);
-                        continue;
-                    }
-                    String content = new Scanner(f).useDelimiter("\\Z").next().replace("\r", "");
-                    dataset.setData(content);
-                    dataset.setEnabled(true);
-                    dataset.setSubmittable(true);
-                    dataset = Database.getInstance().getNcsDatasets().insert(dataset);
-                    logger.info(dataset.toString());
-                } catch (FileNotFoundException e) {
-                    logger.error("Failed to read dataset {}", f.getName(), e);
-                }
+        for(String name: map.keySet()) {
+            if (Database.getInstance().getNcsDatasets().findDatasetByName(name) != null) {
+                continue;
             }
-        } catch (URISyntaxException e) {
-            logger.error("Failed to get dataset path!", e);
+            NCSDataset dataset = map.get(name);
+            if (dataset == null) {
+                logger.error("Definition not found for {}", name);
+                continue;
+            }
+            dataset.setEnabled(true);
+            dataset.setSubmittable(true);
+            dataset = Database.getInstance().getNcsDatasets().insert(dataset);
+            logger.info(dataset.toString());
         }
+//        try {
+//            File datasets = new File(classLoader.getResource("datasets_ncs").toURI());
+//            File[] list = datasets.listFiles((dir, name) -> name.endsWith(".txt"));
+//            for (File f : list) {
+//                try {
+//                    String name = f.getName().replaceAll(".txt", "");
+//                    if (Database.getInstance().getNcsDatasets().findDatasetByName(name) != null) {
+//                        continue;
+//                    }
+//                    NCSDataset dataset = map.get(name);
+//                    if (dataset == null) {
+//                        logger.error("Definition not found for {}", name);
+//                        continue;
+//                    }
+//                    String content = new Scanner(f).useDelimiter("\\Z").next().replace("\r", "");
+//                    dataset.setData(content);
+//                    dataset.setEnabled(true);
+//                    dataset.setSubmittable(true);
+//                    dataset = Database.getInstance().getNcsDatasets().insert(dataset);
+//                    logger.info(dataset.toString());
+//                } catch (FileNotFoundException e) {
+//                    logger.error("Failed to read dataset {}", f.getName(), e);
+//                }
+//            }
+//        } catch (URISyntaxException e) {
+//            logger.error("Failed to get dataset path!", e);
+//        }
     }
 
 }

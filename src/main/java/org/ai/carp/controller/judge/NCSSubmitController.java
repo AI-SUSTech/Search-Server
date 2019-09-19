@@ -2,10 +2,7 @@ package org.ai.carp.controller.judge;
 
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.exceptions.PermissionDeniedException;
-import org.ai.carp.controller.util.ArchiveUtils;
-import org.ai.carp.controller.util.CaseUtils;
-import org.ai.carp.controller.util.DatasetUtils;
-import org.ai.carp.controller.util.UserUtils;
+import org.ai.carp.controller.util.*;
 import org.ai.carp.model.Database;
 import org.ai.carp.service.BaseFunction;
 import org.ai.carp.service.FunctionFactory;
@@ -46,7 +43,8 @@ public class NCSSubmitController {
                 CaseUtils.countPreviousDay(user) >= CARPCase.DAILY_LIMIT) {
             throw new PermissionDeniedException("You have reached daily limits on submission!");
         }
-        Binary archive = ArchiveUtils.convertSubmission((String) postCase.data, dataset.getEntry());
+
+        Binary archive = ParameterFileUtils.convertSubmit((String) postCase.data);
         // todo should use other methos to mark it is ncs
         BaseFunction caseBaseFunction;
         try {
