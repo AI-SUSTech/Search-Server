@@ -76,7 +76,7 @@
 								<h3>NOTICE</h3>
 								<p>
 									<ol style="text-align: left;">
-										<li>You can now see program output and download archive by clicking <b>Info</b> column. So if you haven't changed your password, <b>change it now.</b> We are not responsible for any leak of your source code.</li>
+										<li>You can now see program output and download your parameter by clicking <b>Info</b> column. So if you haven't changed your password, <b>change it now.</b> We are not responsible for any leak of your source code.</li>
 										<li><b>If your program times out, it may because of exceeding memory limit.</b></li>
 										<li><b>If your program uses too much memory, it will take a long and unpredictable time for Python to clean up after finishing program.</b> A hack is to skip cleanup by calling os._exit manually at the end of your program. Be sure to flush stdout before it.</li>
 										<li>Based on the above two problems, <b>if your program times out on OJ but not on your own computer, consider monitoring memory usage.</b></li>
@@ -86,18 +86,17 @@
 										<li>Be sure to submit final solution before <b>23:55 pm, Dec. 11</b>. The code in your last submission (of any dataset) will be considered final solution.</li>
 										<li>Your code will be run on a different set of datasets after deadline. Passing existing datasets <b>DOES NOT guarantee</b> that you can pass final test.</li>
 										<li>You are only allowed to submit <b>30 times every 24 hours</b> (on a rolling basis). Only successful uploads will count.</li>
-										<li>You should submit archived program in <b>zip</b> format. Max allowed size is <b>64KB</b>. The main executable should be named <b>ISE.py</b> (for ISE) or <b>IMP.py</b> (for IMP) and put in <b>root directory</b>. Multiple files and subdirectories are allowed.
-											Your directory structure for ISE may look like the following:<br/>
-											<pre style="text-align:left;">
-|-- ISE.py
-|-- config.py
-`-- submodule
-		|-- submoduleA.py
-		|-- submoduleB.py
-											</pre></li>
-										<li>Your program will be executed with command: <pre>python3 ISE.py –i $network -s $seeds -m $model -t $time</pre> or <pre>python3 IMP.py –i $network -k $seedCount -m $model -t $time</pre></li>
-										<li>Do not use non-standard library except for <b>numpy</b>.</li>
-										<li>Your program is run in Docker container with no network interface.</li>
+										<li>You should submit your parameter in <b>json</b> format file. Max allowed size is <b>64KB</b>.
+											Your json format parameter may look like the following:<br/>
+											<pre style="text-align:left;font-size: x-large;">
+{
+	"sigma": [a multi dimension array],
+	"r": [float],
+	"Tmax": [int],
+	"epoch": [int],
+	"n": [int]
+}</pre></li>
+										<li>The program is run in Docker container with no network interface.</li>
 										<li>You are allowed to use up to <b>800% CPU</b> (8 cores) and <b>2GB RAM</b>. Pay attention that <b>threading</b> in Python does not give you real parallelism.</li>
 										<li>Be sure to exit before time running out. You should leave about <b>1 second</b> for starting container and other overhead.</li>
 										<li>If you need to write temp file, write to <b>/tmp</b>. The whole RootFS is <b>read-only</b>.</li>
@@ -114,7 +113,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3" style="text-align:center;">
-						<h2>Submit your Code</h2>
+						<h2>Submit your Parameter</h2>
 					</div>
 				</div>
 			</div>
@@ -131,7 +130,7 @@
 						</div>
 					</div>
 					<div class="col-md-3" style="vertical-align:middle;padding-top:5px;">
-						<button id="submit_file" onclick="$('#code_submit').trigger('click');" class="btn btn-carp">Submit Code</button>
+						<button id="submit_file" onclick="$('#code_submit').trigger('click');" class="btn btn-carp">Submit Parameter</button>
 					</div>
 					<div class="col-md-1" style="vertical-align:middle;padding-top:13px;">
 						<span id="queue_length">* in queue</span>
@@ -348,6 +347,8 @@
 						<p>Front end: Tao Ren</p>
 						<p>Server: Yi Xie, Edward Fang</p>
 						<p>Judge runner: Yi Xie</p>
+						<p>NCS runner: Yu'an Huang, Qinhua Zhen</p>
+						<p>Adapt NCS Server: Yu'an Huang</p>
 					</div>
 					<div class="col-md-2 col-md-push-1 fh5co-widget">
 						<h4>Links</h4>
