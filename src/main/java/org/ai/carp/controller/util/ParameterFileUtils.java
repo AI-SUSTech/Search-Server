@@ -29,36 +29,39 @@ public class ParameterFileUtils {
         }
         JsonNode jsonNode;
         jsonNode = rootNode.get("Tmax");
-        if(jsonNode == null){
-            throw new InvalidRequestException("require Tmax!");
+        if(jsonNode == null || !jsonNode.isNumber()){
+            throw new InvalidRequestException("require an integer Tmax!");
         }
         int Tmax = jsonNode.asInt();
 
         jsonNode = rootNode.get("sigma");
         if(jsonNode == null || !jsonNode.isArray()){
-            throw new InvalidRequestException("require sigma or sigma is not a array");
+            throw new InvalidRequestException("require an one dimension array sigma");
         }
         double[] sigmaArray = new double[jsonNode.size()];
         for (int i = 0; i < sigmaArray.length; i++) {
-            double sigma = jsonNode.get(i).asDouble();
-            sigmaArray[i] = sigma;
+            JsonNode sigmaNode = jsonNode.get(i);
+            if(sigmaNode.isNumber())
+                sigmaArray[i] = sigmaNode.asDouble();
+            else
+                throw new InvalidRequestException("array sigma contains non-number data!");
         }
 
         jsonNode = rootNode.get("r");
-        if(jsonNode == null){
-            throw new InvalidRequestException("require r!");
+        if(jsonNode == null || !jsonNode.isNumber()){
+            throw new InvalidRequestException("require a float r!");
         }
         double r = jsonNode.asDouble();
 
         jsonNode = rootNode.get("epoch");
-        if(jsonNode == null){
-            throw new InvalidRequestException("require epoch!");
+        if(jsonNode == null || !jsonNode.isNumber()){
+            throw new InvalidRequestException("require an integer epoch!");
         }
         int epoch = jsonNode.asInt();
 
         jsonNode = rootNode.get("n");
-        if(jsonNode == null){
-            throw new InvalidRequestException("require n!");
+        if(jsonNode == null || !jsonNode.isNumber()){
+            throw new InvalidRequestException("require an integer n!");
         }
         int n = jsonNode.asInt();
 
