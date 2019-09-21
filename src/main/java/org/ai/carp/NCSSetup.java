@@ -93,7 +93,8 @@ public class NCSSetup {
             if (StringUtils.isEmpty(splitted[0])) {
                 continue;
             }
-            map.put(splitted[1], new NCSDataset(String.format("F%s-%s", splitted[0], splitted[1]),
+            String dataName = String.format("F%s-%s", splitted[0], splitted[1].trim());
+            map.put(dataName, new NCSDataset(dataName,
                     Integer.valueOf(splitted[2]),
                     Integer.valueOf(splitted[3]),
                     Integer.valueOf(splitted[4]),
