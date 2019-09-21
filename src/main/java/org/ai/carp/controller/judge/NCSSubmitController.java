@@ -45,7 +45,7 @@ public class NCSSubmitController {
         }
 
         Binary archive = ParameterFileUtils.convertSubmit((String) postCase.data);
-        // todo should use other methos to mark it is ncs
+        // todo should use other methods to mark it is ncs
         BaseFunction caseBaseFunction;
         try {
             caseBaseFunction = FunctionFactory.getCaseFunction(dataset.getType());

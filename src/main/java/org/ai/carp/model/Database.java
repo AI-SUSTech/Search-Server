@@ -35,6 +35,17 @@ public class Database {
     private NCSCaseRepository nscCases;
     private NCSDatasetRepository ncsDatasets;
 
+    public NCSParameterRepository getNcsParameterRepository() {
+        return ncsParameterRepository;
+    }
+
+    @Autowired
+    public void setNcsParameterRepository(NCSParameterRepository ncsParameterRepository) {
+        this.ncsParameterRepository = ncsParameterRepository;
+    }
+
+    private NCSParameterRepository ncsParameterRepository;
+
     public NCSCaseRepository getNcsCases() {
         return nscCases;
     }

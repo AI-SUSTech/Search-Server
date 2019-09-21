@@ -1,6 +1,7 @@
 package org.ai.carp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.judge.QuerySelfBestController;
 import org.ai.carp.controller.util.ParameterFileUtils;
 import org.ai.carp.model.Database;
@@ -32,7 +33,20 @@ public class NCSFunction implements BaseFunction {
     @Override
     public BaseCase insert(User user, BaseDataset dataset, Binary archive) {
         NCSParameter ncsParameter = ParameterFileUtils.checkSubmitPara(user, archive.getData());
-        // todo store ncsParameter to database
+        ncsParameter.setDataset((NCSDataset) dataset);
+        int hash = ncsParameter.getHash();
+        List<NCSParameter> parameters = Database.getInstance().getNcsParameterRepository()
+                .findNCSParametersByDatasetAndHashAndUserNot(
+                        (NCSDataset) dataset,
+                        hash,
+                        user
+                );
+        for(NCSParameter parameter:parameters) {
+            if (parameter.equals(ncsParameter))
+                throw new InvalidRequestException(
+                        String.format("You parameter is the same as %s", parameter.getUser().getUsername()));
+        }
+        Database.getInstance().getNcsParameterRepository().insert(ncsParameter);
         return Database.getInstance()
                 .getNcsCases()
                 .insert(new NCSCase(user, dataset, archive));
@@ -77,5 +91,5 @@ public class NCSFunction implements BaseFunction {
                 .map(c -> (BaseCase)c).collect(Collectors.toList());
     }
 
-    
+
 }

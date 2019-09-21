@@ -9,7 +9,6 @@ import org.bson.types.Binary;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Optional;
 
 public class ParameterFileUtils {
     public static Binary convertSubmit(String encoded) {
@@ -36,10 +35,14 @@ public class ParameterFileUtils {
         int Tmax = jsonNode.asInt();
 
         jsonNode = rootNode.get("sigma");
-        if(jsonNode == null){
-            throw new InvalidRequestException("require sigma");
+        if(jsonNode == null || !jsonNode.isArray()){
+            throw new InvalidRequestException("require sigma or sigma is not a array");
         }
-        Object sigma = jsonNode;
+        double[] sigmaArray = new double[jsonNode.size()];
+        for (int i = 0; i < sigmaArray.length; i++) {
+            double sigma = jsonNode.get(i).asDouble();
+            sigmaArray[i] = sigma;
+        }
 
         jsonNode = rootNode.get("r");
         if(jsonNode == null){
@@ -64,7 +67,8 @@ public class ParameterFileUtils {
         ncsParameter.setR(r);
         ncsParameter.setMaxT(Tmax);
         ncsParameter.setN(n);
-        ncsParameter.setSigma(sigma);
+        ncsParameter.setSigma(sigmaArray);
+        ncsParameter.generateHash();
         return ncsParameter;
     }
 }
