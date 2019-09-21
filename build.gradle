@@ -37,6 +37,11 @@ task impSetup(type: JavaExec) {
     main = "org.ai.carp.IMPSetup"
 }
 
+task ncsSetup(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "org.ai.carp.NCSSetup"
+}
+
 task migrateData(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "org.ai.carp.MigrateData"
