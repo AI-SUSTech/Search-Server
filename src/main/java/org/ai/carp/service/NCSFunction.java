@@ -49,7 +49,7 @@ public class NCSFunction implements BaseFunction {
     public List<BaseCase> getBestResult(User user, BaseDataset dataset) {
         List<BaseCase> bestCases;
         bestCases = Database.getInstance().getNcsCases()
-                .findNCSCasesByDatasetAndUserAndStatusAndValidOrderByTimeAscSubmitTimeAsc(
+                .findNCSCasesByDatasetAndUserAndStatusAndValidOrderByResultAscTimeAscSubmitTimeDesc(
                         (NCSDataset) dataset,
                         user,
                         BaseCase.FINISHED,
@@ -71,11 +71,11 @@ public class NCSFunction implements BaseFunction {
     @Override
     public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
         return Database.getInstance().getNcsCases()
-                .findNCSCasesByDatasetAndStatusAndValidOrderByTimeAscSubmitTimeAsc(
+                .findNCSCasesByDatasetAndStatusAndValidOrderByResultAscTimeAscSubmitTimeAsc(
                         (NCSDataset)dataset, BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                 .map(c -> (BaseCase)c).collect(Collectors.toList());
     }
 
-
+    
 }
