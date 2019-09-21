@@ -6,8 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "datasets_ncs")
 public class NCSDataset extends BaseDataset{
 
-
-
     private int problem_index;
 
     static final String[] data_sets = new String[30];

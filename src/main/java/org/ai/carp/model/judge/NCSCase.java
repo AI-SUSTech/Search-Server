@@ -57,7 +57,7 @@ public class NCSCase extends BaseCase {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
         node.put("entry", dataset.getEntry());
-        node.put("parameters", "-i $network -s $seeds -m $model -t $time");
+        node.put("parameters", "-d $data -c $configure");
         node.put("time", dataset.getTime());
         node.put("memory", dataset.getMemory());
         node.put("cpu", dataset.getCpu());
@@ -71,7 +71,7 @@ public class NCSCase extends BaseCase {
 
     @Override
     protected void writeData(ZipOutputStream zos) throws IOException {
-        ZipEntry parameter = new ZipEntry("parameter.json");
+        ZipEntry parameter = new ZipEntry(dataset.getEntry());
         zos.putNextEntry(parameter);
         zos.write(super.archive.getData());
         zos.closeEntry();
