@@ -1109,6 +1109,8 @@
 	      /* Act on the event */
 	      //submit file as base64.
 	      let zipcode = document.getElementById("code_submit").files[0];
+	      document.getElementById('code_submit').value = "";
+
 	      var reader = new FileReader();
 	      reader.readAsDataURL(zipcode);
 	      reader.onload = function(e) {
