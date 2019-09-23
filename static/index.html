@@ -76,14 +76,8 @@
 								<h3>NOTICE</h3>
 								<p>
 									<ol style="text-align: left;">
-										<li>You can now see program output and download your parameter by clicking <b>Info</b> column. So if you haven't changed your password, <b>change it now.</b> We are not responsible for any leak of your source code.</li>
-										<li><b>If your program times out, it may because of exceeding memory limit.</b></li>
-										<li><b>If your program uses too much memory, it will take a long and unpredictable time for Python to clean up after finishing program.</b> A hack is to skip cleanup by calling os._exit manually at the end of your program. Be sure to flush stdout before it.</li>
-										<li>Based on the above two problems, <b>if your program times out on OJ but not on your own computer, consider monitoring memory usage.</b></li>
-										<li><b>Exiting program using exit(0) is unnecessary. If your program exit normally (no uncaught error), exit code is 0.</b></li>
-								<li>Maximum allowed process count in container is <b>64</b>. <b>DO NOT</b> create subprocesses based on CPU core count. Also, <b>DO NOT</b> use more than 8 cores. Otherwise <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a> overhead will make your program run even slower.</li>
-										<li>Be sure to submit final solution before <b>23:55 pm, Dec. 11</b>. The code in your last submission (of any dataset) will be considered final solution.</li>
-										<li>Your code will be run on a different set of datasets after deadline. Passing existing datasets <b>DOES NOT guarantee</b> that you can pass final test.</li>
+										<li>You can see your parameter and download your parameter by clicking <b>Info</b> column. So be sure use <b>a secure passwod.</b> We are not responsible for any leak of your submit data.</li>
+										<li>Be sure to submit final solution before <b>23:55 pm, Oct. 20</b> for task1 and <b>23:55 pm, Oct. 27</b> for task2. The result in your last submission (of any dataset) will be considered final solution.</li>
 										<li>You are only allowed to submit <b>30 times every 24 hours</b> (on a rolling basis). Only successful uploads will count.</li>
 										<li>You should submit your parameter in <b>json</b> format file. Max allowed size is <b>64KB</b>.
 											Your json format parameter may look like the following:<br/>
@@ -96,8 +90,6 @@
 }</pre></li>
 										<li>The program is run in Docker container with no network interface.</li>
 										<li>The iteration time for task1 is fixed:<b>300000</b> and the maximum running time is <b>300s</b></li>
-										<li>Be sure to exit before time running out. You should leave about <b>1 second</b> for starting container and other overhead.</li>
-										<li>If you need to write temp file, write to <b>/tmp</b>. The whole RootFS is <b>read-only</b>.</li>
 									</ol>
 								</p>
 							</div>
