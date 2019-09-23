@@ -3,12 +3,9 @@ package org.ai.carp.model.judge;
 
 import org.ai.carp.model.dataset.NCSDataset;
 import org.ai.carp.model.user.User;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Arrays;
 
 @Document(collection = "ncs_parameter")
 public class NCSParameter {
@@ -16,23 +13,6 @@ public class NCSParameter {
     public NCSParameter(User user) {
         this.user = user;
     }
-
-    public int getMaxT() {
-        return maxT;
-    }
-
-    public void setMaxT(int maxT) {
-        this.maxT = maxT;
-    }
-
-    public double[] getSigma() {
-        return sigma;
-    }
-
-    public void setSigma(double[] sigma) {
-        this.sigma = sigma;
-    }
-
     public double getR() {
         return r;
     }
@@ -74,9 +54,6 @@ public class NCSParameter {
         this.user = user;
     }
 
-    public void setMaxT(Integer maxT) {
-        this.maxT = maxT;
-    }
 
     public void setR(Double r) {
         this.r = r;
@@ -95,8 +72,7 @@ public class NCSParameter {
         hash += epoch.hashCode();
         hash += r.hashCode();
         hash += N.hashCode();
-        hash += Arrays.hashCode(sigma);
-        hash += maxT.hashCode();
+        hash += lambda.hashCode();
         this.hash = hash;
     }
 
@@ -107,15 +83,13 @@ public class NCSParameter {
         }
         if(obj instanceof NCSParameter){
             NCSParameter anObj = (NCSParameter)obj;
-            if(!anObj.maxT.equals(this.maxT))
+            if(!anObj.lambda.equals(this.lambda))
                 return false;
             if(!anObj.r.equals(this.r))
                 return false;
             if(!anObj.epoch.equals(this.epoch))
                 return false;
-            if(!anObj.N.equals(this.N))
-                return false;
-            return Arrays.equals(anObj.sigma, this.sigma);
+            return anObj.N.equals(this.N);
         }
         return false;
     }
@@ -131,7 +105,13 @@ public class NCSParameter {
     @Indexed
     protected User user;
 
+    public Double getLambda() {
+        return lambda;
+    }
 
+    public void setLambda(Double lambda) {
+        this.lambda = lambda;
+    }
 
     public NCSDataset getDataset() {
         return dataset;
@@ -145,8 +125,7 @@ public class NCSParameter {
     @Indexed
     protected NCSDataset dataset;
 
-    private Integer maxT;
-    private double[] sigma;
+    private Double lambda;
 
     private Double r;
 

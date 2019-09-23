@@ -28,24 +28,11 @@ public class ParameterFileUtils {
             throw new InvalidRequestException("not a json format file!");
         }
         JsonNode jsonNode;
-        jsonNode = rootNode.get("Tmax");
+        jsonNode = rootNode.get("lambda");
         if(jsonNode == null || !jsonNode.isNumber()){
-            throw new InvalidRequestException("require an integer Tmax!");
+            throw new InvalidRequestException("require an float lambda in (0, 10)!");
         }
-        int Tmax = jsonNode.asInt();
-
-        jsonNode = rootNode.get("sigma");
-        if(jsonNode == null || !jsonNode.isArray()){
-            throw new InvalidRequestException("require an one dimension array sigma");
-        }
-        double[] sigmaArray = new double[jsonNode.size()];
-        for (int i = 0; i < sigmaArray.length; i++) {
-            JsonNode sigmaNode = jsonNode.get(i);
-            if(sigmaNode.isNumber())
-                sigmaArray[i] = sigmaNode.asDouble();
-            else
-                throw new InvalidRequestException("array sigma contains non-number data!");
-        }
+        double lambda = jsonNode.asDouble();
 
         jsonNode = rootNode.get("r");
         if(jsonNode == null || !jsonNode.isNumber()){
@@ -55,22 +42,21 @@ public class ParameterFileUtils {
 
         jsonNode = rootNode.get("epoch");
         if(jsonNode == null || !jsonNode.isNumber()){
-            throw new InvalidRequestException("require an integer epoch!");
+            throw new InvalidRequestException("require an integer epoch < 300000!");
         }
         int epoch = jsonNode.asInt();
 
         jsonNode = rootNode.get("n");
         if(jsonNode == null || !jsonNode.isNumber()){
-            throw new InvalidRequestException("require an integer n!");
+            throw new InvalidRequestException("require an integer n in [1, 100]!");
         }
         int n = jsonNode.asInt();
 
         NCSParameter ncsParameter = new NCSParameter(user);
         ncsParameter.setEpoch(epoch);
         ncsParameter.setR(r);
-        ncsParameter.setMaxT(Tmax);
         ncsParameter.setN(n);
-        ncsParameter.setSigma(sigmaArray);
+        ncsParameter.setLambda(lambda);
         ncsParameter.generateHash();
         return ncsParameter;
     }

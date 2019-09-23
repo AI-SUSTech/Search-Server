@@ -87,16 +87,15 @@
 										<li>You are only allowed to submit <b>30 times every 24 hours</b> (on a rolling basis). Only successful uploads will count.</li>
 										<li>You should submit your parameter in <b>json</b> format file. Max allowed size is <b>64KB</b>.
 											Your json format parameter may look like the following:<br/>
-											<pre style="text-align:left;font-size: x-large;">
+											<pre style="text-align:left;font-size: large;">
 {
-	"sigma": [1, 2, 4.0, 5, 7],
+	"lambda": [float], // range in (1, 10)
 	"r": [float],
-	"Tmax": [int],
-	"epoch": [int],
-	"n": [int]
+	"epoch": [int], // should smaller than 300000
+	"n": [int], // range in [1, 100]
 }</pre></li>
 										<li>The program is run in Docker container with no network interface.</li>
-										<li>You are allowed to use up to <b>800% CPU</b> (8 cores) and <b>2GB RAM</b>. Pay attention that <b>threading</b> in Python does not give you real parallelism.</li>
+										<li>The iteration time for task1 is fixed:<b>300000</b> and the maximum running time is <b>300s</b></li>
 										<li>Be sure to exit before time running out. You should leave about <b>1 second</b> for starting container and other overhead.</li>
 										<li>If you need to write temp file, write to <b>/tmp</b>. The whole RootFS is <b>read-only</b>.</li>
 									</ol>
