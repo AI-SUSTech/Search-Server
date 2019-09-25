@@ -26,6 +26,9 @@ public class NCSSubmitController {
     @PostMapping
     public NCSSubmitResponse post(@RequestBody NCSPostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
+        if(user.passwordMatches(user.getUsername())){
+            throw new PermissionDeniedException("Please change your password!");
+        }
 //        if (new Date().getTime() >= new Date(2019,8,27,22, 30).getTime()){//1544803200000L) {
 //            throw new InvalidRequestException("Deadline has passed!");
 //        }

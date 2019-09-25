@@ -6,6 +6,7 @@ import org.ai.carp.model.dataset.ISEDatasetRepository;
 import org.ai.carp.model.dataset.NCSDatasetRepository;
 import org.ai.carp.model.judge.*;
 import org.ai.carp.model.user.UserRepository;
+import org.ai.carp.model.user.VerifyCodeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,17 @@ public class Database {
     private ISECaseRepository iseCases;
     private IMPCaseRepository impCases;
     private LiteCaseRepository liteCases;
+
+    public VerifyCodeRepository getVerifyCodeRepository() {
+        return verifyCodeRepository;
+    }
+
+    @Autowired
+    public void setVerifyCodeRepository(VerifyCodeRepository verifyCodeRepository) {
+        this.verifyCodeRepository = verifyCodeRepository;
+    }
+
+    private VerifyCodeRepository verifyCodeRepository;
 
     //ncs
     private NCSCaseRepository nscCases;
