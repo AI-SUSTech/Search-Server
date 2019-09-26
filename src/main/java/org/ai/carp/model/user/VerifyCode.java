@@ -12,6 +12,10 @@ public class VerifyCode {
     @Indexed
     protected User user;
 
+    public VerifyCode(User user, String code){
+        this.user = user;
+        this.code = code;
+    }
 
     @Id
     private String id;

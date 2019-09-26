@@ -1,13 +1,12 @@
 package org.ai.carp.controller.user;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.ai.carp.controller.exceptions.InvalidRequestException;
-import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.Database;
+import org.ai.carp.model.Email;
+import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.user.User;
-import org.springframework.util.StringUtils;
+import org.ai.carp.model.user.VerifyCode;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,23 +17,25 @@ import javax.servlet.http.HttpSession;
 public class SendVerifyCodeController {
 
     @PostMapping
-    public ChangePasswordResponse post(@RequestBody ChangePasswordRequest request, HttpSession session) {
-        if (StringUtils.isEmpty(request.oldP)) {
-            throw new InvalidRequestException("No old password!");
-        }
-        if (StringUtils.isEmpty(request.newP)) {
-            throw new InvalidRequestException("No new password!");
-        }
-        if (request.newP.length() > 32) {
-            throw new InvalidRequestException("Password too long!");
-        }
+    public SendVerifyCodeResponse post(HttpSession session) {
         User user = UserUtils.getUser(session, User.MAX);
-        if (!user.passwordMatches(request.oldP)) {
-            throw new InvalidRequestException("Wrong old password!");
+        if(user==null){
+            throw new InvalidRequestException("invalid user!");
         }
-        user.setPassword(request.newP);
-        Database.getInstance().getUsers().save(user);
-        return new ChangePasswordResponse(user.getId());
+        String deliver = "hy_a12@163.com";
+        String[] receiver = {String.format("%s@mail.sustech.edu.cn",user.getUsername())};
+        String[] carbonCopy = {"11610303@mail.sustech.edu.cn"};
+        String subject = "Verify Code for NCS judge platform";
+        String code = "123456";
+        String content = String.format("Your verfy code is %s", code);
+        try {
+            Email.getInstance().sendSimpleEmail(deliver, receiver, carbonCopy, subject, content);
+            VerifyCode verifyCode = Database.getInstance().getVerifyCodeRepository().save(new VerifyCode(user, code));
+            return new SendVerifyCodeResponse(verifyCode.getGenerateTime().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new InvalidRequestException("send email failed!");
     }
 
 }
@@ -46,15 +47,19 @@ public class SendVerifyCodeController {
 //    public String newP;
 //}
 //
-//class ChangePasswordResponse {
-//
-//    private String uid;
-//
-//    ChangePasswordResponse(String uid) {
-//        this.uid = uid;
-//    }
-//
-//    public String getUid() {
-//        return uid;
-//    }
-//}
+class SendVerifyCodeResponse {
+
+    public String getCodeId() {
+        return codeId;
+    }
+
+    public void setCodeId(String codeId) {
+        this.codeId = codeId;
+    }
+
+    private String codeId;
+
+    public SendVerifyCodeResponse(String codeId){
+        this.codeId = codeId;
+    }
+}

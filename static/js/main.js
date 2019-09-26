@@ -1194,6 +1194,31 @@
 	      }
 	      getSubmitResult(nowpage + 1);
 	    });
+
+          $("#send_verify_code").click(function(event) {
+
+              console.log("logout");
+              $.ajax({
+                  url: RootUrl + "/api/user/verify_code",
+                  type: 'POST',
+                  headers: {
+                      "X-XSRF-TOKEN": $.cookie("XSRF-TOKEN")
+                  },
+                  contentType: 'application/json',
+                  async: false,
+                  success: function(data) {
+                      if (typeof data == "string") {
+                          data = JSON.parse(data);
+                      }
+                      // if (data["msg"]) {
+                      //     $("#info_box_msg").html("<p>"+data["msg"]+"</p>")
+                      //     $("#info_box").modal("show");
+                      // }
+                  }
+              });
+
+          });
+
 	    $("#change_pwd_submit").click(function(event) {
 	      /* Act on the event */
 	      $("#change_pwd_submit").attr("disabled", "disabled");
