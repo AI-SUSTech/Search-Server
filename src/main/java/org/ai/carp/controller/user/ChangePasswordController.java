@@ -5,6 +5,7 @@ import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.user.User;
+import org.ai.carp.model.user.VerifyCode;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,10 +26,17 @@ public class ChangePasswordController {
         if (StringUtils.isEmpty(request.newP)) {
             throw new InvalidRequestException("No new password!");
         }
+        if (StringUtils.isEmpty(request.code)) {
+            throw new InvalidRequestException("No verify code!");
+        }
         if (request.newP.length() > 32) {
             throw new InvalidRequestException("Password too long!");
         }
         User user = UserUtils.getUser(session, User.MAX);
+        VerifyCode verifyCode = Database.getInstance().getVerifyCodeRepository().findTopByUserOrderByGenerateTimeDesc(user);
+        if(!verifyCode.getCode().equals(request.code)){
+            throw new InvalidRequestException("Wrong verify code!");
+        }
         if (!user.passwordMatches(request.oldP)) {
             throw new InvalidRequestException("Wrong old password!");
         }
@@ -44,6 +52,9 @@ class ChangePasswordRequest {
     public String oldP;
     @JsonProperty("new")
     public String newP;
+    @JsonProperty("code")
+    public String code;
+
 }
 
 class ChangePasswordResponse {

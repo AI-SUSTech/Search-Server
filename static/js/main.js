@@ -1196,7 +1196,6 @@
 	    });
 
           $("#send_verify_code").click(function(event) {
-
               console.log("logout");
               $.ajax({
                   url: RootUrl + "/api/user/verify_code",
@@ -1224,9 +1223,11 @@
 	      $("#change_pwd_submit").attr("disabled", "disabled");
 	      let pwd = $("#change_password").val();
 	      let newpwd = $("#change_new_password").val();
+	      let vcode = $("#verify_code").val();
 	      let send_data = {
-	        "old": pwd,
-	        "new": newpwd
+			"old": pwd,
+			"new": newpwd,
+			"code":vcode
 	      };
 	      $.ajax({
 	        url: RootUrl + '/api/user/change/password',

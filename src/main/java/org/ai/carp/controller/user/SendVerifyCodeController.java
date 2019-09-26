@@ -1,6 +1,7 @@
 package org.ai.carp.controller.user;
 
 import org.ai.carp.controller.exceptions.InvalidRequestException;
+import org.ai.carp.controller.util.VerifyCodeGeneUtils;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.Email;
 import org.ai.carp.controller.util.UserUtils;
@@ -22,20 +23,19 @@ public class SendVerifyCodeController {
         if(user==null){
             throw new InvalidRequestException("invalid user!");
         }
-        String deliver = "hy_a12@163.com";
+        String deliver = "11610303@mail.sustech.edu.cn";
         String[] receiver = {String.format("%s@mail.sustech.edu.cn",user.getUsername())};
-        String[] carbonCopy = {"11610303@mail.sustech.edu.cn"};
+        String[] carbonCopy = {};
         String subject = "Verify Code for NCS judge platform";
-        String code = "123456";
+        String code = VerifyCodeGeneUtils.getCode();
         String content = String.format("Your verfy code is %s", code);
         try {
             Email.getInstance().sendSimpleEmail(deliver, receiver, carbonCopy, subject, content);
             VerifyCode verifyCode = Database.getInstance().getVerifyCodeRepository().save(new VerifyCode(user, code));
             return new SendVerifyCodeResponse(verifyCode.getGenerateTime().toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new InvalidRequestException("send email failed!");
         }
-        throw new InvalidRequestException("send email failed!");
     }
 
 }
