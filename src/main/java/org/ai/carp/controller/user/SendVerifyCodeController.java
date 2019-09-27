@@ -1,5 +1,6 @@
 package org.ai.carp.controller.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.util.VerifyCodeGeneUtils;
 import org.ai.carp.model.Database;
@@ -8,6 +9,7 @@ import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.user.User;
 import org.ai.carp.model.user.VerifyCode;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,13 +20,11 @@ import javax.servlet.http.HttpSession;
 public class SendVerifyCodeController {
 
     @PostMapping
-    public SendVerifyCodeResponse post(HttpSession session) {
-        User user = UserUtils.getUser(session, User.MAX);
-        if(user==null){
-            throw new InvalidRequestException("invalid user!");
-        }
+    public SendVerifyCodeResponse post(@RequestBody SendVerifyCodeRequest request, HttpSession session) {
+        User user = UserUtils.findUserByUserName(request.userName);
+
         String deliver = "11610303@mail.sustech.edu.cn";
-        String[] receiver = {String.format("%s@mail.sustech.edu.cn",user.getUsername())};
+        String[] receiver = {String.format("%s@mail.sustech.edu.cn",request.userName)};
         String[] carbonCopy = {};
         String subject = "Verify Code for NCS judge platform";
         String code = VerifyCodeGeneUtils.getCode();
@@ -39,14 +39,12 @@ public class SendVerifyCodeController {
     }
 
 }
-//
-//class ChangePasswordRequest {
-//    @JsonProperty("old")
-//    public String oldP;
-//    @JsonProperty("new")
-//    public String newP;
-//}
-//
+
+class SendVerifyCodeRequest {
+    @JsonProperty("userName")
+    public String userName;
+}
+
 class SendVerifyCodeResponse {
 
     public String getCodeId() {

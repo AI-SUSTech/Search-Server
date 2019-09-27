@@ -20,6 +20,11 @@
 	//Global function for Dom Click events
     var send_verify = function() {
         console.log("logout");
+
+        let sid = $("#sid").val();
+        let send_data = {
+            "userName": sid
+        };
         $.ajax({
             url: RootUrl + "/api/user/verify_code",
             type: 'POST',
@@ -28,6 +33,7 @@
             },
             contentType: 'application/json',
             async: false,
+            data: JSON.stringify(send_data),
             success: function(data) {
                 if (typeof data == "string") {
                     data = JSON.parse(data);
@@ -1229,8 +1235,9 @@
 	      // let pwd = $("#change_password").val();
 	      let newpwd = $("#change_new_password").val();
 	      let vcode = $("#verify_code").val();
+	      let sid = $("#sid").val();
 	      let send_data = {
-			// "old": pwd,
+			"userName": sid,
 			"new": newpwd,
 			"code":vcode
 	      };
@@ -1274,9 +1281,15 @@
 	          $("#change_pwd_content").html("<p>It occurs a error when submit data, Error:" + jqXHR["responseJSON"]["message"] + "</p>");
 	          setTimeout(function() {
 	            let change_pwdHtml = "<div class=\"form-group\">\n";
-	            change_pwdHtml += "	<label for=\"newpassword\">New Password<\/label>\n";
-	            change_pwdHtml += "	<input type=\"password\" class=\"form-control\" name=\"newpassword\" id=\"change_new_password\" placeholder=\"New Password\">\n";
-	            change_pwdHtml += "<\/div>\n";
+
+                change_pwdHtml +=  "<label for=\"sid\">Student ID</label>";
+                change_pwdHtml +=  "<input type=\"text\" class=\"form-control\" name=\"studentId\" id=\"sid\" placeholder=\"student id\">";
+                change_pwdHtml +=  "</div>\n";
+
+                change_pwdHtml += "<div class=\"form-group\">\n";
+                change_pwdHtml += "	<label for=\"newpassword\">New Password<\/label>\n";
+                change_pwdHtml += "	<input type=\"password\" class=\"form-control\" name=\"newpassword\" id=\"change_new_password\" placeholder=\"New Password\">\n";
+                change_pwdHtml += "<\/div>\n";
 
                 change_pwdHtml += "<div class=\"form-group\">\n";
                 change_pwdHtml += "	<label for=\"verify_code\">Verify Code<\/label>\n";

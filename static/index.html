@@ -290,7 +290,7 @@
 							<label for="password">Password</label>
 							<input type="password" class="form-control" id="password" placeholder="Password">
 						</div>
-						<!-- <div><button class="btn btn-link" id="forget_password">Forgot password?</button></div> -->
+						 <div><button class="btn btn-link" id="forget_password", onclick="resetPass(this)">Forgot password?</button></div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" id="login_submit" class="btn btn-carp">Login</button>
@@ -306,13 +306,13 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">Login</h4>
+						<h4 class="modal-title">Reset Password</h4>
 					</div>
 					<div class="modal-body" id="change_pwd_content">
-						<!--<div class="form-group">-->
-							<!--<label for="password">Password</label>-->
-							<!--<input type="password" class="form-control" name="password" id="change_password" placeholder="Password">-->
-						<!--</div>-->
+						<div class="form-group">
+							<label for="sid">Student ID</label>
+							<input type="text" class="form-control" name="studentId" id="sid" placeholder="student id">
+						</div>
 						<div class="form-group">
 							<label for="newpassword">New Password</label>
 							<input type="password" class="form-control" name="newpassword" id="change_new_password" placeholder="New Password">
@@ -382,6 +382,9 @@
 					code_timer(ele)// 关键处-定时循环调用
 				}, 1000)
 			}
+		}
+		resetPass = function (ele) {
+			$("#change_pwd_box").modal("show");
 		}
 	</script>
 	<!-- jQuery -->

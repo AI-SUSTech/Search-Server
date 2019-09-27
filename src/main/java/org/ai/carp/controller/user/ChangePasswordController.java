@@ -24,6 +24,9 @@ public class ChangePasswordController {
 //        if (StringUtils.isEmpty(request.oldP)) {
 //            throw new InvalidRequestException("No old password!");
 //        }
+        if (StringUtils.isEmpty(request.userName)) {
+            throw new InvalidRequestException("No student ID!");
+        }
         if (StringUtils.isEmpty(request.newP)) {
             throw new InvalidRequestException("No new password!");
         }
@@ -33,7 +36,10 @@ public class ChangePasswordController {
         if (request.newP.length() > 32) {
             throw new InvalidRequestException("Password too long!");
         }
-        User user = UserUtils.getUser(session, User.MAX);
+//        User user = UserUtils.getUser(session, User.MAX);
+        User user = UserUtils.findUserByUserName(request.userName);
+
+
         VerifyCode verifyCode = Database.getInstance().getVerifyCodeRepository().findTopByUserOrderByGenerateTimeDesc(user);
         if(!VerifyCodeGeneUtils.checkVerifyCode(verifyCode, request.code)){
             throw new InvalidRequestException("Wrong verify code!");
@@ -49,8 +55,8 @@ public class ChangePasswordController {
 }
 
 class ChangePasswordRequest {
-//    @JsonProperty("old")
-//    public String oldP;
+    @JsonProperty("userName")
+    public String userName;
     @JsonProperty("new")
     public String newP;
     @JsonProperty("code")
