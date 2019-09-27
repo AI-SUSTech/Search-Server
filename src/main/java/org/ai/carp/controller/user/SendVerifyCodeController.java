@@ -30,8 +30,9 @@ public class SendVerifyCodeController {
         String code = VerifyCodeGeneUtils.getCode();
         String content = String.format("Your verfy code is %s", code);
         try {
-            Email.getInstance().sendSimpleEmail(deliver, receiver, carbonCopy, subject, content);
-            VerifyCode verifyCode = Database.getInstance().getVerifyCodeRepository().save(new VerifyCode(user, code));
+            Email email = Email.getInstance();
+            email.sendSimpleEmail(deliver, receiver, carbonCopy, subject, content);
+            VerifyCode verifyCode = email.getVerifyCodeRepository().save(new VerifyCode(user, code));
             return new SendVerifyCodeResponse(verifyCode.getGenerateTime().toString());
         } catch (Exception e) {
             throw new InvalidRequestException("send email failed!");

@@ -13,7 +13,7 @@ public class VerifyCodeGeneUtils {
     }
 
     public static boolean checkVerifyCode(VerifyCode verifyCode, String code){
-        if(verifyCode.getCode().equals(code)){
+        if(verifyCode != null && verifyCode.getCode().equals(code)){
             // check if it is five minutes generated code
             return verifyCode.getGenerateTime().getTime() > System.currentTimeMillis() - 1000 * 300 ;
         }

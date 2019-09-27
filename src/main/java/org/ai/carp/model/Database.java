@@ -32,17 +32,6 @@ public class Database {
     private IMPCaseRepository impCases;
     private LiteCaseRepository liteCases;
 
-    public VerifyCodeRepository getVerifyCodeRepository() {
-        return verifyCodeRepository;
-    }
-
-    @Autowired
-    public void setVerifyCodeRepository(VerifyCodeRepository verifyCodeRepository) {
-        this.verifyCodeRepository = verifyCodeRepository;
-    }
-
-    private VerifyCodeRepository verifyCodeRepository;
-
     //ncs
     private NCSCaseRepository nscCases;
     private NCSDatasetRepository ncsDatasets;

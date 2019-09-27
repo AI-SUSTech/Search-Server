@@ -5,6 +5,7 @@ import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.controller.util.VerifyCodeGeneUtils;
 import org.ai.carp.model.Database;
+import org.ai.carp.model.Email;
 import org.ai.carp.model.user.User;
 import org.ai.carp.model.user.VerifyCode;
 import org.springframework.util.StringUtils;
@@ -40,7 +41,7 @@ public class ChangePasswordController {
         User user = UserUtils.findUserByUserName(request.userName);
 
 
-        VerifyCode verifyCode = Database.getInstance().getVerifyCodeRepository().findTopByUserOrderByGenerateTimeDesc(user);
+        VerifyCode verifyCode = Email.getInstance().getVerifyCodeRepository().findTopByUserOrderByGenerateTimeDesc(user);
         if(!VerifyCodeGeneUtils.checkVerifyCode(verifyCode, request.code)){
             throw new InvalidRequestException("Wrong verify code!");
         }

@@ -1295,7 +1295,7 @@
                 change_pwdHtml += "	<label for=\"verify_code\">Verify Code<\/label>\n";
                 change_pwdHtml += "	<input type=\"password\" class=\"form-control\" name=\"password\" id=\"verify_code\" placeholder=\"input verify code\">\n";
                 change_pwdHtml += "<\/div>\n";
-                change_pwdHtml += "<button type=\"button\" id=\"send_verify_code\" class=\"btn btn-carp\" onclick=\"code_timer(this);send_verify();\">Send Verify Code</button>\n"
+                change_pwdHtml += "<button type=\"button\" id=\"send_verify_code\" class=\"btn btn-carp\" onclick=\"code_timer(this);send_verify();\">send verify code to your student email box</button>\n"
 
                   $("#change_pwd_box").modal("hide");
 	            $("#change_pwd_content").html(change_pwdHtml);

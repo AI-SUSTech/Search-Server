@@ -321,7 +321,7 @@
 							<label for="verify_code">Verify Code</label>
 							<input type="text" class="form-control" name="password" id="verify_code" placeholder="input verify code">
 						</div>
-						<button type="button" id="send_verify_code" class="btn btn-carp" onclick="code_timer(this);send_verify();">Send Verify Code</button>
+						<button type="button" id="send_verify_code" class="btn btn-carp" onclick="code_timer(this);send_verify();">send verify code to your student email box</button>
 
 						<!--<div><button class="btn btn-link" id="forget_password">Forgot password?</button></div>-->
 					</div>
@@ -372,7 +372,7 @@
 		code_timer = function (ele) {
 			if (waitTime == 0) {
 				ele.disabled=false;
-				ele.innerHTML = "Send verify code to your student email";
+				ele.innerHTML = "Send verify code to your student email box";
 				waitTime = 60;// 恢复计时
 			} else {
 				ele.disabled=true;

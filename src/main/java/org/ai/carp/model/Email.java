@@ -2,6 +2,7 @@ package org.ai.carp.model;
 
 
 import org.ai.carp.controller.exceptions.InvalidRequestException;
+import org.ai.carp.model.user.VerifyCodeRepository;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -17,6 +18,16 @@ public class Email {
     private static final Logger logger = LoggerFactory.getLogger(Email.class);
 
     private static Email ourInstance;
+    private VerifyCodeRepository verifyCodeRepository;
+
+    public VerifyCodeRepository getVerifyCodeRepository() {
+        return verifyCodeRepository;
+    }
+
+    @Autowired
+    public void setVerifyCodeRepository(VerifyCodeRepository verifyCodeRepository) {
+        this.verifyCodeRepository = verifyCodeRepository;
+    }
 
     public static Email getInstance() {
         return ourInstance;
