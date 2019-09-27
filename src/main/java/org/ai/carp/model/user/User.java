@@ -74,4 +74,15 @@ public class User {
         return String.format("User[id=%s, name=%s]",
                 id, username);
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    private String email;
+
 }

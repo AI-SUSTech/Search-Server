@@ -70,6 +70,9 @@ public class NCSSetup {
                         continue;
                 }
                 User user = new User(splitted[0], splitted[2], role);
+                if(splitted.length >= 4){
+                    user.setEmail(splitted[3].trim());
+                }
                 user = Database.getInstance().getUsers().insert(user);
                 logger.info(user.toString());
             }

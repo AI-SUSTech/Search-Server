@@ -2,6 +2,7 @@ package org.ai.carp.model;
 
 
 import org.ai.carp.controller.exceptions.InvalidRequestException;
+import org.ai.carp.model.user.User;
 import org.ai.carp.model.user.VerifyCodeRepository;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 
 @Component
@@ -23,6 +25,16 @@ public class Email {
     public VerifyCodeRepository getVerifyCodeRepository() {
         return verifyCodeRepository;
     }
+
+    public String getEmailAddress(User user){
+        if(!StringUtils.isEmpty(user.getEmail())){
+            return user.getEmail();
+        }else if(user.getUsername().matches("[0-9]+")){
+            return String.format("%s@mail.sustech.edu.cn", user.getUsername());
+        }
+        throw new InvalidRequestException("I don't known your email address, please contact administrator");
+    }
+
 
     @Autowired
     public void setVerifyCodeRepository(VerifyCodeRepository verifyCodeRepository) {

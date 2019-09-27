@@ -24,7 +24,7 @@ public class SendVerifyCodeController {
         User user = UserUtils.findUserByUserName(request.userName);
 
         String deliver = "11610303@mail.sustech.edu.cn";
-        String[] receiver = {String.format("%s@mail.sustech.edu.cn",request.userName)};
+        String[] receiver = {Email.getInstance().getEmailAddress(user)};
         String[] carbonCopy = {};
         String subject = "Verify Code for NCS judge platform";
         String code = VerifyCodeGeneUtils.getCode();
