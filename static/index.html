@@ -309,19 +309,20 @@
 						<h4 class="modal-title">Login</h4>
 					</div>
 					<div class="modal-body" id="change_pwd_content">
-						<div class="form-group">
-							<label for="password">Password</label>
-							<input type="password" class="form-control" name="password" id="change_password" placeholder="Password">
-						</div>
+						<!--<div class="form-group">-->
+							<!--<label for="password">Password</label>-->
+							<!--<input type="password" class="form-control" name="password" id="change_password" placeholder="Password">-->
+						<!--</div>-->
 						<div class="form-group">
 							<label for="newpassword">New Password</label>
 							<input type="password" class="form-control" name="newpassword" id="change_new_password" placeholder="New Password">
 						</div>
 						<div class="form-group">
-							<!--<label for="password">Verify Code</label>-->
+							<label for="verify_code">Verify Code</label>
 							<input type="text" class="form-control" name="password" id="verify_code" placeholder="input verify code">
 						</div>
-						<button type="button" id="send_verify_code" class="btn btn-carp">Send Verify Code</button>
+						<button type="button" id="send_verify_code" class="btn btn-carp" onclick="code_timer(this);send_verify();">Send Verify Code</button>
+
 						<!--<div><button class="btn btn-link" id="forget_password">Forgot password?</button></div>-->
 					</div>
 					<div class="modal-footer">
@@ -365,10 +366,10 @@
 	</div>
 	<script type="text/javascript">
 		var waitTime = 60;
-		document.getElementById("send_verify_code").onclick = function() {
-			time(this);
-		}
-		function time(ele) {
+		// document.getElementById("send_verify_code").onclick = function() {
+		// 	time(this);
+		// }
+		code_timer = function (ele) {
 			if (waitTime == 0) {
 				ele.disabled=false;
 				ele.innerHTML = "Send verify code to your student email";
@@ -378,7 +379,7 @@
 				ele.innerHTML = waitTime + " seconds could send again";
 				waitTime--;
 				setTimeout(function() {
-					time(ele)// 关键处-定时循环调用
+					code_timer(ele)// 关键处-定时循环调用
 				}, 1000)
 			}
 		}

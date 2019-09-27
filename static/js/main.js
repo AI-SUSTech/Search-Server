@@ -18,6 +18,30 @@
 	var RenderSelfRankList;
 	var getSubmitResult;
 	//Global function for Dom Click events
+    var send_verify = function() {
+        console.log("logout");
+        $.ajax({
+            url: RootUrl + "/api/user/verify_code",
+            type: 'POST',
+            headers: {
+                "X-XSRF-TOKEN": $.cookie("XSRF-TOKEN")
+            },
+            contentType: 'application/json',
+            async: false,
+            success: function(data) {
+                if (typeof data == "string") {
+                    data = JSON.parse(data);
+                }
+                // if (data["msg"]) {
+                //     $("#info_box_msg").html("<p>"+data["msg"]+"</p>")
+                //     $("#info_box").modal("show");
+                // }
+            }
+        });
+
+    };
+
+
 	var logout_user = function() {
 	  console.log("logout");
 	  $.ajax({
@@ -1195,37 +1219,18 @@
 	      getSubmitResult(nowpage + 1);
 	    });
 
-          $("#send_verify_code").click(function(event) {
-              console.log("logout");
-              $.ajax({
-                  url: RootUrl + "/api/user/verify_code",
-                  type: 'POST',
-                  headers: {
-                      "X-XSRF-TOKEN": $.cookie("XSRF-TOKEN")
-                  },
-                  contentType: 'application/json',
-                  async: false,
-                  success: function(data) {
-                      if (typeof data == "string") {
-                          data = JSON.parse(data);
-                      }
-                      // if (data["msg"]) {
-                      //     $("#info_box_msg").html("<p>"+data["msg"]+"</p>")
-                      //     $("#info_box").modal("show");
-                      // }
-                  }
-              });
 
-          });
+
+          // $("#send_verify_code").click();
 
 	    $("#change_pwd_submit").click(function(event) {
 	      /* Act on the event */
 	      $("#change_pwd_submit").attr("disabled", "disabled");
-	      let pwd = $("#change_password").val();
+	      // let pwd = $("#change_password").val();
 	      let newpwd = $("#change_new_password").val();
 	      let vcode = $("#verify_code").val();
 	      let send_data = {
-			"old": pwd,
+			// "old": pwd,
 			"new": newpwd,
 			"code":vcode
 	      };
@@ -1248,6 +1253,7 @@
 	          $.cookie("username", null);
 	          $.cookie("userid", null);
                 $.cookie("usertype", null);
+                $.cookie("session", null);
 	          setTimeout(function() {
 	            $("#change_pwd_box").modal("hide");
 	            window.location.href = "index.html";
@@ -1268,14 +1274,17 @@
 	          $("#change_pwd_content").html("<p>It occurs a error when submit data, Error:" + jqXHR["responseJSON"]["message"] + "</p>");
 	          setTimeout(function() {
 	            let change_pwdHtml = "<div class=\"form-group\">\n";
-	            change_pwdHtml += "	<label for=\"password\">Password<\/label>\n";
-	            change_pwdHtml += "	<input type=\"password\" class=\"form-control\" name=\"password\" id=\"change_password\" placeholder=\"Password\">\n";
-	            change_pwdHtml += "<\/div>\n";
-	            change_pwdHtml += "<div class=\"form-group\">\n";
 	            change_pwdHtml += "	<label for=\"newpassword\">New Password<\/label>\n";
 	            change_pwdHtml += "	<input type=\"password\" class=\"form-control\" name=\"newpassword\" id=\"change_new_password\" placeholder=\"New Password\">\n";
 	            change_pwdHtml += "<\/div>\n";
-	            $("#change_pwd_box").modal("hide");
+
+                change_pwdHtml += "<div class=\"form-group\">\n";
+                change_pwdHtml += "	<label for=\"verify_code\">Verify Code<\/label>\n";
+                change_pwdHtml += "	<input type=\"password\" class=\"form-control\" name=\"password\" id=\"verify_code\" placeholder=\"input verify code\">\n";
+                change_pwdHtml += "<\/div>\n";
+                change_pwdHtml += "<button type=\"button\" id=\"send_verify_code\" class=\"btn btn-carp\" onclick=\"code_timer(this);send_verify();\">Send Verify Code</button>\n"
+
+                  $("#change_pwd_box").modal("hide");
 	            $("#change_pwd_content").html(change_pwdHtml);
 	            $("#change_pwd_submit").removeAttr("disabled");
 	          }, 3000);

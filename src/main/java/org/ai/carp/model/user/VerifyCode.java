@@ -15,6 +15,7 @@ public class VerifyCode {
     public VerifyCode(User user, String code){
         this.user = user;
         this.code = code;
+        generateTime = new Date();
     }
 
     @Id
