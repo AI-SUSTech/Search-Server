@@ -42,7 +42,10 @@
                 //     $("#info_box_msg").html("<p>"+data["msg"]+"</p>")
                 //     $("#info_box").modal("show");
                 // }
-            }
+            },
+	    error: function(jqXHR, textStatus, errorThrown){
+		alert(jqXHR["responseJSON"]["message"]);
+	    }
         });
 
     };
