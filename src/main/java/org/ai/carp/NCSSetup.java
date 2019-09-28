@@ -3,6 +3,7 @@ package org.ai.carp;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.NCSDataset;
 import org.ai.carp.model.user.User;
+import org.ai.carp.model.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -53,7 +55,10 @@ public class NCSSetup {
             if (StringUtils.isEmpty(splitted[0])) {
                 continue;
             }
-            if (Database.getInstance().getUsers().findByUsername(splitted[0]) == null) {
+            UserRepository userRepository = Database.getInstance().getUsers();
+            User existUser = userRepository.findByUsername(splitted[0]);
+            LinkedList<User> users = new LinkedList<>();
+            if ( existUser== null) {
                 int role;
                 switch (splitted[1]) {
                     case "ADMIN":
@@ -75,7 +80,14 @@ public class NCSSetup {
                 }
                 user = Database.getInstance().getUsers().insert(user);
                 logger.info(user.toString());
+            }else {
+                if(splitted.length>=4){
+                    existUser.setEmail(splitted[3].trim());
+                    users.add(existUser);
+                    logger.info("add email: "+existUser.toString());
+                }
             }
+            userRepository.saveAll(users);
         }
         scanner.close();
     }
@@ -105,7 +117,13 @@ public class NCSSetup {
             );
         }
         for(String name: map.keySet()) {
-            if (Database.getInstance().getNcsDatasets().findDatasetByName(name) != null) {
+            NCSDataset existDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
+            if ( existDataset!= null) {
+                if (existDataset.getProblem_index() == 29) {
+                    existDataset.setSubmittable(false);
+                    existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
+                    logger.info("modify submittable: "+existDataset.toString());
+                }
                 continue;
             }
             NCSDataset dataset = map.get(name);
