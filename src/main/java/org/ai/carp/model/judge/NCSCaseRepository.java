@@ -21,4 +21,7 @@ public interface NCSCaseRepository extends MongoRepository<NCSCase, String> {
     List<NCSCase> findNCSCasesByUserAndDatasetOrderBySubmitTimeDesc(User user, NCSDataset dataset);
 
     List<NCSCase> findNCSCasesByDatasetAndStatusAndValidOrderByResultAscTimeAscSubmitTimeAsc(NCSDataset dataset, int finished, boolean b);
+
+    List<NCSCase> findNCSCasesByUserOrderBySubmitTimeDesc(User user);
+
 }

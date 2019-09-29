@@ -71,12 +71,12 @@ public class QueryUserCaseController {
         if (user == null) {
             throw new InvalidRequestException("User does not exist!");
         }
-        List<BaseCase> baseCases = new ArrayList<>();
-        baseCases.addAll(Database.getInstance().getCarpCases().findCARPCasesByUserOrderBySubmitTimeDesc(user));
-        baseCases.addAll(Database.getInstance().getIseCases().findISECasesByUserOrderBySubmitTimeDesc(user));
-        baseCases.addAll(Database.getInstance().getImpCases().findIMPCasesByUserOrderBySubmitTimeDesc(user));
-        baseCases.sort((a, b) -> b.getSubmitTime().compareTo(a.getSubmitTime()));
-        return baseCases;
+//        List<BaseCase> baseCases = new ArrayList<>();
+//        baseCases.addAll(Database.getInstance().getCarpCases().findCARPCasesByUserOrderBySubmitTimeDesc(user));
+//        baseCases.addAll(Database.getInstance().getIseCases().findISECasesByUserOrderBySubmitTimeDesc(user));
+//        baseCases.addAll(Database.getInstance().getImpCases().findIMPCasesByUserOrderBySubmitTimeDesc(user));
+//        baseCases.sort((a, b) -> b.getSubmitTime().compareTo(a.getSubmitTime()));
+        return FunctionFactory.getAllCases(user);
     }
 
 }

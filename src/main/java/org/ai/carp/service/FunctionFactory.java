@@ -2,7 +2,11 @@ package org.ai.carp.service;
 
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
+import org.ai.carp.model.judge.BaseCase;
+import org.ai.carp.model.judge.LiteCase;
+import org.ai.carp.model.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionFactory {
@@ -48,6 +52,17 @@ public class FunctionFactory {
         datasets.addAll(Database.getInstance().getImpDatasets().findAll());
         datasets.addAll(Database.getInstance().getNcsDatasets().findAll());
         return datasets;
+    }
+
+    public static List<BaseCase> getAllCases(User user){
+
+        List<BaseCase> baseCases = new ArrayList<>();
+        baseCases.addAll(Database.getInstance().getCarpCases().findCARPCasesByUserOrderBySubmitTimeDesc(user));
+        baseCases.addAll(Database.getInstance().getIseCases().findISECasesByUserOrderBySubmitTimeDesc(user));
+        baseCases.addAll(Database.getInstance().getImpCases().findIMPCasesByUserOrderBySubmitTimeDesc(user));
+        baseCases.addAll(Database.getInstance().getNcsCases().findNCSCasesByUserOrderBySubmitTimeDesc(user));
+        baseCases.sort((a, b) -> b.getSubmitTime().compareTo(a.getSubmitTime()));
+        return baseCases;
     }
 
 
