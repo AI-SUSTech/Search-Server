@@ -33,7 +33,7 @@ public class GetArchiveController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "zip"));
-        headers.setContentDispositionFormData("attachment", cid + ".zip");
+        headers.setContentDispositionFormData("attachment", String.format("%s.%s", cid, baseCase.getSubmitFileType()));
         headers.setContentLength(baseCase.getArchive().length());
         return new ResponseEntity<>(baseCase.getArchive().getData(), headers, HttpStatus.OK);
     }

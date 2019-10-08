@@ -37,6 +37,10 @@ public class NCSCase extends BaseCase {
         return BaseDataset.NCS;
     }
 
+    public String getSubmitFileType(){
+        return "json";
+    }
+
     @Override
     public void setDataset(BaseDataset dataset) {
         this.dataset = (NCSDataset) dataset;

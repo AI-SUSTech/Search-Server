@@ -67,6 +67,10 @@ public abstract class BaseCase {
         this.status = WAITING;
     }
 
+    public String getSubmitFileType(){
+        return "zip";
+    }
+
     public abstract int getType();
 
     public abstract void setDataset(BaseDataset dataset);
