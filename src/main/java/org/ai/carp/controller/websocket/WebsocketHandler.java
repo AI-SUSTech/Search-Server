@@ -78,6 +78,8 @@ public class WebsocketHandler extends TextWebSocketHandler {
         if (type == WORKER_TICK) {
             // TODO: Regularly check for worker status
             String tickUid = rootNode.get("uid").asText();
+            // TODO will remove in future
+  //          logger.info("Worker {} tick {}", session.getAttributes().get("uid"), tickUid);
             if (!uid.equals(tickUid)) {
                 // Wrong worker
                 logger.error("Wrong worker uid {}, closing session...", tickUid);
