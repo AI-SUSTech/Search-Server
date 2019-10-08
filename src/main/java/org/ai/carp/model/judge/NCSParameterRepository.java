@@ -14,4 +14,8 @@ public interface NCSParameterRepository extends MongoRepository<NCSParameter, St
             int hash,
             User user
     );
+
+    List<NCSParameter> findNCSParametersByUser(
+            User user
+    );
 }

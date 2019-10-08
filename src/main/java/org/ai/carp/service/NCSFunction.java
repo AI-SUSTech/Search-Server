@@ -46,10 +46,12 @@ public class NCSFunction implements BaseFunction {
                 throw new InvalidRequestException(
                         String.format("You parameter is the same as %s", parameter.getUser().getUsername()));
         }
-        Database.getInstance().getNcsParameterRepository().insert(ncsParameter);
-        return Database.getInstance()
+        BaseCase resCase =  Database.getInstance()
                 .getNcsCases()
                 .insert(new NCSCase(user, dataset, archive));
+        ncsParameter.setCaseId(resCase.getId());
+        Database.getInstance().getNcsParameterRepository().insert(ncsParameter);
+        return resCase;
     }
 
     @Override

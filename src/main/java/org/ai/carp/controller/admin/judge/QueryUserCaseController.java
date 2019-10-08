@@ -4,6 +4,7 @@ import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.util.DatasetUtils;
 import org.ai.carp.controller.util.UserUtils;
 import org.ai.carp.model.Database;
+import org.ai.carp.model.judge.NCSParameter;
 import org.ai.carp.service.FunctionFactory;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.judge.BaseCase;
@@ -77,6 +78,17 @@ public class QueryUserCaseController {
 //        baseCases.addAll(Database.getInstance().getImpCases().findIMPCasesByUserOrderBySubmitTimeDesc(user));
 //        baseCases.sort((a, b) -> b.getSubmitTime().compareTo(a.getSubmitTime()));
         return FunctionFactory.getAllCases(user);
+    }
+
+    @GetMapping
+    @RequestMapping(value = "/api/admin/judge/query_ncs_para", params = {"user"})
+    public List<NCSParameter> getNCSParameter(@RequestParam("user") String username, HttpSession session) {
+        UserUtils.getUser(session, User.ADMIN);
+        User user = Database.getInstance().getUsers().findByUsername(username);
+        if (user == null) {
+            throw new InvalidRequestException("User does not exist!");
+        }
+        return Database.getInstance().getNcsParameterRepository().findNCSParametersByUser(user);
     }
 
 }

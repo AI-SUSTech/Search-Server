@@ -97,6 +97,16 @@ public class NCSParameter {
     @Indexed
     protected int hash;
 
+    public String getCaseId() {
+        return caseId;
+    }
+
+    public void setCaseId(String caseId) {
+        this.caseId = caseId;
+    }
+
+    private String caseId;
+
 //    @Id
 //    @AutoValue
 //    protected String id;
