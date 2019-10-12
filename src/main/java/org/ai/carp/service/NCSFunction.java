@@ -34,17 +34,19 @@ public class NCSFunction implements BaseFunction {
     public BaseCase insert(User user, BaseDataset dataset, Binary archive) {
         NCSParameter ncsParameter = ParameterFileUtils.checkSubmitPara(user, archive.getData());
         ncsParameter.setDataset((NCSDataset) dataset);
-        int hash = ncsParameter.getHash();
-        List<NCSParameter> parameters = Database.getInstance().getNcsParameterRepository()
-                .findNCSParametersByDatasetAndHashAndUserNot(
-                        (NCSDataset) dataset,
-                        hash,
-                        user
-                );
-        for(NCSParameter parameter:parameters) {
-            if (parameter.equals(ncsParameter))
-                throw new InvalidRequestException(
-                        String.format("You parameter is the same as %s", parameter.getUser().getUsername()));
+        if(user.getType() > User.ADMIN){
+                int hash = ncsParameter.getHash();
+                List<NCSParameter> parameters = Database.getInstance().getNcsParameterRepository()
+                        .findNCSParametersByDatasetAndHashAndUserNot(
+                                (NCSDataset) dataset,
+                                hash,
+                                user
+                        );
+                for(NCSParameter parameter:parameters) {
+                if (parameter.equals(ncsParameter))
+                        throw new InvalidRequestException(
+                                String.format("You parameter is the same as %s", parameter.getUser().getUsername()));
+                }
         }
         BaseCase resCase =  Database.getInstance()
                 .getNcsCases()
