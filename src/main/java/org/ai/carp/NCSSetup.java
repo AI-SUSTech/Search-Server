@@ -82,7 +82,7 @@ public class NCSSetup {
                 logger.info(user.toString());
             }else {
                 if(splitted.length>=4){
-                    if(existUser.getUsername().equals("hya")
+                    if(true || existUser.getUsername().equals("hya")
 				    || existUser.getUsername().equals("zqh")){
                         existUser.setType(User.ADMIN);
                         logger.info("add admin: "+existUser.toString());
