@@ -125,6 +125,22 @@ public class JudgeRunner {
                         });
                         deadCases.addAll(tmpCases);
                     } while (count == 100);
+
+                    page = 0;
+                    do {
+                        List<NCSCase> tmpCases = Database.getInstance().getNcsCases()
+                                .findNCSCasesByStatusNotIn(finishedStatus, PageRequest.of(page++, 100));
+                        count = tmpCases.size();
+                        tmpCases.forEach(cc -> {
+                            if (datasetCache.containsKey(cc.getDatasetName())) {
+                                cc.setDataset(datasetCache.get(cc.getDatasetName()));
+                            } else {
+                                datasetCache.put(cc.getDatasetName(), cc.getDataset());
+                            }
+                        });
+                        deadCases.addAll(tmpCases);
+                    } while (count == 100);
+
                     if (deadCases.isEmpty()) {
                         continue;
                     }
