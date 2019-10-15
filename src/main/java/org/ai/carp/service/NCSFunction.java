@@ -104,7 +104,7 @@ public class NCSFunction implements BaseFunction {
     }
 
     private Stream<NCSCase> getTopResult(NCSDataset dataset){
-        List<NCSCase> caseList = Database.getInstance().getNcsCases().findNCSCaseByDataset(dataset);
+        List<NCSCase> caseList = Database.getInstance().getNcsCases().findNCSCaseByDatasetAndStatus(dataset, BaseCase.FINISHED);
         HashMap<String, NCSCase> map = new HashMap<>();
         for(NCSCase ncsCase: caseList){
             if(ncsCase.getUser().getType() <= User.ADMIN){
