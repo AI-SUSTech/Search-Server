@@ -116,7 +116,7 @@ public class NCSFunction implements BaseFunction {
         IntWrapper baseCol = new IntWrapper();
         baseCol.num = -2;
         Database.getInstance().getNcsDatasets().findAll()
-                .stream().filter(NCSDataset::isFinalJudge).forEach(d -> {
+                .stream().filter(NCSDataset::isSubmittable).forEach(d -> {
             // Add combined data
             baseCol.num += 3;
             finalTitle.createCell(baseCol.num).setCellValue(d.getName());

@@ -35,7 +35,7 @@ public class GetNCSGrades {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.setContentDispositionFormData("attachment", "imp.xlsx");
+        headers.setContentDispositionFormData("attachment", "ncs.xlsx");
         headers.setContentLength(baos.size());
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
     }
