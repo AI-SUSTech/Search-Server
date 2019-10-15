@@ -3,7 +3,6 @@ package org.ai.carp.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.judge.QuerySelfBestController;
-import org.ai.carp.controller.judge.QueryTopResult;
 import org.ai.carp.controller.util.ParameterFileUtils;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
@@ -19,10 +18,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bson.types.Binary;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class NCSFunction implements BaseFunction {
     @Override
@@ -101,8 +99,23 @@ public class NCSFunction implements BaseFunction {
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                 .map(c -> (BaseCase)c).collect(Collectors.toList());
     }
-    private class IntWrapper {
-        public int num = 0;
+    private static class IntWrapper {
+        int num = 0;
+    }
+
+    private Stream<NCSCase> getTopResult(NCSDataset dataset){
+        List<NCSCase> caseList = Database.getInstance().getNcsCases().findNCSCaseByDataset(dataset);
+        HashMap<String, NCSCase> map = new HashMap<>();
+        for(NCSCase ncsCase: caseList){
+            if(ncsCase.getUser().getType() <= User.ADMIN){
+                continue;
+            }
+            String userName = ncsCase.getUser().getUsername();
+            if(!map.containsKey(userName) || map.get(userName).getResult() > ncsCase.getResult() ){
+                map.put(userName, ncsCase);
+            }
+        }
+        return map.values().stream();
     }
 
     @Override
@@ -116,57 +129,30 @@ public class NCSFunction implements BaseFunction {
         IntWrapper baseCol = new IntWrapper();
         baseCol.num = -2;
         Database.getInstance().getNcsDatasets().findAll()
-                .stream().filter(NCSDataset::isSubmittable).forEach(d -> {
+                .stream().filter(NCSDataset::isSubmittable).forEach(ncsDataset -> {
             // Add combined data
             baseCol.num += 3;
-            finalTitle.createCell(baseCol.num).setCellValue(d.getName());
+            finalTitle.createCell(baseCol.num).setCellValue(ncsDataset.getName());
             finalTitle.createCell(baseCol.num+1).setCellValue("Time");
-            finalTitle.createCell(baseCol.num+2).setCellValue("Count");
-            QueryTopResult.getFinalList(d.getId()).forEach(c -> {
+            finalTitle.createCell(baseCol.num+2).setCellValue("Result");
+
+
+            getTopResult(ncsDataset).forEach(c -> {
                 Row r;
-                if (!stuFinalMap.containsKey(c.getUserName())) {
+                if (!stuFinalMap.containsKey(c.getUser().getUsername())) {
                     r = finalSheet.createRow(finalSheet.getLastRowNum()+1);
-                    r.createCell(0).setCellValue(c.getUserName());
-                    stuFinalMap.put(c.getUserName(), r);
+                    r.createCell(0).setCellValue(c.getUser().getUsername());
+                    stuFinalMap.put(c.getUser().getUsername(), r);
                 } else {
-                    r = stuFinalMap.get(c.getUserName());
+                    r = stuFinalMap.get(c.getUser().getUsername());
                 }
                 r.createCell(baseCol.num).setCellValue(c.getResult());
-                r.createCell(baseCol.num+1).setCellValue(c.getTime());
-                r.createCell(baseCol.num+2).setCellValue(c.getCount());
+                r.createCell(baseCol.num+1).setCellValue(c.getSubmitTime());
+                r.createCell(baseCol.num+2).setCellValue(c.getResult());
             });
             finalSheet.autoSizeColumn(baseCol.num);
             finalSheet.autoSizeColumn(baseCol.num+1);
             finalSheet.autoSizeColumn(baseCol.num+2);
-            // Create dataset sheet
-            Sheet sheet = wb.createSheet(d.getName());
-            Row row = sheet.createRow(0);
-            row.createCell(0).setCellValue("ID");
-            for (int i=0; i<5; i++) {
-                row.createCell(i*3+1).setCellValue(String.valueOf(i+1));
-                row.createCell(i*3+2).setCellValue("Time");
-                row.createCell(i*3+3).setCellValue("Reason");
-            }
-            // Add dataset data
-            Map<String, Row> stuMap = new HashMap<>();
-            Database.getInstance().getNcsCases()
-                    .findIMPCasesByDatasetOrderBySubmitTimeDesc(d)
-                    .stream().forEach(c -> {
-                Row r;
-                if (!stuMap.containsKey(c.getUser().getUsername())) {
-                    r = sheet.createRow(sheet.getLastRowNum()+1);
-                    r.createCell(0).setCellValue(c.getUser().getUsername());
-                    stuMap.put(c.getUser().getUsername(), r);
-                } else {
-                    r = stuMap.get(c.getUser().getUsername());
-                }
-                r.createCell(r.getLastCellNum()).setCellValue(c.getResult());
-                r.createCell(r.getLastCellNum()).setCellValue(c.getTime());
-                r.createCell(r.getLastCellNum()).setCellValue(c.getReason());
-            });
-            for (int i=0; i<=15; i++) {
-                sheet.autoSizeColumn(i);
-            }
         });
         return wb;
     }

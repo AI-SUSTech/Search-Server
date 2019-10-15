@@ -26,7 +26,7 @@ public interface NCSCaseRepository extends MongoRepository<NCSCase, String> {
 
     List<NCSCase> findNCSCasesByStatusNotIn(List<Integer> status, Pageable pageable);
 
-    List<NCSCase> findIMPCasesByDatasetOrderBySubmitTimeDesc(NCSDataset dataset);
+    List<NCSCase> findNCSCaseByDataset(NCSDataset dataset);
 
 
 }
