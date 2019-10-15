@@ -104,7 +104,7 @@ public class NCSFunction implements BaseFunction {
     }
 
     private Stream<NCSCase> getTopResult(NCSDataset dataset){
-        List<NCSCase> caseList = Database.getInstance().getNcsCases().findNCSCaseByDatasetAndStatus(dataset, BaseCase.FINISHED);
+        List<NCSCase> caseList = Database.getInstance().getNcsCases().findNCSCaseByDatasetAndStatusAndValid(dataset, BaseCase.FINISHED, true);
         HashMap<String, NCSCase> map = new HashMap<>();
         for(NCSCase ncsCase: caseList){
             if(ncsCase.getUser().getType() <= User.ADMIN){
@@ -146,8 +146,8 @@ public class NCSFunction implements BaseFunction {
                 } else {
                     r = stuFinalMap.get(c.getUser().getUsername());
                 }
-                r.createCell(baseCol.num).setCellValue(c.getResult());
-                r.createCell(baseCol.num+1).setCellValue(c.getSubmitTime());
+                r.createCell(baseCol.num).setCellValue(c.getSubmitTime().toString());
+                r.createCell(baseCol.num+1).setCellValue(c.getTime());
                 r.createCell(baseCol.num+2).setCellValue(c.getResult());
             });
             finalSheet.autoSizeColumn(baseCol.num);
