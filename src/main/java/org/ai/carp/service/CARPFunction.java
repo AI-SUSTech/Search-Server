@@ -9,6 +9,7 @@ import org.ai.carp.model.dataset.CARPDataset;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.judge.CARPCase;
 import org.ai.carp.model.user.User;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.bson.types.Binary;
 import org.springframework.data.domain.PageRequest;
 
@@ -63,6 +64,11 @@ public class CARPFunction implements BaseFunction {
                         (CARPDataset)dataset, BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                 .map(c -> (BaseCase)c).collect(Collectors.toList());
+    }
+
+    @Override
+    public Workbook getFinalGrades() {
+        return null;
     }
 
 }

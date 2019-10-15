@@ -5,6 +5,7 @@ import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.CARPDataset;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.user.User;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.bson.types.Binary;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface BaseFunction {
     List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset);
 
     List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset);
+
+    Workbook getFinalGrades();
 }

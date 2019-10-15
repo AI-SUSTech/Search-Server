@@ -8,6 +8,7 @@ import org.ai.carp.model.dataset.IMPDataset;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.judge.IMPCase;
 import org.ai.carp.model.user.User;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.bson.types.Binary;
 import org.springframework.data.domain.PageRequest;
 
@@ -61,5 +62,10 @@ public class IMPFunction implements BaseFunction {
                         (IMPDataset)dataset, BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                 .map(c -> (BaseCase)c).collect(Collectors.toList());
+    }
+
+    @Override
+    public Workbook getFinalGrades() {
+        return null;
     }
 }
