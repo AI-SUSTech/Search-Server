@@ -18,10 +18,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 
 @RestController
 @RequestMapping("/api/judge/submit")
 public class NCSSubmitController {
+
+    private static Date ddl;
+
+    static{
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ddl = df.parse("2019-10-27 23:56:00");
+        }catch(Exception e){
+            System.out.println("parse error:" + e.getMessage());
+        }
+    }
+
 
     @PostMapping
     public NCSSubmitResponse post(@RequestBody NCSPostCase postCase, HttpSession session) {
@@ -29,9 +45,11 @@ public class NCSSubmitController {
         if(user.passwordMatches(user.getUsername())){
             throw new PermissionDeniedException("Please change your password!");
         }
-//        if (new Date().getTime() >= new Date(2019,8,27,22, 30).getTime()){//1544803200000L) {
-//            throw new InvalidRequestException("Deadline has passed!");
-//        }
+
+        if(new Date().getTime() >= ddl.getTime()){
+            throw new InvalidRequestException("Deadline has passed!");
+        }
+
         if (StringUtils.isEmpty(postCase.data)) {
             throw new InvalidRequestException("No data!");
         }

@@ -124,11 +124,13 @@ public class NCSSetup {
         for(String name: map.keySet()) {
             NCSDataset existDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
             if ( existDataset!= null) {
-                if (existDataset.getProblem_index() == 29) {
+                if (existDataset.getProblem_index() != 29) {
                     existDataset.setSubmittable(false);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
-                    logger.info("modify submittable: "+existDataset.toString());
-                }
+                    logger.info("modify submittable to false: "+existDataset.toString());
+                }else{
+		   existDataset.setSubmittable(true);                                                                                                                                    existDataset = Database.getInstance().getNcsDatasets().save(existDataset);                                                                                             logger.info("modify submittable to true: "+existDataset.toString());
+		}
                 continue;
             }
             NCSDataset dataset = map.get(name);
