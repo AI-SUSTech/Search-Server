@@ -101,7 +101,7 @@ public class NCSSetup {
         List<NCSCase> modifiedCase = new ArrayList<>();
         for(NCSCase ncsCase: caseList){
             String stdout = ncsCase.getStdout();
-            if(stdout.length() > 100){
+            if(stdout != null && stdout.length() > 100){
                 ncsCase.setStdout(stdout.substring(stdout.length()-100));
                 modifiedCase.add(ncsCase);
             }
