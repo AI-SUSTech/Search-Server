@@ -40,7 +40,6 @@ public class QueryTopController {
         }
         List<BaseCase> allBaseCases = new ArrayList<>();
         Set<String> invalidUids = new HashSet<>();
-
         try {
             allBaseCases = FunctionFactory.getCaseFunction(dataset.getType()).queryAllDatasetOfUser(dataset);
         } catch (Exception e) {

@@ -10,7 +10,7 @@ import java.util.List;
 public interface NCSCaseRepository extends MongoRepository<NCSCase, String> {
 
 
-    List<NCSCase> findNCSCasesByDatasetAndUserAndStatusAndValidOrderByResultAscTimeAscSubmitTimeDesc(
+    List<NCSCase> findNCSCasesByDatasetAndUserAndStatusAndValidOrderByResultDescTimeAscSubmitTimeDesc(
             NCSDataset dataset,
             User user,
             int status,
@@ -20,7 +20,7 @@ public interface NCSCaseRepository extends MongoRepository<NCSCase, String> {
 
     List<NCSCase> findNCSCasesByUserAndDatasetOrderBySubmitTimeDesc(User user, NCSDataset dataset);
 
-    List<NCSCase> findNCSCasesByDatasetAndStatusAndValidOrderByResultAscTimeAscSubmitTimeAsc(NCSDataset dataset, int finished, boolean b);
+    List<NCSCase> findNCSCasesByDatasetAndStatusAndValidOrderByResultDescTimeAscSubmitTimeAsc(NCSDataset dataset, int finished, boolean b);
 
     List<NCSCase> findNCSCasesByUserOrderBySubmitTimeDesc(User user);
 
