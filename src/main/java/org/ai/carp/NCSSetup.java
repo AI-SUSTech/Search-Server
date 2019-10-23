@@ -2,6 +2,7 @@ package org.ai.carp;
 
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.NCSDataset;
+import org.ai.carp.model.judge.NCSCase;
 import org.ai.carp.model.user.User;
 import org.ai.carp.model.user.UserRepository;
 import org.slf4j.Logger;
@@ -17,10 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @ComponentScan(basePackages = {"org.ai.carp.model"})
 @SpringBootApplication
@@ -33,8 +31,9 @@ public class NCSSetup {
         SpringApplication app = new SpringApplication(NCSSetup.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        addUsers();
-        addDatasets();
+        cutNCSLog();
+//        addUsers();
+//        addDatasets();
     }
 
     private static void addUsers() {
@@ -95,6 +94,20 @@ public class NCSSetup {
             userRepository.saveAll(users);
         }
         scanner.close();
+    }
+
+    private static void cutNCSLog() {
+        List<NCSCase> caseList = Database.getInstance().getNcsCases().findAll();
+        List<NCSCase> modifiedCase = new ArrayList<>();
+        for(NCSCase ncsCase: caseList){
+            String stdout = ncsCase.getStdout();
+            if(stdout.length() > 100){
+                ncsCase.setStdout(stdout.substring(stdout.length()-100));
+                modifiedCase.add(ncsCase);
+            }
+        }
+        Database.getInstance().getNcsCases().saveAll(modifiedCase);
+        logger.info("modified cases number: " + modifiedCase.size());
     }
 
     private static void addDatasets() {
