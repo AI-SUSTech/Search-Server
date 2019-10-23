@@ -108,7 +108,7 @@ public class NCSSetup {
             }
             String stderr = ncsCase.getStderr();
             if(stderr != null && stderr.length() > 100){
-                ncsCase.setStdout(stderr.substring(stderr.length()-100));
+                ncsCase.setStderr(stderr.substring(stderr.length()-100));
                 modifiedFlag = true;
             }
             if(modifiedFlag){
