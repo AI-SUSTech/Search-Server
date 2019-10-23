@@ -122,7 +122,13 @@ public class WebsocketHandler extends TextWebSocketHandler {
                     }
                     baseCase.setStdout(stdout);
                     baseCase.setOutOverflow(rootNode.get("stdout_overflow").asBoolean());
-                    baseCase.setStderr(rootNode.get("stderr").asText());
+
+                    String stderr = rootNode.get("stderr").asText();
+                    if(stderr != null && stderr.length() > 100){
+                        stderr = stderr.substring(stderr.length()-100));
+                        logger.info("stderr too long: {}", baseCase.toString());
+                    }
+                    baseCase.setStderr(stderr);
                     baseCase.setErrOverflow(rootNode.get("stderr_overflow").asBoolean());
                     baseCase.setExitcode(rootNode.get("exitcode").asInt());
                     try {

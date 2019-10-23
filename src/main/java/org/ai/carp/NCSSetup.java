@@ -100,9 +100,18 @@ public class NCSSetup {
         List<NCSCase> caseList = Database.getInstance().getNcsCases().findAll();
         List<NCSCase> modifiedCase = new ArrayList<>();
         for(NCSCase ncsCase: caseList){
+            boolean modifiedFlag = false;
             String stdout = ncsCase.getStdout();
             if(stdout != null && stdout.length() > 100){
                 ncsCase.setStdout(stdout.substring(stdout.length()-100));
+                modifiedFlag = true;
+            }
+            String stderr = ncsCase.getStderr();
+            if(stderr != null && stderr.length() > 100){
+                ncsCase.setStdout(stderr.substring(stderr.length()-100));
+                modifiedFlag = true;
+            }
+            if(modifiedFlag){
                 modifiedCase.add(ncsCase);
             }
         }
