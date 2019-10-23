@@ -31,9 +31,9 @@ public class NCSSetup {
         SpringApplication app = new SpringApplication(NCSSetup.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        cutNCSLog();
+//        cutNCSLog();
 //        addUsers();
-//        addDatasets();
+        addDatasets();
     }
 
     private static void addUsers() {
@@ -148,6 +148,7 @@ public class NCSSetup {
             if ( existDataset!= null) {
                 if (existDataset.getProblem_index() != 29) {
                     existDataset.setSubmittable(false);
+                    existDataset.setEnabled(false);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
                     logger.info("modify submittable to false: "+existDataset.toString());
                 }else{
