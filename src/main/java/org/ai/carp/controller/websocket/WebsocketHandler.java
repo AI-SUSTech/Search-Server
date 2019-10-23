@@ -125,7 +125,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 
                     String stderr = rootNode.get("stderr").asText();
                     if(stderr != null && stderr.length() > 100){
-                        stderr = stderr.substring(stderr.length()-100));
+                        stderr = stderr.substring(stderr.length()-100);
                         logger.info("stderr too long: {}", baseCase.toString());
                     }
                     baseCase.setStderr(stderr);
