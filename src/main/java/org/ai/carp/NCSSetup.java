@@ -127,7 +127,12 @@ public class NCSSetup {
         Database.getInstance().getNcsCases().saveAll(modifiedCase);
         logger.info("modified cases number: " + modifiedCase.size());
         int f12 = 0, f6 = 0, f29 = 0;
+        int invalidValue = 0;
         for (NCSCase ncsCase : invalidCase) {
+            if(!ncsCase.isValid()){
+                invalidValue ++;
+                continue;
+            }
             NCSDataset dataset = (NCSDataset) ncsCase.getDataset();
             switch (dataset.getProblem_index()) {
                 case 6:
@@ -149,7 +154,7 @@ public class NCSSetup {
 //            logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
 //                    ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
         }
-        logger.info(String.format("invalid parameter count: %d f6:%d f12:%d f29:%d", invalidCase.size(), f6, f12, f29));
+        logger.info(String.format("invalid parameter count: %d f6:%d f12:%d f29:%d invalid_res: %d", invalidCase.size(), f6, f12, f29, invalidValue));
     }
 
     private static void addDatasets() {
