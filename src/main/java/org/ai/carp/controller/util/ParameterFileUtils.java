@@ -33,12 +33,18 @@ public class ParameterFileUtils {
             throw new InvalidRequestException("require an float lambda in (0, 10)!");
         }
         double lambda = jsonNode.asDouble();
+	if(lambda <= 0 || lambda >= 10){
+		throw new InvalidRequestException("require an float lambda in (0, 10)!");
+	}
 
         jsonNode = rootNode.get("r");
         if(jsonNode == null || !jsonNode.isNumber()){
             throw new InvalidRequestException("require a float r!");
         }
         double r = jsonNode.asDouble();
+	if(r <= 0){
+		throw new InvalidRequestException("r should be not negative!");
+	}  
 
         jsonNode = rootNode.get("epoch");
         if(jsonNode == null || !jsonNode.isNumber()){
@@ -51,6 +57,11 @@ public class ParameterFileUtils {
             throw new InvalidRequestException("require an integer n in [1, 100]!");
         }
         int n = jsonNode.asInt();
+	if(n<1 || n>100){
+		throw new InvalidRequestException("require an interger in [1, 100]!");
+	}
+	if(epoch > 300000)
+		throw new InvalidRequestException("epoch do not valid!");
 
         NCSParameter ncsParameter = new NCSParameter(user);
         ncsParameter.setEpoch(epoch);

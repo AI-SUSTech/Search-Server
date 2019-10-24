@@ -102,13 +102,13 @@ public class NCSSetup {
         for(NCSCase ncsCase: caseList){
             boolean modifiedFlag = false;
             String stdout = ncsCase.getStdout();
-            if(stdout != null && stdout.length() > 100){
-                ncsCase.setStdout(stdout.substring(stdout.length()-100));
+            if(stdout != null && stdout.length() > 200){
+                ncsCase.setStdout(stdout.substring(stdout.length()-200));
                 modifiedFlag = true;
             }
             String stderr = ncsCase.getStderr();
-            if(stderr != null && stderr.length() > 100){
-                ncsCase.setStderr(stderr.substring(stderr.length()-100));
+            if(stderr != null && stderr.length() > 200){
+                ncsCase.setStderr(stderr.substring(stderr.length()-200));
                 modifiedFlag = true;
             }
             if(modifiedFlag){
