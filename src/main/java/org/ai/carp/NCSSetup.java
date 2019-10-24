@@ -147,14 +147,17 @@ public class NCSSetup {
                     break;
                 case 29:
                     f29++;
-//                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-//                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
+                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
             }
-//            logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-//                    ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
+            ncsCase.setValid(false);
+            ncsCase.setReason("invalid parameter range");
+            logger.info("set invalid parameter to error: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                    ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
         }
         logger.info(String.format("invalid parameter count: %d f6:%d f12:%d f29:%d invalid_res: %d", invalidCase.size(), f6, f12, f29, invalidValue));
+        Database.getInstance().getNcsCases().saveAll(invalidCase);
     }
 
     private static void addDatasets() {

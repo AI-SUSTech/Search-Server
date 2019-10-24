@@ -29,7 +29,7 @@ public class ParameterFileUtils {
         if(parameter.getN()<1 || parameter.getN()>100){
             throw new InvalidRequestException("require an integer in [1, 100]!");
         }
-        if(parameter.getEpoch() > 300000)
+        if(parameter.getEpoch() > 300000 || parameter.getEpoch() <= 0)
             throw new InvalidRequestException("epoch do not valid!");
         parameter.generateHash();
         return parameter;
