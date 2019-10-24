@@ -59,7 +59,7 @@ public class NCSSetup {
             UserRepository userRepository = Database.getInstance().getUsers();
             User existUser = userRepository.findByUsername(splitted[0]);
             LinkedList<User> users = new LinkedList<>();
-            if ( existUser== null) {
+            if (existUser == null) {
                 int role;
                 switch (splitted[1]) {
                     case "ADMIN":
@@ -76,21 +76,21 @@ public class NCSSetup {
                         continue;
                 }
                 User user = new User(splitted[0], splitted[2], role);
-                if(splitted.length >= 4){
+                if (splitted.length >= 4) {
                     user.setEmail(splitted[3].trim());
                 }
                 user = Database.getInstance().getUsers().insert(user);
                 logger.info(user.toString());
-            }else {
-                if(splitted.length>=4){
-                    if(true || existUser.getUsername().equals("hya")
-				    || existUser.getUsername().equals("zqh")){
+            } else {
+                if (splitted.length >= 4) {
+                    if (true || existUser.getUsername().equals("hya")
+                            || existUser.getUsername().equals("zqh")) {
                         existUser.setType(User.ADMIN);
-                        logger.info("add admin: "+existUser.toString());
+                        logger.info("add admin: " + existUser.toString());
                     }
                     existUser.setEmail(splitted[3].trim());
                     users.add(existUser);
-                    logger.info("add email: "+existUser.toString());
+                    logger.info("add email: " + existUser.toString());
                 }
             }
             userRepository.saveAll(users);
@@ -102,34 +102,54 @@ public class NCSSetup {
         List<NCSCase> caseList = Database.getInstance().getNcsCases().findAll();
         List<NCSCase> modifiedCase = new ArrayList<>();
         List<NCSCase> invalidCase = new ArrayList<>();
-        for(NCSCase ncsCase: caseList){
+        for (NCSCase ncsCase : caseList) {
             boolean modifiedFlag = false;
             String stdout = ncsCase.getStdout();
-            if(stdout != null && stdout.length() > 200){
-                ncsCase.setStdout(stdout.substring(stdout.length()-200));
+            if (stdout != null && stdout.length() > 200) {
+                ncsCase.setStdout(stdout.substring(stdout.length() - 200));
                 modifiedFlag = true;
             }
             String stderr = ncsCase.getStderr();
-            if(stderr != null && stderr.length() > 200){
-                ncsCase.setStderr(stderr.substring(stderr.length()-200));
+            if (stderr != null && stderr.length() > 200) {
+                ncsCase.setStderr(stderr.substring(stderr.length() - 200));
                 modifiedFlag = true;
             }
-            if(modifiedFlag){
+            if (modifiedFlag) {
                 modifiedCase.add(ncsCase);
             }
             try {
                 ParameterFileUtils.checkSubmitPara(ncsCase.getUser(), ncsCase.getArchive().getData());
-            }catch (Exception e){
+            } catch (Exception e) {
                 ncsCase.setStdout(e.getMessage());
                 invalidCase.add(ncsCase);
             }
         }
         Database.getInstance().getNcsCases().saveAll(modifiedCase);
         logger.info("modified cases number: " + modifiedCase.size());
-        for(NCSCase ncsCase: invalidCase){
-            logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()));
+        int f12 = 0, f6 = 0, f29 = 0;
+        for (NCSCase ncsCase : invalidCase) {
+            NCSDataset dataset = (NCSDataset) ncsCase.getDataset();
+            switch (dataset.getProblem_index()) {
+                case 6:
+                    f6++;
+                    logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " "+ ncsCase.getStdout());
+                    break;
+                case 12:
+                    f12++;
+                    logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " "+ ncsCase.getStdout());
+                    break;
+                case 29:
+                    f29++;
+//                    logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+//                            ncsCase.getResult() + " "+ ncsCase.getStdout());
+                    break;
+            }
+//            logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+//                    ncsCase.getResult() + " " + ncsCase.getStdout());
         }
-        logger.info("invalid parameter count: " + invalidCase.size());
+        logger.info(String.format("invalid parameter count: %d f6:%d f12:%d f29:%d", invalidCase.size(), f6, f12, f29));
     }
 
     private static void addDatasets() {
@@ -156,17 +176,19 @@ public class NCSSetup {
                     Integer.valueOf(splitted[5]))
             );
         }
-        for(String name: map.keySet()) {
+        for (String name : map.keySet()) {
             NCSDataset existDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
-            if ( existDataset!= null) {
+            if (existDataset != null) {
                 if (existDataset.getProblem_index() != 29) {
                     existDataset.setSubmittable(false);
                     existDataset.setEnabled(false);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
-                    logger.info("modify submittable to false: "+existDataset.toString());
-                }else{
-		   existDataset.setSubmittable(true);                                                                                                                                    existDataset = Database.getInstance().getNcsDatasets().save(existDataset);                                                                                             logger.info("modify submittable to true: "+existDataset.toString());
-		}
+                    logger.info("modify submittable to false: " + existDataset.toString());
+                } else {
+                    existDataset.setSubmittable(true);
+                    existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
+                    logger.info("modify submittable to true: " + existDataset.toString());
+                }
                 continue;
             }
             NCSDataset dataset = map.get(name);
