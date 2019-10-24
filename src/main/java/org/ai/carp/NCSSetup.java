@@ -132,22 +132,22 @@ public class NCSSetup {
             switch (dataset.getProblem_index()) {
                 case 6:
                     f6++;
-                    logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-                            ncsCase.getResult() + " "+ ncsCase.getStdout());
+                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
                 case 12:
                     f12++;
-                    logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-                            ncsCase.getResult() + " "+ ncsCase.getStdout());
+                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
                 case 29:
                     f29++;
-//                    logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-//                            ncsCase.getResult() + " "+ ncsCase.getStdout());
+//                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+//                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
             }
-//            logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-//                    ncsCase.getResult() + " " + ncsCase.getStdout());
+//            logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+//                    ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
         }
         logger.info(String.format("invalid parameter count: %d f6:%d f12:%d f29:%d", invalidCase.size(), f6, f12, f29));
     }
