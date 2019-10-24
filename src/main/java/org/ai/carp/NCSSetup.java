@@ -1,8 +1,10 @@
 package org.ai.carp;
 
+import org.ai.carp.controller.util.ParameterFileUtils;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.NCSDataset;
 import org.ai.carp.model.judge.NCSCase;
+import org.ai.carp.model.judge.NCSParameter;
 import org.ai.carp.model.user.User;
 import org.ai.carp.model.user.UserRepository;
 import org.slf4j.Logger;
@@ -31,9 +33,9 @@ public class NCSSetup {
         SpringApplication app = new SpringApplication(NCSSetup.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-//        cutNCSLog();
+        cutNCSLog();
 //        addUsers();
-        addDatasets();
+//        addDatasets();
     }
 
     private static void addUsers() {
@@ -99,6 +101,7 @@ public class NCSSetup {
     private static void cutNCSLog() {
         List<NCSCase> caseList = Database.getInstance().getNcsCases().findAll();
         List<NCSCase> modifiedCase = new ArrayList<>();
+        List<NCSCase> invalidCase = new ArrayList<>();
         for(NCSCase ncsCase: caseList){
             boolean modifiedFlag = false;
             String stdout = ncsCase.getStdout();
@@ -114,9 +117,19 @@ public class NCSSetup {
             if(modifiedFlag){
                 modifiedCase.add(ncsCase);
             }
+            try {
+                ParameterFileUtils.checkSubmitPara(ncsCase.getUser(), ncsCase.getArchive().getData());
+            }catch (Exception e){
+                ncsCase.setStdout(e.getMessage());
+                invalidCase.add(ncsCase);
+            }
         }
         Database.getInstance().getNcsCases().saveAll(modifiedCase);
         logger.info("modified cases number: " + modifiedCase.size());
+        for(NCSCase ncsCase: invalidCase){
+            logger.info("invalid parameter: " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()));
+        }
+        logger.info("invalid parameter count: " + invalidCase.size());
     }
 
     private static void addDatasets() {
