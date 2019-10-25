@@ -24,29 +24,19 @@ import java.text.SimpleDateFormat;
 
 
 @RestController
-@RequestMapping("/api/judge/submit")
+@RequestMapping("/api/ncs/judge/submit")
 public class NCSSubmitController {
 
-    private static Date ddl;
-
-    static{
-        try{
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            ddl = df.parse("2019-10-27 23:56:00");
-        }catch(Exception e){
-            System.out.println("parse error:" + e.getMessage());
-        }
-    }
 
 
     @PostMapping
-    public NCSSubmitResponse post(@RequestBody NCSPostCase postCase, HttpSession session) {
+    public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
         if(user.passwordMatches(user.getUsername())){
             throw new PermissionDeniedException("Please change your password!");
         }
 
-        if(new Date().getTime() >= ddl.getTime()){
+        if(Deadline.isDDL()){
             throw new InvalidRequestException("Deadline has passed!");
         }
 
@@ -77,17 +67,17 @@ public class NCSSubmitController {
         Database.getInstance().getLiteCases().insert(new LiteCase(baseCase));
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
-        return new NCSSubmitResponse(baseCase.getId(), remain);
+        return new SubmitResponse(baseCase.getId(), remain);
     }
 
 }
 
-class NCSSubmitResponse {
+class SubmitResponse {
 
     private Object cid;
     private int remain;
 
-    public NCSSubmitResponse(Object cid, int remain) {
+    public SubmitResponse(Object cid, int remain) {
         this.cid = cid;
         this.remain = remain;
     }
@@ -101,7 +91,7 @@ class NCSSubmitResponse {
     }
 }
 
-class NCSPostCase {
+class PostCase {
     public String dataset;
-    public Object data;
+    public String data;
 }

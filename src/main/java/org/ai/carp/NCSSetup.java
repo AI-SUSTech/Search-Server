@@ -33,8 +33,8 @@ public class NCSSetup {
         SpringApplication app = new SpringApplication(NCSSetup.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        cutNCSLog();
-//        addUsers();
+//        cutNCSLog();
+        addUsers();
 //        addDatasets();
     }
 
@@ -83,11 +83,8 @@ public class NCSSetup {
                 logger.info(user.toString());
             } else {
                 if (splitted.length >= 4) {
-                    if (true || existUser.getUsername().equals("hya")
-                            || existUser.getUsername().equals("zqh")) {
-                        existUser.setType(User.ADMIN);
-                        logger.info("add admin: " + existUser.toString());
-                    }
+                    existUser.setType(User.ADMIN);
+                    logger.info("add admin: " + existUser.toString());
                     existUser.setEmail(splitted[3].trim());
                     users.add(existUser);
                     logger.info("add email: " + existUser.toString());

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>NCS Online Judge Platform</title>
+	<title>IMP Online Judge Platform</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="CARP Online Judge" />
 	<meta name="keywords" content="CARP" />
@@ -43,7 +43,7 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-xs-2">
-							<div id="fh5co-logo"><a href="index.html">NCS<span>.</span></a></div>
+							<div id="fh5co-logo"><a href="index.html">IMP<span>.</span></a></div>
 						</div>
 						<div class="col-xs-10 text-right menu-1">
 							<ul>
@@ -75,29 +75,33 @@
 
 								<h3>NOTICE</h3>
 								<p>
-									<ol style="text-align: left;">
-										<li>You can see your parameter and download your parameter by clicking <b>Info</b> column. So be sure use <b>a secure passwod.</b> We are not responsible for any leak of your submit data.</li>
-										<li>Be sure to submit your best solution before <b>23:55 pm, Oct. 21</b> for lab4 and <b>23:55 pm, Oct. 27</b> for lab5. The result in your best submission (of any dataset) will be considered final solution.</li>
-										<li>You are only allowed to submit <b>30 times every 24 hours</b> (on a rolling basis).</li>
-										<li>Now you can use mutilple GPUs at one time, but the time for running one task is not decreased so save the number of times you can submit.</li>
-										<li>You should submit your parameter in <b>json</b> format file. Max allowed size is <b>64KB</b>.
-											Your json format parameter may look like the following:<br/>
-											<pre style="text-align:left;font-size: large;">
-{
-	"lambda": [float], // range in (0, 10)
-	"r": [float],
-	"epoch": [int], // should smaller than 300000
-	"n": [int], // range in [1, 100]
-}</pre></li>
-										<li>Your result should pass the <b>baseline</b> of those problems. Otherwise, the score of your lab part may be zero.
-											The passing line of F6, F12, and OLMP are shown below:<br/>
-											<pre style="text-align:left;font-size: large;">
-F6: <= 410.8
-F12: <= 1110
-OLMP: compression rate > 0.8 (valid rate is in [0, 1], other values are invalid.)</pre></li>
-										<li>The program is run in Docker container with no network interface.</li>
-										<li>The iteration time for task1 is fixed:<b>300000</b> and the maximum running time is <b>300s</b></li>
-									</ol>
+								<ol style="text-align: left;">
+									<li>You can now see program output and download archive by clicking <b>Info</b> column. So if you haven't changed your password, <b>change it now.</b> We are not responsible for any leak of your source code.</li>
+									<li><b>If your program times out, it may because of exceeding memory limit.</b></li>
+									<li><b>If your program uses too much memory, it will take a long and unpredictable time for Python to clean up after finishing program.</b> A hack is to skip cleanup by calling os._exit manually at the end of your program. Be sure to flush stdout before it.</li>
+									<li>Based on the above two problems, <b>if your program times out on OJ but not on your own computer, consider monitoring memory usage.</b></li>
+									<li><b>Exiting program using exit(0) is unnecessary. If your program exit normally (no uncaught error), exit code is 0.</b></li>
+									<li><b>DO NOT</b> output extra logs in ISE and IMP cases.</li>
+									<li>Maximum allowed process count in container is <b>64</b>. <b>DO NOT</b> create subprocesses based on CPU core count. Also, <b>DO NOT</b> use more than 8 cores. Otherwise <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a> overhead will make your program run even slower.</li>
+									<li>Be sure to submit final solution before <b>23:55 pm, Dec. 11</b>. The code in your last submission (of any dataset) will be considered final solution.</li>
+									<li>Your code will be run on a different set of datasets after deadline. Passing existing datasets <b>DOES NOT guarantee</b> that you can pass final test.</li>
+									<li>You are only allowed to submit <b>30 times every 24 hours</b> (on a rolling basis). Only successful uploads will count.</li>
+									<li>You should submit archived program in <b>zip</b> format. Max allowed size is <b>64KB</b>. The main executable should be named <b>ISE.py</b> (for ISE) or <b>IMP.py</b> (for IMP) and put in <b>root directory</b>. Multiple files and subdirectories are allowed.
+										Your directory structure for ISE may look like the following:<br/>
+										<pre style="text-align:left;">
+|-- ISE.py
+|-- config.py
+`-- submodule
+		|-- submoduleA.py
+		|-- submoduleB.py
+											</pre></li>
+									<li>Your program will be executed with command: <pre>python3 ISE.py –i $network -s $seeds -m $model -t $time</pre> or <pre>python3 IMP.py –i $network -k $seedCount -m $model -t $time</pre></li>
+									<li>Do not use non-standard library except for <b>numpy</b>.</li>
+									<li>Your program is run in Docker container with no network interface.</li>
+									<li>You are allowed to use up to <b>800% CPU</b> (8 cores) and <b>2GB RAM</b>. Pay attention that <b>threading</b> in Python does not give you real parallelism.</li>
+									<li>Be sure to exit before time running out. You should leave about <b>1 second</b> for starting container and other overhead.</li>
+									<li>If you need to write temp file, write to <b>/tmp</b>. The whole RootFS is <b>read-only</b>.</li>
+								</ol>
 								</p>
 							</div>
 							<br/>
@@ -110,7 +114,7 @@ OLMP: compression rate > 0.8 (valid rate is in [0, 1], other values are invalid.
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6 col-md-offset-3" style="text-align:center;">
-						<h2>Submit your Parameter</h2>
+						<h2>Submit your Code</h2>
 					</div>
 				</div>
 			</div>
@@ -127,7 +131,7 @@ OLMP: compression rate > 0.8 (valid rate is in [0, 1], other values are invalid.
 						</div>
 					</div>
 					<div class="col-md-3" style="vertical-align:middle;padding-top:5px;">
-						<button id="submit_file" onclick="$('#code_submit').trigger('click');" class="btn btn-carp">Submit Parameter</button>
+						<button id="submit_file" onclick="$('#code_submit').trigger('click');" class="btn btn-carp">Submit Code</button>
 					</div>
 					<div class="col-md-1" style="vertical-align:middle;padding-top:13px;">
 						<span id="queue_length">* in queue</span>
@@ -347,12 +351,12 @@ OLMP: compression rate > 0.8 (valid rate is in [0, 1], other values are invalid.
 
 				<div class="row row-pb-md">
 					<div class="col-md-4 fh5co-widget">
-						<h4>NCS Judge System</h4>
+						<h4>IMP Judge System</h4>
 						<p>Front end: Tao Ren</p>
 						<p>Server: Yi Xie, Edward Fang</p>
 						<p>Judge runner: Yi Xie</p>
-						<p>NCS runner: Yu'an Huang, Qinhua Zhen</p>
-						<p>Adapt NCS Server: Yu'an Huang</p>
+						<p>Modify runner: Yu'an Huang, Qinhua Zhen</p>
+						<p>Modify server: Yu'an Huang</p>
 					</div>
 					<div class="col-md-2 col-md-push-1 fh5co-widget">
 						<h4>Links</h4>

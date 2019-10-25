@@ -24,17 +24,20 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/judge/submit")
+@RequestMapping("/api/judge/submit")
 public class SubmitController {
 
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
+        if(user.passwordMatches(user.getUsername())){
+            throw new PermissionDeniedException("Please change your password!");
+        }
 
-        //noinspection deprecation
-        if (new Date().getTime() >= new Date(2019,8,27,22, 30).getTime()){//1544803200000L) {
+        if(Deadline.isDDL()){
             throw new InvalidRequestException("Deadline has passed!");
         }
+
         if (StringUtils.isEmpty(postCase.data)) {
             throw new InvalidRequestException("No data!");
         }
@@ -79,26 +82,26 @@ public class SubmitController {
 
 }
 
-class SubmitResponse {
-
-    private String cid;
-    private int remain;
-
-    public SubmitResponse(String cid, int remain) {
-        this.cid = cid;
-        this.remain = remain;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public int getRemain() {
-        return remain;
-    }
-}
-
-class PostCase {
-    public String dataset;
-    public String data;
-}
+//class SubmitResponse {
+//
+//    private String cid;
+//    private int remain;
+//
+//    public SubmitResponse(String cid, int remain) {
+//        this.cid = cid;
+//        this.remain = remain;
+//    }
+//
+//    public String getCid() {
+//        return cid;
+//    }
+//
+//    public int getRemain() {
+//        return remain;
+//    }
+//}
+//
+//class PostCase {
+//    public String dataset;
+//    public String data;
+//}
