@@ -32,7 +32,7 @@ public class NCSSubmitController {
     static{
         try{
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            ddl = df.parse("2019-10-27 23:56:00");
+            ddl = df.parse("2019-10-28 23:56:00");
         }catch(Exception e){
             System.out.println("parse error:" + e.getMessage());
         }
@@ -76,7 +76,7 @@ public class NCSSubmitController {
         BaseCase baseCase = caseBaseFunction.insert(user, dataset, archive);
         Database.getInstance().getLiteCases().insert(new LiteCase(baseCase));
         JudgeRunner.queue.add(baseCase);
-        int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
+        int remain = NCSCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
         return new NCSSubmitResponse(baseCase.getId(), remain);
     }
 

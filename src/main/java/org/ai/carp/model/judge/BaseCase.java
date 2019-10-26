@@ -31,7 +31,7 @@ public abstract class BaseCase {
     public static final int FINISHED = 3;
     public static final int ERROR = 4;
 
-    public static final int DAILY_LIMIT = 30;
+    public static final int DAILY_LIMIT = 50;
     public static final int RUN_COUNT = 5;
 
     @Id
