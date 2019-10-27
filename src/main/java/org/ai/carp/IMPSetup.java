@@ -70,6 +70,7 @@ public class IMPSetup {
                         , Double.valueOf(splitted[7]));
                 dataset.setEnabled(true);
                 dataset.setSubmittable(false);
+                dataset.setFinalJudge(true);
                 dataset = Database.getInstance().getIseDatasets().insert(dataset);
                 logger.info(dataset.toString());
             } catch (Exception e) {
