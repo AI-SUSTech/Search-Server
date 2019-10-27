@@ -48,6 +48,7 @@ public class IMPSetup {
         for (File f : list) {
             fileMap.put(f.getName().replace(".txt", ""), f);
         }
+//        name, seedfile, model, limitTime, memory, cpu, influence, bias
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             line = line.replaceAll("\r", "");
