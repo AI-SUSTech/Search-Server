@@ -51,6 +51,8 @@ public class IMPSetup {
 //        name, seedfile, model, limitTime, memory, cpu, influence, bias
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
+            if(line.startsWith("#"))
+                continue;
             line = line.replaceAll("\r", "");
             String[] splitted = line.split(",");
             if (StringUtils.isEmpty(splitted[0])) {
