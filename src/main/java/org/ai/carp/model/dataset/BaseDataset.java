@@ -45,6 +45,10 @@ public abstract class BaseDataset {
         return memory;
     }
 
+    public void setMemory(int memory) {
+        this.memory = memory;
+    }
+
     public int getCpu() {
         return cpu;
     }

@@ -72,8 +72,8 @@ public class IMPSetup {
                         , splitted[2], network, seeds, Double.valueOf(splitted[6])
                         , Double.valueOf(splitted[7]));
                 dataset.setEnabled(true);
-                dataset.setSubmittable(true);
-                dataset.setFinalJudge(true);
+                dataset.setSubmittable(false);
+                dataset.setFinalJudge(false);
 
                 dataset = Database.getInstance().getIseDatasets().insert(dataset);
                 logger.info(dataset.toString());
@@ -118,8 +118,8 @@ public class IMPSetup {
                         , Integer.valueOf(splitted[4]), Integer.valueOf(splitted[5])
                         , Integer.valueOf(splitted[1]), splitted[2], network);
                 dataset.setEnabled(true);
-                dataset.setSubmittable(true);
-                dataset.setFinalJudge(true);
+                dataset.setSubmittable(false);
+                dataset.setFinalJudge(false);
                 dataset = Database.getInstance().getImpDatasets().insert(dataset);
                 logger.info(dataset.toString());
             } catch (Exception e) {

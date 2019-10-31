@@ -35,7 +35,7 @@ public class NCSSetup {
         app.run(args);
 //        cutNCSLog();
         addUsers();
-//        addDatasets();
+        addDatasets();
     }
 
     private static void addUsers() {
@@ -184,7 +184,7 @@ public class NCSSetup {
         for (String name : map.keySet()) {
             NCSDataset existDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
             if (existDataset != null) {
-                if (existDataset.getProblem_index() != 29) {
+                if (existDataset.getProblem_index() != 30) {
                     existDataset.setSubmittable(false);
                     existDataset.setEnabled(false);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);

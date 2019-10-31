@@ -23,8 +23,9 @@ public class IMPDatasetFix {
         SpringApplication app = new SpringApplication(IMPDatasetFix.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        fixISE();
-        fixIMP();
+        fixMemory();
+        //fixISE();
+        //fixIMP();
     }
 
     private static void fixISE() {
@@ -61,6 +62,15 @@ public class IMPDatasetFix {
                                 c.setStatus(BaseCase.WAITING);
                                 Database.getInstance().getIseCases().save(c);
                             });
+                });
+    }
+
+    private static void fixMemory() {
+        Database.getInstance().getImpDatasets().findAll().stream()
+                .filter(d -> d.getName().contains("NetHEPT"))
+                .forEach(d -> {
+                    d.setMemory(20000);
+                    logger.info(Database.getInstance().getImpDatasets().save(d).toString());
                 });
     }
 
