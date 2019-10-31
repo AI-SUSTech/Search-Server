@@ -32,7 +32,7 @@ public class NCSSubmitController {
     static{
         try{
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            ddl = df.parse("2019-10-28 23:56:00");
+            ddl = df.parse("2019-10-29 23:56:00");
         }catch(Exception e){
             System.out.println("parse error:" + e.getMessage());
         }
