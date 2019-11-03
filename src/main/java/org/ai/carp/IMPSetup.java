@@ -72,7 +72,7 @@ public class IMPSetup {
                         , splitted[2], network, seeds, Double.valueOf(splitted[6])
                         , Double.valueOf(splitted[7]));
                 dataset.setEnabled(true);
-                dataset.setSubmittable(false);
+                dataset.setSubmittable(true);
                 dataset.setFinalJudge(false);
 
                 dataset = Database.getInstance().getIseDatasets().insert(dataset);
@@ -81,6 +81,21 @@ public class IMPSetup {
                 logger.error("Error adding dataset", e);
             }
         }
+    }
+
+    private static void changeDatasetsInfo() {
+        Database.getInstance().getImpDatasets().findAll().forEach(c ->
+        {
+            c.setEnabled(true);
+            c.setSubmittable(true);
+            c.setFinalJudge(false);
+            if(c.getName().startsWith("NetHEPT")){
+                c.setMemory(2000);
+                logger.info("change memory"+c.toString());
+            }
+            Database.getInstance().getImpDatasets().save(c);
+            logger.info(c.toString());
+        });
     }
 
     private static void addIMPDatasets() throws URISyntaxException {
@@ -118,7 +133,7 @@ public class IMPSetup {
                         , Integer.valueOf(splitted[4]), Integer.valueOf(splitted[5])
                         , Integer.valueOf(splitted[1]), splitted[2], network);
                 dataset.setEnabled(true);
-                dataset.setSubmittable(false);
+                dataset.setSubmittable(true);
                 dataset.setFinalJudge(false);
                 dataset = Database.getInstance().getImpDatasets().insert(dataset);
                 logger.info(dataset.toString());

@@ -116,7 +116,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
                     baseCase.setTime(timestamp - judgeTime);
                     baseCase.setTimedout(rootNode.get("timedout").asBoolean());
                     String stdout = rootNode.get("stdout").asText();
-                    int MAX_LOG_LEN = 500;
+                    int MAX_LOG_LEN = 4096;
                     if(stdout!= null && stdout.length() > MAX_LOG_LEN) {
                         stdout = stdout.substring(stdout.length()- MAX_LOG_LEN);
                         logger.info("stdout too long: {}", baseCase.toString());

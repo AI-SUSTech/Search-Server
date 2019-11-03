@@ -126,32 +126,32 @@ public class NCSSetup {
         int f12 = 0, f6 = 0, f29 = 0;
         int invalidValue = 0;
         for (NCSCase ncsCase : invalidCase) {
-            if(!ncsCase.isValid()){
-                invalidValue ++;
+            if (!ncsCase.isValid()) {
+                invalidValue++;
                 continue;
             }
             NCSDataset dataset = (NCSDataset) ncsCase.getDataset();
             switch (dataset.getProblem_index()) {
                 case 6:
                     f6++;
-                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
+                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " " + ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
                 case 12:
                     f12++;
-                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
+                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " " + ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
                 case 29:
                     f29++;
-                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-                            ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
+                    logger.info("invalid parameter: " + ncsCase.getDatasetName() + " " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                            ncsCase.getResult() + " " + ncsCase.getStdout() + " " + ncsCase.getStderr());
                     break;
             }
             ncsCase.setValid(false);
             ncsCase.setReason("invalid parameter range");
-            logger.info("set invalid parameter to error: " + ncsCase.getDatasetName() + " " +ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
-                    ncsCase.getResult() + " "+ ncsCase.getStdout() + " " + ncsCase.getStderr());
+            logger.info("set invalid parameter to error: " + ncsCase.getDatasetName() + " " + ncsCase.toString() + " " + new String(ncsCase.getArchive().getData()) +
+                    ncsCase.getResult() + " " + ncsCase.getStdout() + " " + ncsCase.getStderr());
         }
         logger.info(String.format("invalid parameter count: %d f6:%d f12:%d f29:%d invalid_res: %d", invalidCase.size(), f6, f12, f29, invalidValue));
         Database.getInstance().getNcsCases().saveAll(invalidCase);
@@ -184,14 +184,14 @@ public class NCSSetup {
         for (String name : map.keySet()) {
             NCSDataset existDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
             if (existDataset != null) {
-                if (existDataset.getProblem_index() != 29) {
+                if (existDataset.getProblem_index() != 30) {
                     existDataset.setSubmittable(false);
                     existDataset.setEnabled(false);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
                     logger.info("modify submittable to false: " + existDataset.toString());
                 } else {
                     existDataset.setSubmittable(false);
-		     existDataset.setEnabled(true);
+                    existDataset.setEnabled(true);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
                     logger.info("modify enable to true: " + existDataset.toString());
                 }
