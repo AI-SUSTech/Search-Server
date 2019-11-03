@@ -34,7 +34,7 @@ public class NCSSetup {
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
 //        cutNCSLog();
-        addUsers();
+//        addUsers();
         addDatasets();
     }
 
@@ -184,15 +184,16 @@ public class NCSSetup {
         for (String name : map.keySet()) {
             NCSDataset existDataset = Database.getInstance().getNcsDatasets().findDatasetByName(name);
             if (existDataset != null) {
-                if (existDataset.getProblem_index() != 30) {
+                if (existDataset.getProblem_index() != 29) {
                     existDataset.setSubmittable(false);
                     existDataset.setEnabled(false);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
                     logger.info("modify submittable to false: " + existDataset.toString());
                 } else {
-                    existDataset.setSubmittable(true);
+                    existDataset.setSubmittable(false);
+		     existDataset.setEnabled(true);
                     existDataset = Database.getInstance().getNcsDatasets().save(existDataset);
-                    logger.info("modify submittable to true: " + existDataset.toString());
+                    logger.info("modify enable to true: " + existDataset.toString());
                 }
                 continue;
             }

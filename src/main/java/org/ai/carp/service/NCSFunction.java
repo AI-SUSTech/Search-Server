@@ -111,7 +111,7 @@ public class NCSFunction implements BaseFunction {
                 continue;
             }
             String userName = ncsCase.getUser().getUsername();
-            if(!map.containsKey(userName) || map.get(userName).getResult() > ncsCase.getResult() ){
+            if(!map.containsKey(userName) || map.get(userName).getResult() < ncsCase.getResult() ){
                 map.put(userName, ncsCase);
             }
         }
@@ -129,7 +129,7 @@ public class NCSFunction implements BaseFunction {
         IntWrapper baseCol = new IntWrapper();
         baseCol.num = -2;
         Database.getInstance().getNcsDatasets().findAll()
-                .stream().filter(NCSDataset::isSubmittable).forEach(ncsDataset -> {
+                .stream().filter(NCSDataset::isEnabled).forEach(ncsDataset -> {
             // Add combined data
             baseCol.num += 3;
             finalTitle.createCell(baseCol.num).setCellValue(ncsDataset.getName());
