@@ -17,13 +17,13 @@ public class CaseUtils {
         return Database.getInstance().getLiteCases().countLiteCasesByUserAndSubmitTimeAfter(user, oneDayBefore);
     }
 
-    public static Set<User> countISESubmit() {
+    public static Set countISESubmit() {
         List<ISECase> iseCases = Database.getInstance().getIseCases().findAll();
-        HashSet<User> users = new HashSet<>();
+        HashSet<String> users = new HashSet<>();
         for(BaseCase iseCase: iseCases){
             User user = iseCase.getUser();
             if(user.getType() > User.ADMIN) {
-                users.add(user);
+                users.add(user.getUsername());
             }
         }
         return users;
@@ -31,11 +31,11 @@ public class CaseUtils {
 
     public static Set countIMPSubmit() {
         List<IMPCase> impCases = Database.getInstance().getImpCases().findAll();
-        HashSet<User> users = new HashSet<>();
+        HashSet<String> users = new HashSet<>();
         for(BaseCase iseCase: impCases){
             User user = iseCase.getUser();
             if(user.getType() > User.ADMIN) {
-                users.add(user);
+                users.add(user.getUsername());
             }
         }
         return users;
