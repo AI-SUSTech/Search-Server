@@ -36,7 +36,7 @@ public class NCSSubmitController {
             throw new PermissionDeniedException("Please change your password!");
         }
 
-        if(Deadline.isDDL()){
+        if(Deadline.isDDL(Deadline.getNcsDDL())){
             throw new InvalidRequestException("Deadline has passed!");
         }
 

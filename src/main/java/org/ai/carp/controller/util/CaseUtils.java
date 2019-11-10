@@ -8,8 +8,7 @@ import org.ai.carp.model.user.User;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 public class CaseUtils {
 
@@ -17,7 +16,31 @@ public class CaseUtils {
         Date oneDayBefore = new Date(new Date().getTime() - 24 * 3600 * 1000);
         return Database.getInstance().getLiteCases().countLiteCasesByUserAndSubmitTimeAfter(user, oneDayBefore);
     }
-    
+
+    public static Set<User> countISESubmit() {
+        List<ISECase> iseCases = Database.getInstance().getIseCases().findAll();
+        HashSet<User> users = new HashSet<>();
+        for(BaseCase iseCase: iseCases){
+            User user = iseCase.getUser();
+            if(user.getType() > User.ADMIN) {
+                users.add(user);
+            }
+        }
+        return users;
+    }
+
+    public static Set countIMPSubmit() {
+        List<IMPCase> impCases = Database.getInstance().getImpCases().findAll();
+        HashSet<User> users = new HashSet<>();
+        for(BaseCase iseCase: impCases){
+            User user = iseCase.getUser();
+            if(user.getType() > User.ADMIN) {
+                users.add(user);
+            }
+        }
+        return users;
+    }
+
     public static boolean checkResult(BaseCase baseCase) {
         if (baseCase.getStatus() != BaseCase.FINISHED) {
             return false;

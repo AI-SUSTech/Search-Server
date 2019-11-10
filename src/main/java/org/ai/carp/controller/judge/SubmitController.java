@@ -15,10 +15,7 @@ import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
 import org.bson.types.Binary;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -30,18 +27,27 @@ public class SubmitController {
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
-        if(user.passwordMatches(user.getUsername())){
+        if (user.passwordMatches(user.getUsername())) {
             throw new PermissionDeniedException("Please change your password!");
-        }
-
-        if(Deadline.isDDL()){
-            throw new InvalidRequestException("Deadline has passed!");
         }
 
         if (StringUtils.isEmpty(postCase.data)) {
             throw new InvalidRequestException("No data!");
         }
+
         BaseDataset dataset = DatasetUtils.apiGetById(postCase.dataset);
+        switch (dataset.getType()) {
+            case BaseDataset.IMP:
+                if (Deadline.isDDL(Deadline.getImpDDL())) {
+                    throw new InvalidRequestException("IMP Deadline has passed!");
+                }
+                break;
+            case BaseDataset.ISE:
+                if (Deadline.isDDL(Deadline.getIseDDL())) {
+                    throw new InvalidRequestException("ISE Deadline has passed!");
+                }
+                break;
+        }
         if (!dataset.isEnabled()) {
             throw new PermissionDeniedException("Dataset is disabled!");
         }
@@ -78,6 +84,26 @@ public class SubmitController {
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
         return new SubmitResponse(baseCase.getId(), remain);
+    }
+
+    @GetMapping
+    public CountSubmitResponse get(HttpSession session) {
+        User user = UserUtils.getUser(session, User.ADMIN);
+        int imps = CaseUtils.countIMPSubmit().size();
+        int ises = CaseUtils.countISESubmit().size();
+        return new CountSubmitResponse(imps, ises, user.getUsername());
+    }
+
+    static class CountSubmitResponse{
+        public CountSubmitResponse(int imps, int ises, String queryer) {
+            this.imps = imps;
+            this.ises = ises;
+            this.queryer = queryer;
+        }
+
+        public int imps;
+        public int ises;
+        public String queryer;
     }
 
 }

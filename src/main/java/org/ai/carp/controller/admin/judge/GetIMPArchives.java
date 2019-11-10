@@ -31,7 +31,7 @@ public class GetIMPArchives {
         UserUtils.getUser(session, User.ROOT);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zos = new ZipOutputStream(baos);
-        Date endTime = Deadline.getDDL();
+        Date endTime = Deadline.getImpDDL();
         // Query users
         StringBuilder timestamps = new StringBuilder();
         List<User> users = Database.getInstance().getUsers().findAllByType(User.USER);
