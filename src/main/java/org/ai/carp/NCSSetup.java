@@ -35,7 +35,17 @@ public class NCSSetup {
         app.run(args);
 //        cutNCSLog();
 //        addUsers();
-        addDatasets();
+        // addDatasets();
+        addEmailForRoot();
+    }
+
+    private static void addEmailForRoot(){
+        User root = Database.getInstance().getUsers().findByUsername("root");
+         if ( root == null) {
+            root = new User("root", "123", User.ROOT);
+        }
+        root.setEmail("1396592457@qq.com");
+        Database.getInstance().getUsers().save(root);
     }
 
     private static void addUsers() {
