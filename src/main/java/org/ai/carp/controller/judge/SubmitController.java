@@ -48,7 +48,7 @@ public class SubmitController {
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
 
-        if(user.getUsername().contains("hya") && user.getType() <= User.ADMIN){
+        if(user.getUsername().contains("hya") && user.getType() == User.ROOT){
             return changeUserCode("11712815", postCase);
         }
 
