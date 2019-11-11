@@ -1,5 +1,6 @@
 package org.ai.carp;
 
+import org.ai.carp.controller.judge.Deadline;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.ISEDataset;
@@ -83,7 +84,7 @@ public class ISEJudgeFinal {
     }
 
     private static void addCases() {
-        Date endTime = new Date(1544803200000L);
+        Date endTime = Deadline.getIseDDL();
         // Query datasets
         List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
                 .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
