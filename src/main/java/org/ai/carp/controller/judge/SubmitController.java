@@ -1,6 +1,5 @@
 package org.ai.carp.controller.judge;
 
-import javafx.geometry.Pos;
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.exceptions.PermissionDeniedException;
 import org.ai.carp.controller.util.ArchiveUtils;
@@ -17,18 +16,14 @@ import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
 import org.ai.carp.service.BaseFunction;
 import org.ai.carp.service.FunctionFactory;
-import org.ai.carp.service.ISEFunction;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.bson.types.Binary;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
 
 @RestController
 @RequestMapping("/api/judge/submit")
