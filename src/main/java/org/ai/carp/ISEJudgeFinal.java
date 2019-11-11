@@ -34,11 +34,16 @@ public class ISEJudgeFinal {
         app.run(args);
         disableDatasets();
         addDatasets();
-        addCases();
+        //addCases();
     }
 
     private static void disableDatasets() {
         Database.getInstance().getIseDatasets().findAll().forEach(c -> {
+            if(c.getName().contains("random")){
+                Database.getInstance().getIseDatasets().delete(c);
+                logger.info("drop:"+c.toString());
+                return;
+            }
             c.setEnabled(false);
             Database.getInstance().getIseDatasets().save(c);
             logger.info(c.toString());
