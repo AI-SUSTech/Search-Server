@@ -74,8 +74,75 @@ public class ISEFunction implements BaseFunction {
                 .map(c -> (BaseCase)c).collect(Collectors.toList());
     }
 
+    private Stream<ISECase> getTopResult(ISEDataset dataset){
+        List<ISECase> caseList = Database.getInstance().getIseCases().findISECasesByDatasetAndStatus(dataset,BaseCase.FINISHED);
+        List<ISECase> errorList = Database.getInstance().getIseCases().findISECasesByDatasetAndStatus(dataset,BaseCase.ERROR);
+        HashMap<String, ISECase> map = new HashMap<>();
+        for(ISECase iseCase: caseList){
+            if(iseCase.getUser().getType() <= User.ADMIN){
+                continue;
+            }
+            String userName = iseCase.getUser().getUsername();
+            if(!map.containsKey(userName)
+                    || !map.get(userName).isValid()){
+                map.put(userName, iseCase);
+            }
+        }
+        for(ISECase iseCase: errorList){
+            if(iseCase.getUser().getType() <= User.ADMIN){
+                continue;
+            }
+            String userName = iseCase.getUser().getUsername();
+            if(!map.containsKey(userName)){
+                map.put(userName, iseCase);
+            }
+        }
+        return map.values().stream();
+    }
+
     @Override
     public Workbook getFinalGrades() {
+        Workbook wb = new XSSFWorkbook();
+        Sheet finalSheet = wb.createSheet("Final");
+        Row finalTitle = finalSheet.createRow(0);
+        finalTitle.createCell(0).setCellValue("ID");
+        Map<String, Row> stuFinalMap = new HashMap<>();
+
+        IntWrapper baseCol = new IntWrapper();
+        baseCol.num = -3;
+        Database.getInstance().getIseDatasets().findAll()
+                .stream().filter(ISEDataset::isEnabled).forEach(iseDataset -> {
+            // Add combined data
+            baseCol.num += 4;
+            finalTitle.createCell(baseCol.num).setCellValue(iseDataset.getName());
+            finalTitle.createCell(baseCol.num+1).setCellValue("Time");
+            finalTitle.createCell(baseCol.num+2).setCellValue("Result");
+            finalTitle.createCell(baseCol.num+2).setCellValue("Reason");
+
+
+            getTopResult(iseDataset).forEach(c -> {
+                Row r;
+                if (!stuFinalMap.containsKey(c.getUser().getUsername())) {
+                    r = finalSheet.createRow(finalSheet.getLastRowNum()+1);
+                    r.createCell(0).setCellValue(c.getUser().getUsername());
+                    stuFinalMap.put(c.getUser().getUsername(), r);
+                } else {
+                    r = stuFinalMap.get(c.getUser().getUsername());
+                }
+                r.createCell(baseCol.num).setCellValue(c.getSubmitTime().toString());
+                r.createCell(baseCol.num+1).setCellValue(c.getTime());
+                r.createCell(baseCol.num+2).setCellValue(c.getResult());
+                r.createCell(baseCol.num+2).setCellValue(c.getReason());
+            });
+            finalSheet.autoSizeColumn(baseCol.num);
+            finalSheet.autoSizeColumn(baseCol.num+1);
+            finalSheet.autoSizeColumn(baseCol.num+2);
+            finalSheet.autoSizeColumn(baseCol.num+3);
+        });
+        return wb;
+    }
+
+    public Workbook getFinalFinalGrades() {
         Workbook wb = new XSSFWorkbook();
         Sheet finalSheet = wb.createSheet("Final");
         Row finalTitle = finalSheet.createRow(0);

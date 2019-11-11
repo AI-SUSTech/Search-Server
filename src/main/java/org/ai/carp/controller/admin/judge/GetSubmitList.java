@@ -29,17 +29,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/api/admin/judge/grades/iseall", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-public class GetISEGrades {
+public class GetSubmitList {
 
 
     @GetMapping
-    public ResponseEntity<byte[]> get(HttpSession session) throws IOException {
+    @RequestMapping(value = "/api/admin/judge/submit/ise", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> getISE(HttpSession session) throws IOException {
         UserUtils.getUser(session, User.ROOT);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             BaseFunction baseFunction = FunctionFactory.getCaseFunction(BaseDataset.ISE);
-            Workbook wb = ((ISEFunction)baseFunction).getFinalFinalGrades();
+            Workbook wb = baseFunction.getFinalGrades();
             wb.write(baos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,6 +47,27 @@ public class GetISEGrades {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         headers.setContentDispositionFormData("attachment", "ise.xlsx");
+        headers.setContentLength(baos.size());
+        return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping
+    @RequestMapping(value = "/api/admin/judge/submit/imp", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public ResponseEntity<byte[]> getIMP(HttpSession session) throws IOException {
+        UserUtils.getUser(session, User.ROOT);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            BaseFunction baseFunction = FunctionFactory.getCaseFunction(BaseDataset.IMP);
+            Workbook wb = baseFunction.getFinalGrades();
+            wb.write(baos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "imp.xlsx");
         headers.setContentLength(baos.size());
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
     }

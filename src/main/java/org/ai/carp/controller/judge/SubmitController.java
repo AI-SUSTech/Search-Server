@@ -15,11 +15,18 @@ import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
 import org.ai.carp.service.BaseFunction;
 import org.ai.carp.service.FunctionFactory;
+import org.ai.carp.service.ISEFunction;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.bson.types.Binary;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
 
 @RestController
 @RequestMapping("/api/judge/submit")
@@ -85,26 +92,6 @@ public class SubmitController {
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
         return new SubmitResponse(baseCase.getId(), remain);
-    }
-
-    @GetMapping
-    public CountSubmitResponse get(HttpSession session) {
-        User user = UserUtils.getUser(session, User.ADMIN);
-        int imps = CaseUtils.countIMPSubmit().size();
-        int ises = CaseUtils.countISESubmit().size();
-        return new CountSubmitResponse(imps, ises, user.getUsername());
-    }
-
-    static class CountSubmitResponse{
-        public CountSubmitResponse(int imps, int ises, String queryer) {
-            this.imps = imps;
-            this.ises = ises;
-            this.queryer = queryer;
-        }
-
-        public int imps;
-        public int ises;
-        public String queryer;
     }
 
 }

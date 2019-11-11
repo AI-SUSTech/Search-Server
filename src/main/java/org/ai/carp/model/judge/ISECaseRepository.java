@@ -21,5 +21,6 @@ public interface ISECaseRepository extends MongoRepository<ISECase, String> {
     List<ISECase> findISECasesByDatasetAndStatusAndValidOrderByTimeAscSubmitTimeAsc(ISEDataset dataset, int status, boolean valid);
     List<ISECase> findISECasesByDatasetAndUserAndStatusAndValidOrderByTimeAscSubmitTimeAsc(ISEDataset dataset, User user, int status, boolean valid, Pageable pageable);
     int countISECasesByUserAndSubmitTimeAfter(User user, Date startTime);
+    List<ISECase> findISECasesByDatasetAndStatus(ISEDataset dataset, int status);
 
 }
