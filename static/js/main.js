@@ -785,7 +785,7 @@
             if (RankData[datasetid] == undefined) {
                 render_data = [];
             } else {
-                render_data = RankData[datasetid].slice(0, 150);
+                render_data = RankData[datasetid].slice(0, 180);
             }
             let RankListHtml = "";
             RankListHtml += "<thead>\n";
