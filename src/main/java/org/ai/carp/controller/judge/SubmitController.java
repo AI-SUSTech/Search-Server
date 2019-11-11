@@ -6,19 +6,20 @@ import org.ai.carp.controller.util.ArchiveUtils;
 import org.ai.carp.controller.util.CaseUtils;
 import org.ai.carp.controller.util.DatasetUtils;
 import org.ai.carp.controller.util.UserUtils;
-import org.ai.carp.service.BaseFunction;
 import org.ai.carp.model.Database;
-import org.ai.carp.service.FunctionFactory;
 import org.ai.carp.model.dataset.BaseDataset;
-import org.ai.carp.model.judge.*;
+import org.ai.carp.model.judge.BaseCase;
+import org.ai.carp.model.judge.CARPCase;
+import org.ai.carp.model.judge.LiteCase;
 import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
+import org.ai.carp.service.BaseFunction;
+import org.ai.carp.service.FunctionFactory;
 import org.bson.types.Binary;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/api/judge/submit")
