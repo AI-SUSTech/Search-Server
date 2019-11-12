@@ -151,7 +151,7 @@ public class ISEFunction implements BaseFunction {
         IntWrapper baseCol = new IntWrapper();
         baseCol.num = -2;
         Database.getInstance().getIseDatasets().findAll()
-                .stream().filter(ISEDataset::isSubmittable).forEach(d -> {
+                .stream().filter(ISEDataset::isFinalJudge).forEach(d -> {
             // Add combined data
             baseCol.num += 3;
             finalTitle.createCell(baseCol.num).setCellValue(d.getName());
@@ -174,7 +174,13 @@ public class ISEFunction implements BaseFunction {
             finalSheet.autoSizeColumn(baseCol.num+1);
             finalSheet.autoSizeColumn(baseCol.num+2);
             // Create dataset sheet
-            Sheet sheet = wb.createSheet(d.getName());
+            int nameLen = d.getName().length();
+            String sheetName = nameLen > 30? d.getName().substring(nameLen-30):d.getName();
+            Sheet sheet = wb.createSheet(sheetName);
+            System.out.println(String.format("add %s now has sheet:", d.getName()));
+            for(int k=0;k<wb.getNumberOfSheets();k++) {
+                System.out.println(wb.getSheetName(k));
+            }
             Row row = sheet.createRow(0);
             row.createCell(0).setCellValue("ID");
             for (int i=0; i<5; i++) {

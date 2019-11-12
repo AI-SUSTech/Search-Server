@@ -33,9 +33,10 @@ public class ISEJudgeFinal {
         SpringApplication app = new SpringApplication(ISEJudgeFinal.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        disableDatasets();
-        addDatasets();
+        //disableDatasets();
+        //addDatasets();
         //addCases();
+        addUserCases("11712815");
     }
 
     private static void disableDatasets() {
@@ -80,6 +81,42 @@ public class ISEJudgeFinal {
             dataset.setFinalJudge(true);
             dataset = Database.getInstance().getIseDatasets().insert(dataset);
             logger.info(dataset.toString());
+        }
+    }
+
+    private static void addUserCases(String userName) {
+        Date endTime = Deadline.getIseDDL();
+        // Query datasets
+        List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
+                .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
+        // Query users
+        User u = Database.getInstance().getUsers().findByUsername(userName);
+        if(u==null){
+            logger.info("user not found:"+userName);
+            return;
+        }
+        List<ISECase> cases = new ArrayList<>();
+        ISECase submission = Database.getInstance().getIseCases()
+                .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(u, endTime);
+        if (submission == null || submission.getArchive() == null) {
+            return;
+        }
+        for (ISEDataset dataset : datasets) {
+            //remove previous case
+            List<ISECase> isecases = Database.getInstance().getIseCases()
+                .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
+            Database.getInstance().getIseCases().deleteAll(isecases);
+            logger.info(String.format("remove %d isecase of %s:%s", isecases.size(), u.getUsername(), dataset.getName()));
+
+            for (int i=0; i<5; i++) {
+                cases.add(new ISECase(u, dataset, submission.getArchive()));
+            }
+        }
+        Collections.shuffle(cases);
+        for (ISECase c : cases) {
+            ISECase newC = Database.getInstance().getIseCases().insert(c);
+            Database.getInstance().getLiteCases().insert(new LiteCase(c));
+            logger.info(newC.toString());
         }
     }
 

@@ -29,15 +29,31 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/judge/submit")
 public class SubmitController {
 
-    private SubmitResponse changeUserCode(String userName, PostCase postCase){
+    private SubmitResponse changeUserCode(String userName, PostCase postCase) throws InvalidRequestException{
         User user = Database.getInstance().getUsers().findByUsername(userName);
+        if(user==null){
+            throw new InvalidRequestException("not exist user:"+userName);
+        }
         ISECase finalSubmit = Database.getInstance().getIseCases()
                 .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(user, Deadline.getIseDDL());
         Binary archive = ArchiveUtils.convertSubmission(postCase.data, "ISE.py");
 
-        finalSubmit.setArchive(archive);
-        finalSubmit.reset();
+        LiteCase optLiteCase = Database.getInstance().getLiteCases().findLiteCaseByFullId(finalSubmit.getId());
+        if (optLiteCase == null) {
+            throw new InvalidRequestException("Case does not exist!");
+        }
+        BaseCase baseCase = optLiteCase.getFullCase();
+        if (baseCase.getStatus() != CARPCase.FINISHED && baseCase.getStatus() != CARPCase.ERROR) {
+            throw new InvalidRequestException("Case has not finished!");
+        }
+        ((ISECase)baseCase).setArchive(archive);
+        baseCase.reset();
+        baseCase = CaseUtils.saveCase(baseCase);
+        JudgeRunner.queue.add(baseCase);
+
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
+        System.out.println("change latest code of:"+user.getUsername());
+
         return new SubmitResponse(finalSubmit.getId(), remain);
 
     }
@@ -48,9 +64,9 @@ public class SubmitController {
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
 
-        if(user.getUsername().contains("hya") && user.getType() == User.ROOT){
-            return changeUserCode("11712815", postCase);
-        }
+        // if(user.getType() == User.ROOT){
+        //     return changeUserCode("11712815", postCase);
+        // }
 
 
         if (user.passwordMatches(user.getUsername())) {

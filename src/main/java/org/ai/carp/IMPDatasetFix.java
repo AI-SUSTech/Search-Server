@@ -23,10 +23,24 @@ public class IMPDatasetFix {
         SpringApplication app = new SpringApplication(IMPDatasetFix.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        fixMemory();
+        // fixMemory();
         //fixISE();
         //fixIMP();
+        fixClientError();
     }
+
+    private static void fixClientError() {
+        Database.getInstance().getIseCases().findISECasesByStatus(BaseCase.ERROR)
+                .forEach(iseCase -> {
+                    String reason = iseCase.getReason();
+                    if(reason != null && reason.contains("409 Client Error:")) {
+                        iseCase.reset();
+                        iseCase.setStatus(BaseCase.WAITING);
+                        logger.info(Database.getInstance().getIseCases().save(iseCase).toString());
+                    }
+                });
+    }
+
 
     private static void fixISE() {
         Database.getInstance().getIseDatasets().findAll().stream()
