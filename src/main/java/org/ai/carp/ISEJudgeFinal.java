@@ -5,6 +5,7 @@ import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.ISEDataset;
 import org.ai.carp.model.judge.ISECase;
+import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.judge.LiteCase;
 import org.ai.carp.model.user.User;
 import org.slf4j.Logger;
@@ -36,8 +37,24 @@ public class ISEJudgeFinal {
         //disableDatasets();
         //addDatasets();
         //addCases();
-        addUserCases("11712815");
+        addUserCases("11710324");
+        // fixSwap();
     }
+
+
+    private static void fixSwap() {
+        Database.getInstance().getIseDatasets().findAll().stream()
+                .filter(d -> d.getName().contains("random"))
+                .forEach(d -> {
+                    List<ISECase> iseCases = Database.getInstance().getIseCases()
+                            .findISECasesByDatasetAndStatusAndValidOrderByTimeAscSubmitTimeAsc(d, BaseCase.FINISHED, false);
+                    for(ISECase iseCase:iseCases){
+                        iseCase.setStatus(BaseCase.WAITING);
+                        logger.info(Database.getInstance().getIseCases().save(iseCase).toString()+iseCase.getReason());
+                    }
+                });
+    }
+
 
     private static void disableDatasets() {
         Database.getInstance().getIseDatasets().findAll().forEach(c -> {

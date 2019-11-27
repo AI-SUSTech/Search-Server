@@ -27,6 +27,7 @@ public class IMPDatasetFix {
         //fixISE();
         //fixIMP();
         fixClientError();
+        fixSwap();
     }
 
     private static void fixClientError() {
@@ -38,6 +39,15 @@ public class IMPDatasetFix {
                         iseCase.setStatus(BaseCase.WAITING);
                         logger.info(Database.getInstance().getIseCases().save(iseCase).toString());
                     }
+                });
+    }
+
+    private static void fixSwap() {
+        Database.getInstance().getIseCases().findISECasesByStatus(BaseCase.ERROR)
+                .forEach(iseCase -> {
+                    String reason = iseCase.getReason();
+                    iseCase.setStatus(BaseCase.WAITING);
+                    logger.info(Database.getInstance().getIseCases().save(iseCase).toString()+reason);
                 });
     }
 

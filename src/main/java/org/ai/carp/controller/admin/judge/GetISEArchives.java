@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.ai.carp.controller.judge.Deadline;
+
 @RestController
 @RequestMapping(value = "/api/admin/judge/archive/iseall", produces = "application/zip")
 public class GetISEArchives {
@@ -29,7 +31,7 @@ public class GetISEArchives {
         UserUtils.getUser(session, User.ROOT);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zos = new ZipOutputStream(baos);
-        Date endTime = new Date(1544951523000L);
+        Date endTime = Deadline.getIseDDL();
         // Query users
         StringBuilder timestamps = new StringBuilder();
         List<User> users = Database.getInstance().getUsers().findAllByType(User.USER);

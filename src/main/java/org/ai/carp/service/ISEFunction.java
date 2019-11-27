@@ -177,10 +177,10 @@ public class ISEFunction implements BaseFunction {
             int nameLen = d.getName().length();
             String sheetName = nameLen > 30? d.getName().substring(nameLen-30):d.getName();
             Sheet sheet = wb.createSheet(sheetName);
-            System.out.println(String.format("add %s now has sheet:", d.getName()));
-            for(int k=0;k<wb.getNumberOfSheets();k++) {
-                System.out.println(wb.getSheetName(k));
-            }
+            // System.out.println(String.format("add %s now has sheet:", d.getName()));
+            // for(int k=0;k<wb.getNumberOfSheets();k++) {
+            //     System.out.println(wb.getSheetName(k));
+            // }
             Row row = sheet.createRow(0);
             row.createCell(0).setCellValue("ID");
             for (int i=0; i<5; i++) {

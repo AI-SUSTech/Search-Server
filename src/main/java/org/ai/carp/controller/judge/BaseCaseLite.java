@@ -55,6 +55,10 @@ public class BaseCaseLite {
         return result / (double) count;
     }
 
+    public double sortKey() {
+        return -getResult();
+    }
+
     public Date getSubmitTime() {
         return submitTime;
     }

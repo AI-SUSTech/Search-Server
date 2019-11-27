@@ -30,8 +30,9 @@ public class IMPSetup {
         SpringApplication app = new SpringApplication(IMPSetup.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        addISEDatasets();
-        addIMPDatasets();
+        // addISEDatasets();
+        // addIMPDatasets();
+        disableIseDatasets(true);
     }
 
     private static void addISEDatasets() throws URISyntaxException {
@@ -94,6 +95,15 @@ public class IMPSetup {
                 logger.info("change memory"+c.toString());
             }
             Database.getInstance().getImpDatasets().save(c);
+            logger.info(c.toString());
+        });
+    }
+
+    private static void disableIseDatasets(boolean disable) {
+        Database.getInstance().getIseDatasets().findAll().forEach(c ->
+        {
+            c.setEnabled(!disable);
+            Database.getInstance().getIseDatasets().save(c);
             logger.info(c.toString());
         });
     }

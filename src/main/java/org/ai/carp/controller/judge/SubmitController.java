@@ -10,7 +10,7 @@ import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.judge.CARPCase;
-import org.ai.carp.model.judge.ISECase;
+import org.ai.carp.model.judge.IMPCase;
 import org.ai.carp.model.judge.LiteCase;
 import org.ai.carp.model.user.User;
 import org.ai.carp.runner.JudgeRunner;
@@ -34,21 +34,24 @@ public class SubmitController {
         if(user==null){
             throw new InvalidRequestException("not exist user:"+userName);
         }
-        ISECase finalSubmit = Database.getInstance().getIseCases()
-                .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(user, Deadline.getIseDDL());
-        Binary archive = ArchiveUtils.convertSubmission(postCase.data, "ISE.py");
+        IMPCase finalSubmit = Database.getInstance().getImpCases()
+                .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(user, Deadline.getImpDDL());
+        if(finalSubmit == null){
+            throw new InvalidRequestException("no code!");
+        }
+        Binary archive = ArchiveUtils.convertSubmission(postCase.data, "IMP.py");
 
-        LiteCase optLiteCase = Database.getInstance().getLiteCases().findLiteCaseByFullId(finalSubmit.getId());
-        if (optLiteCase == null) {
-            throw new InvalidRequestException("Case does not exist!");
-        }
-        BaseCase baseCase = optLiteCase.getFullCase();
-        if (baseCase.getStatus() != CARPCase.FINISHED && baseCase.getStatus() != CARPCase.ERROR) {
-            throw new InvalidRequestException("Case has not finished!");
-        }
-        ((ISECase)baseCase).setArchive(archive);
-        baseCase.reset();
-        baseCase = CaseUtils.saveCase(baseCase);
+        // LiteCase optLiteCase = Database.getInstance().getLiteCases().findLiteCaseByFullId(finalSubmit.getId());
+        // if (optLiteCase == null) {
+        //     throw new InvalidRequestException("Case does not exist!");
+        // }
+        // BaseCase baseCase = optLiteCase.getFullCase();
+        // if (baseCase.getStatus() != CARPCase.FINISHED && baseCase.getStatus() != CARPCase.ERROR) {
+        //     throw new InvalidRequestException("Case has not finished!");
+        // }
+        finalSubmit.setArchive(archive);
+        finalSubmit.reset();
+        BaseCase baseCase = CaseUtils.saveCase(finalSubmit);
         JudgeRunner.queue.add(baseCase);
 
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
@@ -65,7 +68,7 @@ public class SubmitController {
         User user = UserUtils.getUser(session, User.USER);
 
         // if(user.getType() == User.ROOT){
-        //     return changeUserCode("11712815", postCase);
+        //    return changeUserCode("11611615", postCase);
         // }
 
 

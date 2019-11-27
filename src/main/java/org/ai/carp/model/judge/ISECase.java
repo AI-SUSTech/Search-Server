@@ -27,10 +27,6 @@ public class ISECase extends BaseCase {
     @Indexed
     private ISEDataset dataset;
 
-    public void setArchive(Binary archive){
-        super.archive = archive;
-    }
-
     // Result
     private double influence;
 
