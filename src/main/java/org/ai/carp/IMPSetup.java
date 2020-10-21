@@ -32,7 +32,7 @@ public class IMPSetup {
         app.run(args);
         // addISEDatasets();
         // addIMPDatasets();
-        disableIseDatasets(true);
+        disableIseDatasets(false);
     }
 
     private static void addISEDatasets() throws URISyntaxException {

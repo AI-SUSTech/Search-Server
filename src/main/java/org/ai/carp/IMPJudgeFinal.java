@@ -38,8 +38,56 @@ public class IMPJudgeFinal {
         // disableDatasets();
         // addDatasets();
         // addCases();
-        addValidCase("11710712");
+        // addValidCase("11710938");
+        // addValidCase("11710815");
+        addCaseBySubmitIdAndTime("5dd048b1e788580e2526eccf", "11-17 03:06:25");
     }
+
+    private static void addCaseBySubmitIdAndTime(String submitId, String date){
+        Date endTime = Deadline.getImpDDL();
+        // Query datasets
+        List<IMPDataset> datasets = Database.getInstance().getImpDatasets().findAll()
+                .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
+        List<IMPCase> cases = new ArrayList<>();
+ 
+        IMPCase submission = (IMPCase)Database.getInstance().getLiteCases()
+                .findLiteCaseByFullId(submitId).getFullCase();
+        if (submission == null || submission.getArchive() == null) {
+            logger.info("not submission found id:"+submitId);
+            return;
+        }else{
+            logger.info("found:"+submitId);
+            logger.info("detail:"+submission.toString());
+            logger.info("submit time:"+submission.getSubmitTime().toString());
+            logger.info("is before ddl:"+(submission.getSubmitTime().getTime()<endTime.getTime()));
+            logger.info("you said it submit in:"+date+", do you want to rejudge it?");
+   
+            logger.info("rejudge start!");
+        }
+        
+        User user = submission.getUser();
+        for (IMPDataset dataset : datasets) {
+            //remove previous case
+            List<IMPCase> impcases = Database.getInstance().getImpCases()
+                .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
+            Database.getInstance().getImpCases().deleteAll(impcases);
+            logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
+
+            for (int i=0; i<5; i++) {
+                cases.add(new IMPCase(user, dataset, submission.getArchive()));
+            }
+        }
+
+        Collections.shuffle(cases);
+        for (IMPCase c : cases) {
+            IMPCase newC = Database.getInstance().getImpCases().insert(c);
+            Database.getInstance().getLiteCases().insert(new LiteCase(c));
+            logger.info(newC.toString());
+        }
+        logger.info("add final test:"+cases.size());
+        
+    }
+
 
     private static void disableDatasets() {
         Database.getInstance().getImpDatasets().findAll().forEach(c -> {

@@ -37,8 +37,9 @@ public class ISEJudgeFinal {
         //disableDatasets();
         //addDatasets();
         //addCases();
-        addUserCases("11710324");
+        //addUserCases("11710324");
         // fixSwap();
+        addCaseBySubmitIdAndTime("5dc52181e788581b27462dbd", "2019-11-08T08:04:17.185+0000");//this is for ISE
     }
 
 
@@ -99,6 +100,51 @@ public class ISEJudgeFinal {
             dataset = Database.getInstance().getIseDatasets().insert(dataset);
             logger.info(dataset.toString());
         }
+    }
+
+    private static void addCaseBySubmitIdAndTime(String submitId, String date){
+        Date endTime = Deadline.getIseDDL();
+        // Query datasets
+        List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
+                .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
+ 
+        List<ISECase> cases = new ArrayList<>();
+ 
+        ISECase submission = (ISECase)Database.getInstance().getLiteCases()
+                .findLiteCaseByFullId(submitId).getFullCase();
+        if (submission == null || submission.getArchive() == null) {
+            logger.info("not submission found id:"+submitId);
+            return;
+        }else{
+            logger.info("found:"+submitId);
+            logger.info("detail:"+submission.toString());
+            logger.info("submit time:"+submission.getSubmitTime().toString());
+            logger.info("is before ddl:"+(submission.getSubmitTime().getTime()<endTime.getTime()));
+            logger.info("you said it submit in:"+date+", do you want to rejudge it?");
+   
+            logger.info("rejudge start!");
+        }
+        
+        User u = submission.getUser();
+
+        for (ISEDataset dataset : datasets) {
+            //remove previous case
+            List<ISECase> isecases = Database.getInstance().getIseCases()
+                .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
+            Database.getInstance().getIseCases().deleteAll(isecases);
+            logger.info(String.format("remove %d isecase of %s:%s", isecases.size(), u.getUsername(), dataset.getName()));
+
+            for (int i=0; i<5; i++) {
+                cases.add(new ISECase(u, dataset, submission.getArchive()));
+            }
+        }
+        Collections.shuffle(cases);
+        for (ISECase c : cases) {
+            ISECase newC = Database.getInstance().getIseCases().insert(c);
+            Database.getInstance().getLiteCases().insert(new LiteCase(c));
+            logger.info(newC.toString());
+        }
+        
     }
 
     private static void addUserCases(String userName) {
