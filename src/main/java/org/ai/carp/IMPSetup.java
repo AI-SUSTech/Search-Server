@@ -32,7 +32,7 @@ public class IMPSetup {
         app.run(args);
         // addISEDatasets();
         // addIMPDatasets();
-        disableIseDatasets(false);
+        // enableIseDatasets(true);
     }
 
     private static void addISEDatasets() throws URISyntaxException {
@@ -99,10 +99,10 @@ public class IMPSetup {
         });
     }
 
-    private static void disableIseDatasets(boolean disable) {
+    private static void enableIseDatasets(boolean enable) {
         Database.getInstance().getIseDatasets().findAll().forEach(c ->
         {
-            c.setEnabled(!disable);
+            c.setEnabled(enable);
             Database.getInstance().getIseDatasets().save(c);
             logger.info(c.toString());
         });
