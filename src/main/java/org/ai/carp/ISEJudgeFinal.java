@@ -1,6 +1,6 @@
 package org.ai.carp;
 
-import org.ai.carp.controller.judge.Deadline;
+import org.ai.carp.model.Deadline;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.ISEDataset;

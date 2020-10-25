@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.ai.carp.controller.judge.Deadline;
+import org.ai.carp.model.Deadline;
 
 @RestController
 @RequestMapping(value = "/api/admin/judge/archive/impall", produces = "application/zip")

@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.ai.carp.controller.judge.Deadline;
+import org.ai.carp.model.Deadline;
 
 
 @ComponentScan(basePackages = {"org.ai.carp.model"})
