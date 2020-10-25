@@ -34,77 +34,9 @@ public class NCSSetup {
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
 //        cutNCSLog();
-//        addUsers();
         // addDatasets();
-        addEmailForRoot();
     }
-
-    private static void addEmailForRoot(){
-        User root = Database.getInstance().getUsers().findByUsername("root");
-         if ( root == null) {
-            root = new User("root", "123", User.ROOT);
-        }
-        root.setEmail("1396592457@qq.com");
-        Database.getInstance().getUsers().save(root);
-    }
-
-    private static void addUsers() {
-        if (Database.getInstance().getUsers().findByUsername("root") == null) {
-            Database.getInstance().getUsers().insert(new User("root", "123", User.ROOT));
-        }
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classLoader.getResourceAsStream("users.csv");
-        if (is == null) {
-            logger.error("users.csv not found!");
-            return;
-        }
-        Scanner scanner = new Scanner(is);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            line = line.replaceAll("\r", "");
-            String[] splitted = line.split(",");
-            if (StringUtils.isEmpty(splitted[0])) {
-                continue;
-            }
-            UserRepository userRepository = Database.getInstance().getUsers();
-            User existUser = userRepository.findByUsername(splitted[0]);
-            LinkedList<User> users = new LinkedList<>();
-            if (existUser == null) {
-                int role;
-                switch (splitted[1]) {
-                    case "ADMIN":
-                        role = User.ADMIN;
-                        break;
-                    case "USER":
-                        role = User.USER;
-                        break;
-                    case "WORKER":
-                        role = User.WORKER;
-                        break;
-                    default:
-                        logger.error("Invalid user info for {}", splitted[0]);
-                        continue;
-                }
-                User user = new User(splitted[0], splitted[2], role);
-                if (splitted.length >= 4) {
-                    user.setEmail(splitted[3].trim());
-                }
-                user = Database.getInstance().getUsers().insert(user);
-                logger.info(user.toString());
-            } else {
-                if (splitted.length >= 4) {
-                    existUser.setType(User.ADMIN);
-                    logger.info("add admin: " + existUser.toString());
-                    existUser.setEmail(splitted[3].trim());
-                    users.add(existUser);
-                    logger.info("add email: " + existUser.toString());
-                }
-            }
-            userRepository.saveAll(users);
-        }
-        scanner.close();
-    }
-
+    
     private static void cutNCSLog() {
         List<NCSCase> caseList = Database.getInstance().getNcsCases().findAll();
         List<NCSCase> modifiedCase = new ArrayList<>();
