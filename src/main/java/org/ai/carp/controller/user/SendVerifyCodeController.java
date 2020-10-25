@@ -23,7 +23,7 @@ public class SendVerifyCodeController {
     public SendVerifyCodeResponse post(@RequestBody SendVerifyCodeRequest request, HttpSession session) {
         User user = UserUtils.findUserByUserName(request.userName);
 
-        String deliver = "11610303@mail.sustech.edu.cn";
+        String deliver = "11712225@mail.sustech.edu.cn";
         String[] receiver = {Email.getInstance().getEmailAddress(user)};
         String[] carbonCopy = {};
         String subject = "Verify Code for NCS judge platform";

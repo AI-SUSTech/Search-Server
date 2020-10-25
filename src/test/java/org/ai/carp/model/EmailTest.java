@@ -15,9 +15,9 @@ public class EmailTest {
     @Test
     public void testSendSimple() {
         Email email = Email.getInstance();
-        String deliver = "11610303@mail.sustech.edu.cn";
-        String[] receiver = {"11610303@mail.sustech.edu.cn"};
-        String[] carbonCopy = {"11610303@mail.sustech.edu.cn"};
+        String deliver = "11712225@mail.sustech.edu.cn";
+        String[] receiver = {"11712225@mail.sustech.edu.cn"};
+        String[] carbonCopy = {"11712225@mail.sustech.edu.cn"};
         String subject = "Verify Code for NCS judge platform";
         String content = "Your verfy code is 123456";
         try {

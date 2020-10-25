@@ -92,6 +92,12 @@ task impFinal(type: JavaExec) {
     main = "org.ai.carp.IMPJudgeFinal"
 }
 
+task userSetup(type: JavaExec) {
+    classpath sourceSets.main.runtimeClasspath
+    main = "org.ai.carp.UserSetup"
+}
+
+
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
     implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
