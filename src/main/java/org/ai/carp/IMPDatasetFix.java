@@ -81,7 +81,7 @@ public class IMPDatasetFix {
                     }
                     d.setSeeds(sb.toString());
                     logger.info(Database.getInstance().getIseDatasets().save(d).toString());
-                    Database.getInstance().getIseCases().findISECasesByDatasetOrderBySubmitTimeDesc(d)
+                    Database.getInstance().getIseCases().findISECasesByDatasetIdOrderBySubmitTimeDesc(d.getId())
                             .forEach(c -> {
                                 c.setStatus(BaseCase.WAITING);
                                 Database.getInstance().getIseCases().save(c);

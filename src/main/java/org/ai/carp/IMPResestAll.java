@@ -28,7 +28,7 @@ public class IMPResestAll {
         Database.getInstance().getIseDatasets().findAll().stream()
                 .filter(d -> d.getName().contains("NetHEPT"))
                 .forEach(d -> {
-                    Database.getInstance().getIseCases().findISECasesByDatasetOrderBySubmitTimeDesc(d)
+                    Database.getInstance().getIseCases().findISECasesByDatasetIdOrderBySubmitTimeDesc(d.getId())
                             .forEach(c -> {
                                 c.reset();
                                 Database.getInstance().getIseCases().save(c);

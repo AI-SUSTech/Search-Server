@@ -75,8 +75,8 @@ public class ISEFunction implements BaseFunction {
     }
 
     private Stream<ISECase> getTopResult(ISEDataset dataset) {
-        List<ISECase> caseList = Database.getInstance().getIseCases().findISECasesByDatasetAndStatus(dataset, BaseCase.FINISHED);
-        List<ISECase> errorList = Database.getInstance().getIseCases().findISECasesByDatasetAndStatus(dataset, BaseCase.ERROR);
+        List<ISECase> caseList = Database.getInstance().getIseCases().findISECasesByDatasetIdAndStatus(dataset.getId(), BaseCase.FINISHED);
+        List<ISECase> errorList = Database.getInstance().getIseCases().findISECasesByDatasetIdAndStatus(dataset.getId(), BaseCase.ERROR);
         HashMap<String, ISECase> map = new HashMap<>();
         for (ISECase iseCase : caseList) {
             if (iseCase.getUser().getType() <= User.ADMIN) {
@@ -191,7 +191,7 @@ public class ISEFunction implements BaseFunction {
             // Add dataset data
             Map<String, Row> stuMap = new HashMap<>();
             Database.getInstance().getIseCases()
-                    .findISECasesByDatasetOrderBySubmitTimeDesc(d)
+                    .findISECasesByDatasetIdOrderBySubmitTimeDesc(d.getId())
                     .stream().forEach(c -> {
                 Row r;
                 if (!stuMap.containsKey(c.getUser().getUsername())) {

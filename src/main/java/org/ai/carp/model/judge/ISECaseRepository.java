@@ -16,7 +16,7 @@ public interface ISECaseRepository extends MongoRepository<ISECase, String> {
 
     ISECase findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(User user, Date endTime);
 
-    List<ISECase> findISECasesByDatasetOrderBySubmitTimeDesc(ISEDataset dataset);
+    List<ISECase> findISECasesByDatasetIdOrderBySubmitTimeDesc(String datasetId);
 
     List<ISECase> findISECasesByUserOrderBySubmitTimeDesc(User user);
 
@@ -24,7 +24,7 @@ public interface ISECaseRepository extends MongoRepository<ISECase, String> {
 
     List<ISECase> findISECasesByStatusNotIn(List<Integer> status, Pageable pageable);
 
-    List<ISECase> findISECasesByDatasetAndStatusAndValidAndTimedout(ISEDataset dataset, int status, boolean valid, boolean timedout);
+    List<ISECase> findISECasesByDatasetIdAndStatusAndValidAndTimedout(String datasetId, int status, boolean valid, boolean timedout);
 
     List<ISECase> findISECasesByDatasetIdAndStatusAndValidOrderByTimeAscSubmitTimeAsc(String datasetId, int status, boolean valid);
 
@@ -32,7 +32,7 @@ public interface ISECaseRepository extends MongoRepository<ISECase, String> {
 
     int countISECasesByUserAndSubmitTimeAfter(User user, Date startTime);
 
-    List<ISECase> findISECasesByDatasetAndStatus(ISEDataset dataset, int status);
+    List<ISECase> findISECasesByDatasetIdAndStatus(String datasetId, int status);
 
     List<ISECase> findISECasesByStatus(int status);
 }
