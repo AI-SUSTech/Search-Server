@@ -31,8 +31,8 @@ public class UserUtils {
 
     public static User findUserByUserName(String userName) {
 
-        User user =  Database.getInstance().getUsers().findByUsername(userName);
-        if(user==null){
+        User user = Database.getInstance().getUsers().findByUsername(userName);
+        if (user == null) {
             throw new PermissionDeniedException("User does not exist!");
         }
         return user;

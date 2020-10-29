@@ -13,6 +13,7 @@ public class NCSParameter {
     public NCSParameter(User user) {
         this.user = user;
     }
+
     public double getR() {
         return r;
     }
@@ -81,13 +82,13 @@ public class NCSParameter {
         if (this == obj) {
             return true;
         }
-        if(obj instanceof NCSParameter){
-            NCSParameter anObj = (NCSParameter)obj;
-            if(!anObj.lambda.equals(this.lambda))
+        if (obj instanceof NCSParameter) {
+            NCSParameter anObj = (NCSParameter) obj;
+            if (!anObj.lambda.equals(this.lambda))
                 return false;
-            if(!anObj.r.equals(this.r))
+            if (!anObj.r.equals(this.r))
                 return false;
-            if(!anObj.epoch.equals(this.epoch))
+            if (!anObj.epoch.equals(this.epoch))
                 return false;
             return anObj.N.equals(this.N);
         }

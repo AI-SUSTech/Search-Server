@@ -8,14 +8,14 @@ import java.util.Random;
 public class VerifyCodeGeneUtils {
     private static Random random = new Random(System.currentTimeMillis());
 
-    public static String getCode(){
+    public static String getCode() {
         return String.format("%06d", (random.nextInt(1000000) + 1000000) % 1000000);
     }
 
-    public static boolean checkVerifyCode(VerifyCode verifyCode, String code){
-        if(verifyCode != null && verifyCode.getCode().equals(code)){
+    public static boolean checkVerifyCode(VerifyCode verifyCode, String code) {
+        if (verifyCode != null && verifyCode.getCode().equals(code)) {
             // check if it is five minutes generated code
-            return verifyCode.getGenerateTime().getTime() > System.currentTimeMillis() - 1000 * 300 ;
+            return verifyCode.getGenerateTime().getTime() > System.currentTimeMillis() - 1000 * 300;
         }
         return false;
     }

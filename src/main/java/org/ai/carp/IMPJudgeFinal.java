@@ -43,37 +43,37 @@ public class IMPJudgeFinal {
         addCaseBySubmitIdAndTime("5dd048b1e788580e2526eccf", "11-17 03:06:25");
     }
 
-    private static void addCaseBySubmitIdAndTime(String submitId, String date){
+    private static void addCaseBySubmitIdAndTime(String submitId, String date) {
         Date endTime = Deadline.getImpDDL();
         // Query datasets
         List<IMPDataset> datasets = Database.getInstance().getImpDatasets().findAll()
                 .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
         List<IMPCase> cases = new ArrayList<>();
- 
-        IMPCase submission = (IMPCase)Database.getInstance().getLiteCases()
+
+        IMPCase submission = (IMPCase) Database.getInstance().getLiteCases()
                 .findLiteCaseByFullId(submitId).getFullCase();
         if (submission == null || submission.getArchive() == null) {
-            logger.info("not submission found id:"+submitId);
+            logger.info("not submission found id:" + submitId);
             return;
-        }else{
-            logger.info("found:"+submitId);
-            logger.info("detail:"+submission.toString());
-            logger.info("submit time:"+submission.getSubmitTime().toString());
-            logger.info("is before ddl:"+(submission.getSubmitTime().getTime()<endTime.getTime()));
-            logger.info("you said it submit in:"+date+", do you want to rejudge it?");
-   
+        } else {
+            logger.info("found:" + submitId);
+            logger.info("detail:" + submission.toString());
+            logger.info("submit time:" + submission.getSubmitTime().toString());
+            logger.info("is before ddl:" + (submission.getSubmitTime().getTime() < endTime.getTime()));
+            logger.info("you said it submit in:" + date + ", do you want to rejudge it?");
+
             logger.info("rejudge start!");
         }
-        
+
         User user = submission.getUser();
         for (IMPDataset dataset : datasets) {
             //remove previous case
             List<IMPCase> impcases = Database.getInstance().getImpCases()
-                .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
+                    .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
             Database.getInstance().getImpCases().deleteAll(impcases);
             logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
 
-            for (int i=0; i<5; i++) {
+            for (int i = 0; i < 5; i++) {
                 cases.add(new IMPCase(user, dataset, submission.getArchive()));
             }
         }
@@ -84,21 +84,21 @@ public class IMPJudgeFinal {
             Database.getInstance().getLiteCases().insert(new LiteCase(c));
             logger.info(newC.toString());
         }
-        logger.info("add final test:"+cases.size());
-        
+        logger.info("add final test:" + cases.size());
+
     }
 
 
     private static void disableDatasets() {
         Database.getInstance().getImpDatasets().findAll().forEach(c -> {
-            if(c.getName().contains("random")){
+            if (c.getName().contains("random")) {
                 List<IMPCase> cases = Database.getInstance().getImpCases().
-                    findIMPCasesByDatasetOrderBySubmitTimeDesc(c);
+                        findIMPCasesByDatasetOrderBySubmitTimeDesc(c);
 
                 Database.getInstance().getImpCases().deleteAll(cases);
 
                 Database.getInstance().getImpDatasets().delete(c);
-                logger.info("drop:"+c.toString()+"drop this type case:"+cases.size());
+                logger.info("drop:" + c.toString() + "drop this type case:" + cases.size());
                 return;
             }
             c.setEnabled(false);
@@ -107,15 +107,15 @@ public class IMPJudgeFinal {
         });
     }
 
-    private static void dropUserCase(String userName, int times){
+    private static void dropUserCase(String userName, int times) {
         // Query users
         Date endTime = Deadline.getImpDDL();
         User user = Database.getInstance().getUsers().findByUsername(userName);
-        for(int i=0;i<times;i++){
+        for (int i = 0; i < times; i++) {
             IMPCase submission = Database.getInstance().getImpCases()
                     .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(user, endTime);
             Database.getInstance().getImpCases().delete(submission);
-            logger.info("drop case of"+userName+" :"+submission.toString());
+            logger.info("drop case of" + userName + " :" + submission.toString());
         }
     }
 
@@ -149,33 +149,33 @@ public class IMPJudgeFinal {
         }
     }
 
-    private static void addValidCase(String userName){
+    private static void addValidCase(String userName) {
         Date endTime = Deadline.getImpDDL();
         // Query datasets
         List<IMPDataset> datasets = Database.getInstance().getImpDatasets().findAll()
                 .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
         // Query users
         User user = Database.getInstance().getUsers().findByUsername(userName);
-        if(user==null){
-            logger.info("not found user:"+userName);
+        if (user == null) {
+            logger.info("not found user:" + userName);
             return;
         }
         List<IMPCase> cases = new ArrayList<>();
- 
+
         IMPCase submission = Database.getInstance().getImpCases()
                 .findFirstByUserAndSubmitTimeBeforeAndValidOrderBySubmitTimeDesc(user, endTime, true);
         if (submission == null || submission.getArchive() == null) {
-            logger.info("not submission found user:"+userName);
+            logger.info("not submission found user:" + userName);
             return;
         }
         for (IMPDataset dataset : datasets) {
             //remove previous case
             List<IMPCase> impcases = Database.getInstance().getImpCases()
-                .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
+                    .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
             Database.getInstance().getImpCases().deleteAll(impcases);
             logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
 
-            for (int i=0; i<5; i++) {
+            for (int i = 0; i < 5; i++) {
                 cases.add(new IMPCase(user, dataset, submission.getArchive()));
             }
         }
@@ -186,7 +186,7 @@ public class IMPJudgeFinal {
             Database.getInstance().getLiteCases().insert(new LiteCase(c));
             logger.info(newC.toString());
         }
-        logger.info("add final test:"+cases.size());
+        logger.info("add final test:" + cases.size());
     }
 
     private static void addCases() {
@@ -204,7 +204,7 @@ public class IMPJudgeFinal {
                 continue;
             }
             for (IMPDataset dataset : datasets) {
-                for (int i=0; i<5; i++) {
+                for (int i = 0; i < 5; i++) {
                     cases.add(new IMPCase(u, dataset, submission.getArchive()));
                 }
             }
@@ -215,7 +215,7 @@ public class IMPJudgeFinal {
             Database.getInstance().getLiteCases().insert(new LiteCase(c));
             logger.info(newC.toString());
         }
-        logger.info("add final test:"+cases.size());
+        logger.info("add final test:" + cases.size());
     }
 
 }

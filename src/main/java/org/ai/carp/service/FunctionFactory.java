@@ -24,9 +24,8 @@ public class FunctionFactory {
     }
 
 
-
     public static BaseFunction getCaseFunction(int problemType) throws Exception {
-        switch (problemType){
+        switch (problemType) {
             case BaseDataset
                     .CARP:
                 return carpFunction;
@@ -43,8 +42,8 @@ public class FunctionFactory {
         throw new Exception("unknown problem type");
     }
 
-    public static List<BaseDataset> getAllDataset(List<BaseDataset> datasets){
-        if(datasets==null){
+    public static List<BaseDataset> getAllDataset(List<BaseDataset> datasets) {
+        if (datasets == null) {
             return datasets;
         }
         datasets.addAll(Database.getInstance().getCarpDatasets().findAll());
@@ -54,7 +53,7 @@ public class FunctionFactory {
         return datasets;
     }
 
-    public static List<BaseCase> getAllCases(User user){
+    public static List<BaseCase> getAllCases(User user) {
 
         List<BaseCase> baseCases = new ArrayList<>();
         baseCases.addAll(Database.getInstance().getCarpCases().findCARPCasesByUserOrderBySubmitTimeDesc(user));
@@ -64,7 +63,6 @@ public class FunctionFactory {
         baseCases.sort((a, b) -> b.getSubmitTime().compareTo(a.getSubmitTime()));
         return baseCases;
     }
-
 
 
 }

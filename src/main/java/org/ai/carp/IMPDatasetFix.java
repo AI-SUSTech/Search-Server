@@ -34,7 +34,7 @@ public class IMPDatasetFix {
         Database.getInstance().getIseCases().findISECasesByStatus(BaseCase.ERROR)
                 .forEach(iseCase -> {
                     String reason = iseCase.getReason();
-                    if(reason != null && reason.contains("409 Client Error:")) {
+                    if (reason != null && reason.contains("409 Client Error:")) {
                         iseCase.reset();
                         iseCase.setStatus(BaseCase.WAITING);
                         logger.info(Database.getInstance().getIseCases().save(iseCase).toString());
@@ -47,7 +47,7 @@ public class IMPDatasetFix {
                 .forEach(iseCase -> {
                     String reason = iseCase.getReason();
                     iseCase.setStatus(BaseCase.WAITING);
-                    logger.info(Database.getInstance().getIseCases().save(iseCase).toString()+reason);
+                    logger.info(Database.getInstance().getIseCases().save(iseCase).toString() + reason);
                 });
     }
 

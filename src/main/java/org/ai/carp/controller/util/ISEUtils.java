@@ -3,7 +3,7 @@ package org.ai.carp.controller.util;
 import org.ai.carp.model.judge.ISECase;
 
 public class ISEUtils {
-    
+
     public static void checkResult(ISECase iseCase) {
         if (!CaseUtils.checkResult(iseCase)) {
             return;
@@ -32,5 +32,5 @@ public class ISEUtils {
         double bias = Math.abs(standard - student);
         return bias > max_bias;
     }
-    
+
 }

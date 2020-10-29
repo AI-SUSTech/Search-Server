@@ -30,49 +30,34 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/judge/submit")
 public class SubmitController {
 
-    private SubmitResponse changeUserCode(String userName, PostCase postCase) throws InvalidRequestException{
+    private SubmitResponse changeUserCode(String userName, PostCase postCase) throws InvalidRequestException {
         User user = Database.getInstance().getUsers().findByUsername(userName);
-        if(user==null){
-            throw new InvalidRequestException("not exist user:"+userName);
+        if (user == null) {
+            throw new InvalidRequestException("not exist user:" + userName);
         }
         IMPCase finalSubmit = Database.getInstance().getImpCases()
                 .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(user, Deadline.getImpDDL());
-        if(finalSubmit == null){
+        if (finalSubmit == null) {
             throw new InvalidRequestException("no code!");
         }
         Binary archive = ArchiveUtils.convertSubmission(postCase.data, "IMP.py");
 
-        // LiteCase optLiteCase = Database.getInstance().getLiteCases().findLiteCaseByFullId(finalSubmit.getId());
-        // if (optLiteCase == null) {
-        //     throw new InvalidRequestException("Case does not exist!");
-        // }
-        // BaseCase baseCase = optLiteCase.getFullCase();
-        // if (baseCase.getStatus() != CARPCase.FINISHED && baseCase.getStatus() != CARPCase.ERROR) {
-        //     throw new InvalidRequestException("Case has not finished!");
-        // }
         finalSubmit.setArchive(archive);
         finalSubmit.reset();
         BaseCase baseCase = CaseUtils.saveCase(finalSubmit);
         JudgeRunner.queue.add(baseCase);
 
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
-        System.out.println("change latest code of:"+user.getUsername());
+        System.out.println("change latest code of:" + user.getUsername());
 
         return new SubmitResponse(finalSubmit.getId(), remain);
 
     }
 
 
-
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
-
-        // if(user.getType() == User.ROOT){
-        //    return changeUserCode("11611615", postCase);
-        // }
-
-
         if (user.passwordMatches(user.getUsername())) {
             throw new PermissionDeniedException("Please change your password!");
         }
@@ -113,19 +98,6 @@ public class SubmitController {
         } catch (Exception e) {
             throw new InvalidRequestException("Invalid dataset type!");
         }
-//        switch (dataset.getType()) {
-//            case BaseDataset.CARP:
-//                baseCase = Database.getInstance().getCarpCases().insert(new CARPCase(user, (CARPDataset)dataset, archive));
-//                break;
-//            case BaseDataset.ISE:
-//                baseCase = Database.getInstance().getIseCases().insert(new ISECase(user, (ISEDataset)dataset, archive));
-//                break;
-//            case BaseDataset.IMP:
-//                baseCase = Database.getInstance().getImpCases().insert(new IMPCase(user, (IMPDataset)dataset, archive));
-//                break;
-//            default:
-//                throw new InvalidRequestException("Invalid dataset type!");
-//        }
         Database.getInstance().getLiteCases().insert(new LiteCase(baseCase));
         JudgeRunner.queue.add(baseCase);
         int remain = CARPCase.DAILY_LIMIT - CaseUtils.countPreviousDay(user);
@@ -133,27 +105,3 @@ public class SubmitController {
     }
 
 }
-
-//class SubmitResponse {
-//
-//    private String cid;
-//    private int remain;
-//
-//    public SubmitResponse(String cid, int remain) {
-//        this.cid = cid;
-//        this.remain = remain;
-//    }
-//
-//    public String getCid() {
-//        return cid;
-//    }
-//
-//    public int getRemain() {
-//        return remain;
-//    }
-//}
-//
-//class PostCase {
-//    public String dataset;
-//    public String data;
-//}

@@ -42,25 +42,6 @@ public class QueryUserCaseController {
         } catch (Exception e) {
             throw new InvalidRequestException("unknown problem type!");
         }
-
-//        switch (dataset.getType()) {
-//            case BaseDataset.CARP:
-//                baseCases = Database.getInstance().getCarpCases()
-//                        .findCARPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (CARPDataset)dataset)
-//                        .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
-//                break;
-//            case BaseDataset.ISE:
-//                baseCases = Database.getInstance().getIseCases()
-//                        .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(user, (ISEDataset)dataset)
-//                        .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
-//                break;
-//            case BaseDataset.IMP:
-//                baseCases = Database.getInstance().getImpCases()
-//                        .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (IMPDataset) dataset)
-//                        .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
-//                break;
-//            default:
-//        }
         return baseCases;
     }
 
@@ -72,11 +53,6 @@ public class QueryUserCaseController {
         if (user == null) {
             throw new InvalidRequestException("User does not exist!");
         }
-//        List<BaseCase> baseCases = new ArrayList<>();
-//        baseCases.addAll(Database.getInstance().getCarpCases().findCARPCasesByUserOrderBySubmitTimeDesc(user));
-//        baseCases.addAll(Database.getInstance().getIseCases().findISECasesByUserOrderBySubmitTimeDesc(user));
-//        baseCases.addAll(Database.getInstance().getImpCases().findIMPCasesByUserOrderBySubmitTimeDesc(user));
-//        baseCases.sort((a, b) -> b.getSubmitTime().compareTo(a.getSubmitTime()));
         return FunctionFactory.getAllCases(user);
     }
 

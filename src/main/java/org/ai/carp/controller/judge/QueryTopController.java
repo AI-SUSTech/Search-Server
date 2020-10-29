@@ -48,32 +48,12 @@ public class QueryTopController {
         } catch (Exception e) {
             throw new InvalidRequestException("unknown dataset type");
         }
-
-
         if (dataset.getType() == BaseDataset.CARP) {
-//            allBaseCases = Database.getInstance().getCarpCases()
-//                    .findCARPCasesByDatasetAndStatusAndValidOrderByCostAscTimeAscSubmitTimeAsc(
-//                            (CARPDataset)dataset, BaseCase.FINISHED, true)
-//                    .stream().filter(c -> c.getUser().getType() > User.ADMIN)
-//                    .map(c -> (BaseCase)c).collect(Collectors.toList());
             invalidUids = Database.getInstance().getCarpCases()
                     .findCARPCasesByDatasetAndStatusAndValidAndTimedout((CARPDataset) dataset, BaseCase.FINISHED, false, false)
                     .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                     .map(BaseCase::getUserId).collect(Collectors.toSet());
         }
-//        else if (dataset.getType() == BaseDataset.ISE) {
-//            allBaseCases = Database.getInstance().getIseCases()
-//                    .findISECasesByDatasetAndStatusAndValidOrderByTimeAscSubmitTimeAsc(
-//                            (ISEDataset)dataset, BaseCase.FINISHED, true)
-//                    .stream().filter(c -> c.getUser().getType() > User.ADMIN)
-//                    .map(c -> (BaseCase)c).collect(Collectors.toList());
-//        } else if (dataset.getType() == BaseDataset.IMP) {
-//            allBaseCases = Database.getInstance().getImpCases()
-//                    .findIMPCasesByDatasetAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
-//                            (IMPDataset)dataset, BaseCase.FINISHED, true)
-//                    .stream().filter(c -> c.getUser().getType() > User.ADMIN)
-//                    .map(c -> (BaseCase)c).collect(Collectors.toList());
-//        }
         return new QueryTopResult(dataset, allBaseCases, invalidUids, user.getType() <= User.ADMIN);
     }
 

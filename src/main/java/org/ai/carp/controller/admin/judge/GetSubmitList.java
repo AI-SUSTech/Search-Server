@@ -52,7 +52,6 @@ public class GetSubmitList {
     }
 
 
-
     @GetMapping
     @RequestMapping(value = "/api/admin/judge/submit/imp", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     public ResponseEntity<byte[]> getIMP(HttpSession session) throws IOException {

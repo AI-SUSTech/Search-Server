@@ -32,7 +32,7 @@ public class CARPFunction implements BaseFunction {
 
     @Override
     public void afterGetResult(BaseCase baseCase, JsonNode rootNode) {
-        CARPUtils.checkResult((CARPCase)baseCase);
+        CARPUtils.checkResult((CARPCase) baseCase);
     }
 
 
@@ -41,19 +41,19 @@ public class CARPFunction implements BaseFunction {
         List<BaseCase> bestCases;
         bestCases = Database.getInstance().getCarpCases()
                 .findCARPCasesByDatasetAndUserAndStatusAndValidOrderByCostAscTimeAscSubmitTimeAsc(
-                        (CARPDataset)dataset, user, BaseCase.FINISHED, true,
+                        (CARPDataset) dataset, user, BaseCase.FINISHED, true,
                         PageRequest.of(0, QuerySelfBestController.COUNT_BEST))
-                .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
+                .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return bestCases;
     }
 
 
     @Override
-    public List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset){
+    public List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset) {
         List<BaseCase> baseCases;
-            baseCases = Database.getInstance().getCarpCases()
-                    .findCARPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (CARPDataset)dataset)
-                    .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
+        baseCases = Database.getInstance().getCarpCases()
+                .findCARPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (CARPDataset) dataset)
+                .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return baseCases;
     }
 
@@ -61,9 +61,9 @@ public class CARPFunction implements BaseFunction {
     public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
         return Database.getInstance().getCarpCases()
                 .findCARPCasesByDatasetAndStatusAndValidOrderByCostAscTimeAscSubmitTimeAsc(
-                        (CARPDataset)dataset, BaseCase.FINISHED, true)
+                        (CARPDataset) dataset, BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
-                .map(c -> (BaseCase)c).collect(Collectors.toList());
+                .map(c -> (BaseCase) c).collect(Collectors.toList());
     }
 
     @Override

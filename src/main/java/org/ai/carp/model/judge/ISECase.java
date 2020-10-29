@@ -10,7 +10,6 @@ import org.ai.carp.model.dataset.ISEDataset;
 import org.ai.carp.model.user.User;
 import org.bson.types.Binary;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;

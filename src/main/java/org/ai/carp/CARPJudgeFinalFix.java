@@ -55,7 +55,7 @@ public class CARPJudgeFinalFix {
     }
 
     private static void selectLastValid() {
-        String[] userNames = {  };
+        String[] userNames = {};
         Date endTime = new Date(1542964624000L);
         // Query datasets
         List<CARPDataset> datasets = Database.getInstance().getCarpDatasets().findAll()
@@ -78,7 +78,7 @@ public class CARPJudgeFinalFix {
                     logger.info("Removed: {}", c.toString());
                     Database.getInstance().getCarpCases().delete(c);
                 }
-                for (int i=0; i<5; i++) {
+                for (int i = 0; i < 5; i++) {
                     cases.add(new CARPCase(u, dataset, submission.getArchive()));
                 }
             }
@@ -92,7 +92,7 @@ public class CARPJudgeFinalFix {
     }
 
     private static void restartAllCases() {
-        String[] userNames = { "11610214", "11610205" };
+        String[] userNames = {"11610214", "11610205"};
         Date endTime = new Date(1542964624000L);
         // Query datasets
         List<CARPDataset> datasets = Database.getInstance().getCarpDatasets().findAll()

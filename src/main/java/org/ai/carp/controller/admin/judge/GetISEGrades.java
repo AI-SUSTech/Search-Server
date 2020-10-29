@@ -39,7 +39,7 @@ public class GetISEGrades {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             BaseFunction baseFunction = FunctionFactory.getCaseFunction(BaseDataset.ISE);
-            Workbook wb = ((ISEFunction)baseFunction).getFinalFinalGrades();
+            Workbook wb = ((ISEFunction) baseFunction).getFinalFinalGrades();
             wb.write(baos);
         } catch (Exception e) {
             e.printStackTrace();

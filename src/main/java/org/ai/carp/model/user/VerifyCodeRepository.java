@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface VerifyCodeRepository extends MongoRepository<VerifyCode, String> {
 
-   VerifyCode findTopByUserOrderByGenerateTimeDesc(User user);
+    VerifyCode findTopByUserOrderByGenerateTimeDesc(User user);
 
 
 }

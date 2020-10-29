@@ -7,7 +7,9 @@ import java.util.List;
 public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findAllByType(int type);
+
     User findByUsername(String username);
+
     void deleteUsersByUsername(String username);
 
 }

@@ -37,7 +37,7 @@ public class NCSCase extends BaseCase {
         return BaseDataset.NCS;
     }
 
-    public String getSubmitFileType(){
+    public String getSubmitFileType() {
         return "json";
     }
 

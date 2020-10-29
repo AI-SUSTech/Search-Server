@@ -63,10 +63,10 @@ public class ISEFixBias {
             c.setReason(null);
             c.setResult(0);
             ISEUtils.checkResult(c);
-            if(!c.isValid()){
+            if (!c.isValid()) {
                 logger.info("not valid now:" + Database.getInstance().getIseCases().save(c).toString());
-            }else
-            logger.info(Database.getInstance().getIseCases().save(c).toString());
+            } else
+                logger.info(Database.getInstance().getIseCases().save(c).toString());
         });
     }
 

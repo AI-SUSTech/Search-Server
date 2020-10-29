@@ -43,57 +43,57 @@ public class GetIMPGrades {
         baseCol.num = -2;
         Database.getInstance().getImpDatasets().findAll()
                 .stream().filter(IMPDataset::isFinalJudge).forEach(d -> {
-                    // Add combined data
-                    baseCol.num += 3;
-                    finalTitle.createCell(baseCol.num).setCellValue(d.getName());
-                    finalTitle.createCell(baseCol.num+1).setCellValue("Time");
-                    finalTitle.createCell(baseCol.num+2).setCellValue("Count");
-                    QueryTopResult.getFinalList(d.getId()).forEach(c -> {
-                        Row r;
-                        if (!stuFinalMap.containsKey(c.getUserName())) {
-                            r = finalSheet.createRow(finalSheet.getLastRowNum()+1);
-                            r.createCell(0).setCellValue(c.getUserName());
-                            stuFinalMap.put(c.getUserName(), r);
-                        } else {
-                            r = stuFinalMap.get(c.getUserName());
-                        }
-                        r.createCell(baseCol.num).setCellValue(c.getResult());
-                        r.createCell(baseCol.num+1).setCellValue(c.getTime());
-                        r.createCell(baseCol.num+2).setCellValue(c.getCount());
-                    });
-                    finalSheet.autoSizeColumn(baseCol.num);
-                    finalSheet.autoSizeColumn(baseCol.num+1);
-                    finalSheet.autoSizeColumn(baseCol.num+2);
-                    // Create dataset sheet
-                    Sheet sheet = wb.createSheet(d.getName());
-                    Row row = sheet.createRow(0);
-                    row.createCell(0).setCellValue("ID");
-                    for (int i=0; i<5; i++) {
-                        row.createCell(i*3+1).setCellValue(String.valueOf(i+1));
-                        row.createCell(i*3+2).setCellValue("Time");
-                        row.createCell(i*3+3).setCellValue("Reason");
-                    }
-                    // Add dataset data
-                    Map<String, Row> stuMap = new HashMap<>();
-                    Database.getInstance().getImpCases()
-                            .findIMPCasesByDatasetOrderBySubmitTimeDesc(d)
-                            .stream().forEach(c -> {
-                        Row r;
-                        if (!stuMap.containsKey(c.getUser().getUsername())) {
-                            r = sheet.createRow(sheet.getLastRowNum()+1);
-                            r.createCell(0).setCellValue(c.getUser().getUsername());
-                            stuMap.put(c.getUser().getUsername(), r);
-                        } else {
-                            r = stuMap.get(c.getUser().getUsername());
-                        }
-                        r.createCell(r.getLastCellNum()).setCellValue(c.getResult());
-                        r.createCell(r.getLastCellNum()).setCellValue(c.getTime());
-                        r.createCell(r.getLastCellNum()).setCellValue(c.getReason());
-                    });
-                    for (int i=0; i<=15; i++) {
-                        sheet.autoSizeColumn(i);
-                    }
-                });
+            // Add combined data
+            baseCol.num += 3;
+            finalTitle.createCell(baseCol.num).setCellValue(d.getName());
+            finalTitle.createCell(baseCol.num + 1).setCellValue("Time");
+            finalTitle.createCell(baseCol.num + 2).setCellValue("Count");
+            QueryTopResult.getFinalList(d.getId()).forEach(c -> {
+                Row r;
+                if (!stuFinalMap.containsKey(c.getUserName())) {
+                    r = finalSheet.createRow(finalSheet.getLastRowNum() + 1);
+                    r.createCell(0).setCellValue(c.getUserName());
+                    stuFinalMap.put(c.getUserName(), r);
+                } else {
+                    r = stuFinalMap.get(c.getUserName());
+                }
+                r.createCell(baseCol.num).setCellValue(c.getResult());
+                r.createCell(baseCol.num + 1).setCellValue(c.getTime());
+                r.createCell(baseCol.num + 2).setCellValue(c.getCount());
+            });
+            finalSheet.autoSizeColumn(baseCol.num);
+            finalSheet.autoSizeColumn(baseCol.num + 1);
+            finalSheet.autoSizeColumn(baseCol.num + 2);
+            // Create dataset sheet
+            Sheet sheet = wb.createSheet(d.getName());
+            Row row = sheet.createRow(0);
+            row.createCell(0).setCellValue("ID");
+            for (int i = 0; i < 5; i++) {
+                row.createCell(i * 3 + 1).setCellValue(String.valueOf(i + 1));
+                row.createCell(i * 3 + 2).setCellValue("Time");
+                row.createCell(i * 3 + 3).setCellValue("Reason");
+            }
+            // Add dataset data
+            Map<String, Row> stuMap = new HashMap<>();
+            Database.getInstance().getImpCases()
+                    .findIMPCasesByDatasetOrderBySubmitTimeDesc(d)
+                    .stream().forEach(c -> {
+                Row r;
+                if (!stuMap.containsKey(c.getUser().getUsername())) {
+                    r = sheet.createRow(sheet.getLastRowNum() + 1);
+                    r.createCell(0).setCellValue(c.getUser().getUsername());
+                    stuMap.put(c.getUser().getUsername(), r);
+                } else {
+                    r = stuMap.get(c.getUser().getUsername());
+                }
+                r.createCell(r.getLastCellNum()).setCellValue(c.getResult());
+                r.createCell(r.getLastCellNum()).setCellValue(c.getTime());
+                r.createCell(r.getLastCellNum()).setCellValue(c.getReason());
+            });
+            for (int i = 0; i <= 15; i++) {
+                sheet.autoSizeColumn(i);
+            }
+        });
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         wb.write(baos);
         HttpHeaders headers = new HttpHeaders();

@@ -29,8 +29,7 @@ public class NCSFunction implements BaseFunction {
     }
 
     /**
-     *
-     * @param user the user whom submit this case to judge
+     * @param user    the user whom submit this case to judge
      * @param dataset useless, should be null
      * @param archive useless, should be null
      * @return new inserted NCSCase
@@ -39,21 +38,21 @@ public class NCSFunction implements BaseFunction {
     public BaseCase insert(User user, BaseDataset dataset, Binary archive) {
         NCSParameter ncsParameter = ParameterFileUtils.checkSubmitPara(user, archive.getData());
         ncsParameter.setDataset((NCSDataset) dataset);
-        if(user.getType() > User.ADMIN){
-                int hash = ncsParameter.getHash();
-                List<NCSParameter> parameters = Database.getInstance().getNcsParameterRepository()
-                        .findNCSParametersByDatasetAndHashAndUserNot(
-                                (NCSDataset) dataset,
-                                hash,
-                                user
-                        );
-                for(NCSParameter parameter:parameters) {
+        if (user.getType() > User.ADMIN) {
+            int hash = ncsParameter.getHash();
+            List<NCSParameter> parameters = Database.getInstance().getNcsParameterRepository()
+                    .findNCSParametersByDatasetAndHashAndUserNot(
+                            (NCSDataset) dataset,
+                            hash,
+                            user
+                    );
+            for (NCSParameter parameter : parameters) {
                 if (parameter.equals(ncsParameter))
-                        throw new InvalidRequestException(
-                                String.format("You parameter is the same as %s", parameter.getUser().getUsername()));
-                }
+                    throw new InvalidRequestException(
+                            String.format("You parameter is the same as %s", parameter.getUser().getUsername()));
+            }
         }
-        BaseCase resCase =  Database.getInstance()
+        BaseCase resCase = Database.getInstance()
                 .getNcsCases()
                 .insert(new NCSCase(user, dataset, archive));
         ncsParameter.setCaseId(resCase.getId());
@@ -78,7 +77,7 @@ public class NCSFunction implements BaseFunction {
                         BaseCase.FINISHED,
                         true,
                         PageRequest.of(0, QuerySelfBestController.COUNT_BEST))
-                .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
+                .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return bestCases;
     }
 
@@ -86,8 +85,8 @@ public class NCSFunction implements BaseFunction {
     public List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset) {
         List<BaseCase> baseCases;
         baseCases = Database.getInstance().getNcsCases()
-                .findNCSCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (NCSDataset)dataset)
-                .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
+                .findNCSCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (NCSDataset) dataset)
+                .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return baseCases;
     }
 
@@ -95,23 +94,24 @@ public class NCSFunction implements BaseFunction {
     public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
         return Database.getInstance().getNcsCases()
                 .findNCSCasesByDatasetAndStatusAndValidOrderByResultDescTimeAscSubmitTimeAsc(
-                        (NCSDataset)dataset, BaseCase.FINISHED, true)
+                        (NCSDataset) dataset, BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
-                .map(c -> (BaseCase)c).collect(Collectors.toList());
+                .map(c -> (BaseCase) c).collect(Collectors.toList());
     }
+
     private static class IntWrapper {
         int num = 0;
     }
 
-    private Stream<NCSCase> getTopResult(NCSDataset dataset){
+    private Stream<NCSCase> getTopResult(NCSDataset dataset) {
         List<NCSCase> caseList = Database.getInstance().getNcsCases().findNCSCaseByDatasetAndStatusAndValid(dataset, BaseCase.FINISHED, true);
         HashMap<String, NCSCase> map = new HashMap<>();
-        for(NCSCase ncsCase: caseList){
-            if(ncsCase.getUser().getType() <= User.ADMIN){
+        for (NCSCase ncsCase : caseList) {
+            if (ncsCase.getUser().getType() <= User.ADMIN) {
                 continue;
             }
             String userName = ncsCase.getUser().getUsername();
-            if(!map.containsKey(userName) || map.get(userName).getResult() < ncsCase.getResult() ){
+            if (!map.containsKey(userName) || map.get(userName).getResult() < ncsCase.getResult()) {
                 map.put(userName, ncsCase);
             }
         }
@@ -133,26 +133,26 @@ public class NCSFunction implements BaseFunction {
             // Add combined data
             baseCol.num += 3;
             finalTitle.createCell(baseCol.num).setCellValue(ncsDataset.getName());
-            finalTitle.createCell(baseCol.num+1).setCellValue("Time");
-            finalTitle.createCell(baseCol.num+2).setCellValue("Result");
+            finalTitle.createCell(baseCol.num + 1).setCellValue("Time");
+            finalTitle.createCell(baseCol.num + 2).setCellValue("Result");
 
 
             getTopResult(ncsDataset).forEach(c -> {
                 Row r;
                 if (!stuFinalMap.containsKey(c.getUser().getUsername())) {
-                    r = finalSheet.createRow(finalSheet.getLastRowNum()+1);
+                    r = finalSheet.createRow(finalSheet.getLastRowNum() + 1);
                     r.createCell(0).setCellValue(c.getUser().getUsername());
                     stuFinalMap.put(c.getUser().getUsername(), r);
                 } else {
                     r = stuFinalMap.get(c.getUser().getUsername());
                 }
                 r.createCell(baseCol.num).setCellValue(c.getSubmitTime().toString());
-                r.createCell(baseCol.num+1).setCellValue(c.getTime());
-                r.createCell(baseCol.num+2).setCellValue(c.getResult());
+                r.createCell(baseCol.num + 1).setCellValue(c.getTime());
+                r.createCell(baseCol.num + 2).setCellValue(c.getResult());
             });
             finalSheet.autoSizeColumn(baseCol.num);
-            finalSheet.autoSizeColumn(baseCol.num+1);
-            finalSheet.autoSizeColumn(baseCol.num+2);
+            finalSheet.autoSizeColumn(baseCol.num + 1);
+            finalSheet.autoSizeColumn(baseCol.num + 2);
         });
         return wb;
     }

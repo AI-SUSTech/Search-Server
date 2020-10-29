@@ -23,9 +23,6 @@ public class DatasetAllController {
         User user = UserUtils.getUser(session, User.MAX);
         List<BaseDataset> datasets = new ArrayList<>();
         FunctionFactory.getAllDataset(datasets);
-//        datasets.addAll(Database.getInstance().getCarpDatasets().findAll());
-//        datasets.addAll(Database.getInstance().getIseDatasets().findAll());
-//        datasets.addAll(Database.getInstance().getImpDatasets().findAll());
         datasets = datasets.stream().filter(BaseDataset::isEnabled).collect(Collectors.toList());
         if (user.getType() > User.ADMIN) {
             datasets = datasets.stream().filter(d -> !d.isFinalJudge()).collect(Collectors.toList());

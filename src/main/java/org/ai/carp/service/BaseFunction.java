@@ -13,7 +13,9 @@ import java.util.List;
 public interface BaseFunction {
 
     BaseCase save(BaseCase baseCase);
+
     BaseCase insert(User user, BaseDataset dataset, Binary archive);
+
     void afterGetResult(BaseCase baseCase, JsonNode rootNode);
 
     List<BaseCase> getBestResult(User user, BaseDataset dataset);

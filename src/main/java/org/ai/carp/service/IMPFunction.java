@@ -32,7 +32,7 @@ public class IMPFunction implements BaseFunction {
     public void afterGetResult(BaseCase baseCase, JsonNode rootNode) {
         baseCase.setValid(rootNode.get("valid").asBoolean());
         baseCase.setReason(rootNode.get("reason").asText());
-        ((IMPCase)baseCase).setInfluence(rootNode.get("influence").asDouble());
+        ((IMPCase) baseCase).setInfluence(rootNode.get("influence").asDouble());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class IMPFunction implements BaseFunction {
                 .findIMPCasesByDatasetAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
                         (IMPDataset) dataset, user, BaseCase.FINISHED, true,
                         PageRequest.of(0, QuerySelfBestController.COUNT_BEST))
-                .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
+                .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return bestCases;
     }
 
@@ -50,8 +50,8 @@ public class IMPFunction implements BaseFunction {
     public List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset) {
         List<BaseCase> baseCases;
         baseCases = Database.getInstance().getImpCases()
-                    .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (IMPDataset) dataset)
-                    .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
+                .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (IMPDataset) dataset)
+                .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return baseCases;
     }
 
@@ -59,9 +59,9 @@ public class IMPFunction implements BaseFunction {
     public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
         return Database.getInstance().getImpCases()
                 .findIMPCasesByDatasetAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
-                        (IMPDataset)dataset, BaseCase.FINISHED, true)
+                        (IMPDataset) dataset, BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
-                .map(c -> (BaseCase)c).collect(Collectors.toList());
+                .map(c -> (BaseCase) c).collect(Collectors.toList());
     }
 
     @Override

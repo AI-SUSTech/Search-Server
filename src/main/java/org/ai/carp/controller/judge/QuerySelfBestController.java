@@ -37,34 +37,6 @@ public class QuerySelfBestController {
         } catch (Exception e) {
             throw new PermissionDeniedException("unknown problem type dataset");
         }
-
-//        switch (dataset.getType()) {
-//            case BaseDataset.CARP:
-//                bestCases = Database.getInstance().getCarpCases()
-//                        .findCARPCasesByDatasetAndUserAndStatusAndValidOrderByCostAscTimeAscSubmitTimeAsc(
-//                                (CARPDataset)dataset, user, BaseCase.FINISHED, true,
-//                                PageRequest.of(0, COUNT_BEST))
-//                        .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
-//                break;
-//            case BaseDataset.ISE:
-//                bestCases = Database.getInstance().getIseCases()
-//                        .findISECasesByDatasetAndUserAndStatusAndValidOrderByTimeAscSubmitTimeAsc(
-//                                (ISEDataset)dataset, user, BaseCase.FINISHED, true,
-//                                PageRequest.of(0, COUNT_BEST))
-//                        .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
-//                break;
-//            case BaseDataset.IMP:
-//                bestCases = Database.getInstance().getImpCases()
-//                        .findIMPCasesByDatasetAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
-//                                (IMPDataset) dataset, user, BaseCase.FINISHED, true,
-//                                PageRequest.of(0, COUNT_BEST))
-//                        .stream().map(c -> (BaseCase)c).collect(Collectors.toList());
-//                break;
-//            default:
-//        }
         return new QuerySelfBestResult(bestCases);
     }
-
-
-
 }

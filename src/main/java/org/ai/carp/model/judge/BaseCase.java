@@ -67,12 +67,12 @@ public abstract class BaseCase {
         this.status = WAITING;
     }
 
-    public void setArchive(Binary archive){
+    public void setArchive(Binary archive) {
         this.archive = archive;
     }
 
 
-    public String getSubmitFileType(){
+    public String getSubmitFileType() {
         return "zip";
     }
 

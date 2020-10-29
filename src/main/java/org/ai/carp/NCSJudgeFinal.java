@@ -100,7 +100,7 @@ public class NCSJudgeFinal {
                 continue;
             }
             for (CARPDataset dataset : datasets) {
-                for (int i=0; i<5; i++) {
+                for (int i = 0; i < 5; i++) {
                     cases.add(new CARPCase(u, dataset, submission.getArchive()));
                 }
             }

@@ -22,9 +22,6 @@ public class ChangePasswordController {
 
     @PostMapping
     public ChangePasswordResponse post(@RequestBody ChangePasswordRequest request, HttpSession session) {
-//        if (StringUtils.isEmpty(request.oldP)) {
-//            throw new InvalidRequestException("No old password!");
-//        }
         if (StringUtils.isEmpty(request.userName)) {
             throw new InvalidRequestException("No student ID!");
         }
@@ -37,17 +34,14 @@ public class ChangePasswordController {
         if (request.newP.length() > 32) {
             throw new InvalidRequestException("Password too long!");
         }
-//        User user = UserUtils.getUser(session, User.MAX);
         User user = UserUtils.findUserByUserName(request.userName);
 
 
         VerifyCode verifyCode = Email.getInstance().getVerifyCodeRepository().findTopByUserOrderByGenerateTimeDesc(user);
-        if(!VerifyCodeGeneUtils.checkVerifyCode(verifyCode, request.code)){
+        if (!VerifyCodeGeneUtils.checkVerifyCode(verifyCode, request.code)) {
             throw new InvalidRequestException("Wrong verify code!");
         }
-//        if (!user.passwordMatches(request.oldP)) {
-//            throw new InvalidRequestException("Wrong old password!");
-//        }
+
         user.setPassword(request.newP);
         Database.getInstance().getUsers().save(user);
         return new ChangePasswordResponse(user.getId());

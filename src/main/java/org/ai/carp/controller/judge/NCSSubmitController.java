@@ -29,15 +29,14 @@ import java.text.SimpleDateFormat;
 public class NCSSubmitController {
 
 
-
     @PostMapping
     public SubmitResponse post(@RequestBody PostCase postCase, HttpSession session) {
         User user = UserUtils.getUser(session, User.USER);
-        if(user.passwordMatches(user.getUsername())){
+        if (user.passwordMatches(user.getUsername())) {
             throw new PermissionDeniedException("Please change your password!");
         }
 
-        if(Deadline.isDDL(Deadline.getNcsDDL())){
+        if (Deadline.isDDL(Deadline.getNcsDDL())) {
             throw new InvalidRequestException("Deadline has passed!");
         }
 

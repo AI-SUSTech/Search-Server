@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.ai.carp.model.user.User;
+
 import java.util.List;
 
 @ComponentScan(basePackages = {"org.ai.carp.model"})
@@ -38,7 +39,7 @@ public class LiteCaseFix {
                     .forEach(d -> Database.getInstance().getLiteCases().insert(new LiteCase(d)));
             Database.getInstance().getImpCases().findIMPCasesByUserOrderBySubmitTimeDesc(u)
                     .forEach(d -> Database.getInstance().getLiteCases().insert(new LiteCase(d)));
-            logger.info("add lite case of "+u.toString());
+            logger.info("add lite case of " + u.toString());
         }
     }
 

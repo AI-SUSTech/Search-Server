@@ -20,9 +20,9 @@ public class CaseUtils {
     public static Set countISESubmit() {
         List<ISECase> iseCases = Database.getInstance().getIseCases().findAll();
         HashSet<String> users = new HashSet<>();
-        for(BaseCase iseCase: iseCases){
+        for (BaseCase iseCase : iseCases) {
             User user = iseCase.getUser();
-            if(user.getType() > User.ADMIN) {
+            if (user.getType() > User.ADMIN) {
                 users.add(user.getUsername());
             }
         }
@@ -32,9 +32,9 @@ public class CaseUtils {
     public static Set countIMPSubmit() {
         List<IMPCase> impCases = Database.getInstance().getImpCases().findAll();
         HashSet<String> users = new HashSet<>();
-        for(BaseCase iseCase: impCases){
+        for (BaseCase iseCase : impCases) {
             User user = iseCase.getUser();
-            if(user.getType() > User.ADMIN) {
+            if (user.getType() > User.ADMIN) {
                 users.add(user.getUsername());
             }
         }

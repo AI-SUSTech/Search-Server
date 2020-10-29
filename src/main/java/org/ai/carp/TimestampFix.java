@@ -29,8 +29,8 @@ public class TimestampFix {
         Database.getInstance().getCarpCases().findAll()
                 .stream().filter(c -> c.getJudgeTime() != null)
                 .filter(c -> c.getJudgeWorker().getUsername().equals("judge")).forEach(c -> {
-                    c.setJudgeTime(new Date(c.getJudgeTime().getTime() - 28751000L));
-                    logger.info(Database.getInstance().getCarpCases().save(c).toString());
+            c.setJudgeTime(new Date(c.getJudgeTime().getTime() - 28751000L));
+            logger.info(Database.getInstance().getCarpCases().save(c).toString());
         });
     }
 

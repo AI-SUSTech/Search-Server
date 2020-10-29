@@ -13,9 +13,6 @@ public class QueryTopResult {
     private static Map<String, Long> queryCacheTime = new HashMap<>();
 
     public static List<BaseCaseLite> getFinalList(String datasetId) {
-        // System.out.println("want to find:"+datasetId);
-        // for(String q: queryCache.keySet())
-        //     System.out.println("has key:" + q);
         if (queryCache.containsKey(datasetId)) {
             return queryCache.get(datasetId);
         } else {
@@ -38,9 +35,6 @@ public class QueryTopResult {
 
     public QueryTopResult(BaseDataset dataset, List<BaseCase> cases, Set<String> invalidUids, boolean admin) {
         if (dataset.isFinalJudge()) {
-            // System.out.println("some one is query "+dataset.getName());
-            // for(String q: queryCache.keySet())
-            //     System.out.println("has key:" + q);
             if (queryCache.containsKey(dataset.getId())) {
                 if (new Date().getTime() - queryCacheTime.get(dataset.getId()) < 60000L) {
                     baseCases = queryCache.get(dataset.getId());

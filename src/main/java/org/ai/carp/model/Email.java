@@ -26,10 +26,10 @@ public class Email {
         return verifyCodeRepository;
     }
 
-    public String getEmailAddress(User user){
-        if(!StringUtils.isEmpty(user.getEmail())){
+    public String getEmailAddress(User user) {
+        if (!StringUtils.isEmpty(user.getEmail())) {
             return user.getEmail();
-        }else if(user.getUsername().matches("[0-9]+")){
+        } else if (user.getUsername().matches("[0-9]+")) {
             return String.format("%s@mail.sustech.edu.cn", user.getUsername());
         }
         throw new InvalidRequestException("I don't known your email address, please contact administrator");

@@ -36,7 +36,7 @@ public class NCSSetup {
 //        cutNCSLog();
         // addDatasets();
     }
-    
+
     private static void cutNCSLog() {
         List<NCSCase> caseList = Database.getInstance().getNcsCases().findAll();
         List<NCSCase> modifiedCase = new ArrayList<>();

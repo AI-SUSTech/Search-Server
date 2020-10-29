@@ -12,7 +12,7 @@ public class VerifyCode {
     @Indexed
     protected User user;
 
-    public VerifyCode(User user, String code){
+    public VerifyCode(User user, String code) {
         this.user = user;
         this.code = code;
         generateTime = new Date();

@@ -57,7 +57,8 @@ public class User {
         this.type = type;
     }
 
-    public User() {}
+    public User() {
+    }
 
     public User(@NotNull String username, @NotNull String password) {
         this(username, password, USER);

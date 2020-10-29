@@ -58,7 +58,7 @@ class SendVerifyCodeResponse {
 
     private String codeId;
 
-    public SendVerifyCodeResponse(String codeId){
+    public SendVerifyCodeResponse(String codeId) {
         this.codeId = codeId;
     }
 }
