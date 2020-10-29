@@ -23,7 +23,6 @@ public class SendVerifyCodeController {
     public SendVerifyCodeResponse post(@RequestBody SendVerifyCodeRequest request, HttpSession session) {
         User user = UserUtils.findUserByUserName(request.userName);
 
-        String deliver = "11712225@mail.sustech.edu.cn";
         String[] receiver = {Email.getInstance().getEmailAddress(user)};
         String[] carbonCopy = {};
         String subject = "Verify Code for NCS judge platform";
@@ -31,7 +30,7 @@ public class SendVerifyCodeController {
         String content = String.format("Your verfy code is %s", code);
         try {
             Email email = Email.getInstance();
-            email.sendSimpleEmail(deliver, receiver, carbonCopy, subject, content);
+            email.sendSimpleEmail(receiver, carbonCopy, subject, content);
             VerifyCode verifyCode = email.getVerifyCodeRepository().save(new VerifyCode(user, code));
             return new SendVerifyCodeResponse(verifyCode.getGenerateTime().toString());
         } catch (Exception e) {

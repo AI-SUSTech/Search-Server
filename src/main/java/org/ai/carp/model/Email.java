@@ -4,6 +4,7 @@ package org.ai.carp.model;
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.model.user.User;
 import org.ai.carp.model.user.VerifyCodeRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -51,9 +52,11 @@ public class Email {
     @Autowired
     TemplateEngine templateEngine;
 
-    public void sendSimpleEmail(String deliver, String[] receiver, String[] carbonCopy, String subject, String content)
-            throws MailException {
+    @Value("${spring.mail.username}")
+    private String deliver;
 
+    public void sendSimpleEmail( String[] receiver, String[] carbonCopy, String subject, String content)
+            throws MailException {
         long startTimestamp = System.currentTimeMillis();
         logger.info("Start send mail ... ");
 
@@ -68,7 +71,6 @@ public class Email {
             logger.info("Send mail success, cost {} million seconds", System.currentTimeMillis() - startTimestamp);
         } catch (MailException e) {
             logger.error("Send mail failed, error message is : {} \n", e.getMessage());
-//            e.printStackTrace();
             throw new InvalidRequestException(e.getMessage());
         }
     }
