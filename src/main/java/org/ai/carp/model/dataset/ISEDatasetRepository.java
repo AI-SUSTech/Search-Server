@@ -6,4 +6,5 @@ public interface ISEDatasetRepository extends MongoRepository<ISEDataset, String
 
     ISEDataset findDatasetByName(String name);
 
+    ISEDataset findDatasetById(String id);
 }

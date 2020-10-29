@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.ISEDataset;
 import org.ai.carp.model.user.User;
@@ -23,21 +24,20 @@ public class ISECase extends BaseCase {
     private static Random random = new Random();
 
     // Submission
-    @DBRef
     @Indexed
-    private ISEDataset dataset;
+    private String datasetId;
 
     // Result
     private double influence;
 
-    public ISECase(User user, ISEDataset dataset, Binary archive) {
+    public ISECase(User user, String datasetId, Binary archive) {
         super(user, archive);
-        this.dataset = dataset;
+        this.datasetId = datasetId;
     }
 
     @Override
     public void setDataset(BaseDataset dataset) {
-        this.dataset = (ISEDataset) dataset;
+        this.datasetId = dataset.getId();
     }
 
     public void setInfluence(double influence) {
@@ -46,7 +46,7 @@ public class ISECase extends BaseCase {
 
     @JsonIgnore
     public ISEDataset getDataset() {
-        return dataset;
+        return Database.getInstance().getIseDatasets().findDatasetById(datasetId);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ISECase extends BaseCase {
     }
 
     public String getDatasetName() {
-        return dataset.getName();
+        return getDataset().getName();
     }
 
     @JsonIgnore
@@ -77,14 +77,15 @@ public class ISECase extends BaseCase {
     protected String buildConfig() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
+        ISEDataset iseDataset = getDataset();
         node.put("entry", "ISE.py");
         node.put("network", "network.dat");
         node.put("seeds", "seeds.dat");
         node.put("parameters", "-i $network -s $seeds -m $model -t $time");
-        node.put("time", dataset.getTime());
-        node.put("memory", dataset.getMemory());
-        node.put("cpu", dataset.getCpu());
-        node.put("model", dataset.getModel());
+        node.put("time", iseDataset.getTime());
+        node.put("memory", iseDataset.getMemory());
+        node.put("cpu", iseDataset.getCpu());
+        node.put("model", iseDataset.getModel());
         return mapper.writeValueAsString(node);
     }
 
@@ -95,18 +96,19 @@ public class ISECase extends BaseCase {
     @Override
     protected void writeData(ZipOutputStream zos) throws IOException {
         ZipEntry data = new ZipEntry("data/network.dat");
+        ISEDataset iseDataset = getDataset();
         zos.putNextEntry(data);
-        zos.write(dataset.getNetwork().getBytes());
+        zos.write(iseDataset.getNetwork().getBytes());
         zos.closeEntry();
         data = new ZipEntry("data/seeds.dat");
         zos.putNextEntry(data);
-        zos.write(dataset.getSeeds().getBytes());
+        zos.write(iseDataset.getSeeds().getBytes());
         zos.closeEntry();
     }
 
     @Override
     public String toString() {
         return String.format("ISECase[id=%s, user=%s, dataset=%s, status=%d, influence=%f]",
-                id, user.getUsername(), dataset.getName(), status, influence);
+                id, user.getUsername(), getDataset().getName(), status, influence);
     }
 }

@@ -48,10 +48,10 @@ public class ISEJudgeFinal {
                 .filter(d -> d.getName().contains("random"))
                 .forEach(d -> {
                     List<ISECase> iseCases = Database.getInstance().getIseCases()
-                            .findISECasesByDatasetAndStatusAndValidOrderByTimeAscSubmitTimeAsc(d, BaseCase.FINISHED, false);
-                    for(ISECase iseCase:iseCases){
+                            .findISECasesByDatasetIdAndStatusAndValidOrderByTimeAscSubmitTimeAsc(d.getId(), BaseCase.FINISHED, false);
+                    for (ISECase iseCase : iseCases) {
                         iseCase.setStatus(BaseCase.WAITING);
-                        logger.info(Database.getInstance().getIseCases().save(iseCase).toString()+iseCase.getReason());
+                        logger.info(Database.getInstance().getIseCases().save(iseCase).toString() + iseCase.getReason());
                     }
                 });
     }
@@ -59,9 +59,9 @@ public class ISEJudgeFinal {
 
     private static void disableDatasets() {
         Database.getInstance().getIseDatasets().findAll().forEach(c -> {
-            if(c.getName().contains("random")){
+            if (c.getName().contains("random")) {
                 Database.getInstance().getIseDatasets().delete(c);
-                logger.info("drop:"+c.toString());
+                logger.info("drop:" + c.toString());
                 return;
             }
             c.setEnabled(false);
@@ -102,40 +102,40 @@ public class ISEJudgeFinal {
         }
     }
 
-    private static void addCaseBySubmitIdAndTime(String submitId, String date){
+    private static void addCaseBySubmitIdAndTime(String submitId, String date) {
         Date endTime = Deadline.getIseDDL();
         // Query datasets
         List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
                 .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
- 
+
         List<ISECase> cases = new ArrayList<>();
- 
-        ISECase submission = (ISECase)Database.getInstance().getLiteCases()
+
+        ISECase submission = (ISECase) Database.getInstance().getLiteCases()
                 .findLiteCaseByFullId(submitId).getFullCase();
         if (submission == null || submission.getArchive() == null) {
-            logger.info("not submission found id:"+submitId);
+            logger.info("not submission found id:" + submitId);
             return;
-        }else{
-            logger.info("found:"+submitId);
-            logger.info("detail:"+submission.toString());
-            logger.info("submit time:"+submission.getSubmitTime().toString());
-            logger.info("is before ddl:"+(submission.getSubmitTime().getTime()<endTime.getTime()));
-            logger.info("you said it submit in:"+date+", do you want to rejudge it?");
-   
+        } else {
+            logger.info("found:" + submitId);
+            logger.info("detail:" + submission.toString());
+            logger.info("submit time:" + submission.getSubmitTime().toString());
+            logger.info("is before ddl:" + (submission.getSubmitTime().getTime() < endTime.getTime()));
+            logger.info("you said it submit in:" + date + ", do you want to rejudge it?");
+
             logger.info("rejudge start!");
         }
-        
+
         User u = submission.getUser();
 
         for (ISEDataset dataset : datasets) {
             //remove previous case
             List<ISECase> isecases = Database.getInstance().getIseCases()
-                .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
+                    .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
             Database.getInstance().getIseCases().deleteAll(isecases);
             logger.info(String.format("remove %d isecase of %s:%s", isecases.size(), u.getUsername(), dataset.getName()));
 
-            for (int i=0; i<5; i++) {
-                cases.add(new ISECase(u, dataset, submission.getArchive()));
+            for (int i = 0; i < 5; i++) {
+                cases.add(new ISECase(u, dataset.getId(), submission.getArchive()));
             }
         }
         Collections.shuffle(cases);
@@ -144,7 +144,7 @@ public class ISEJudgeFinal {
             Database.getInstance().getLiteCases().insert(new LiteCase(c));
             logger.info(newC.toString());
         }
-        
+
     }
 
     private static void addUserCases(String userName) {
@@ -154,8 +154,8 @@ public class ISEJudgeFinal {
                 .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
         // Query users
         User u = Database.getInstance().getUsers().findByUsername(userName);
-        if(u==null){
-            logger.info("user not found:"+userName);
+        if (u == null) {
+            logger.info("user not found:" + userName);
             return;
         }
         List<ISECase> cases = new ArrayList<>();
@@ -167,12 +167,12 @@ public class ISEJudgeFinal {
         for (ISEDataset dataset : datasets) {
             //remove previous case
             List<ISECase> isecases = Database.getInstance().getIseCases()
-                .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
+                    .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
             Database.getInstance().getIseCases().deleteAll(isecases);
             logger.info(String.format("remove %d isecase of %s:%s", isecases.size(), u.getUsername(), dataset.getName()));
 
-            for (int i=0; i<5; i++) {
-                cases.add(new ISECase(u, dataset, submission.getArchive()));
+            for (int i = 0; i < 5; i++) {
+                cases.add(new ISECase(u, dataset.getId(), submission.getArchive()));
             }
         }
         Collections.shuffle(cases);
@@ -198,8 +198,8 @@ public class ISEJudgeFinal {
                 continue;
             }
             for (ISEDataset dataset : datasets) {
-                for (int i=0; i<5; i++) {
-                    cases.add(new ISECase(u, dataset, submission.getArchive()));
+                for (int i = 0; i < 5; i++) {
+                    cases.add(new ISECase(u, dataset.getId(), submission.getArchive()));
                 }
             }
         }

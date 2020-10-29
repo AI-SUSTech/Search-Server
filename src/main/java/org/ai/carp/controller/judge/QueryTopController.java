@@ -1,5 +1,6 @@
 package org.ai.carp.controller.judge;
 
+import org.ai.carp.CARPSetup;
 import org.ai.carp.controller.exceptions.InvalidRequestException;
 import org.ai.carp.controller.exceptions.PermissionDeniedException;
 import org.ai.carp.controller.util.DatasetUtils;
@@ -12,6 +13,8 @@ import org.ai.carp.model.dataset.ISEDataset;
 import org.ai.carp.model.judge.BaseCase;
 import org.ai.carp.model.user.User;
 import org.ai.carp.service.FunctionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/judge/top")
 public class QueryTopController {
-
+    private static final Logger logger = LoggerFactory.getLogger(QueryTopController.class);
     public static final int COUNT_LEADERBOARD = 20;
 
 
@@ -54,7 +57,7 @@ public class QueryTopController {
 //                    .stream().filter(c -> c.getUser().getType() > User.ADMIN)
 //                    .map(c -> (BaseCase)c).collect(Collectors.toList());
             invalidUids = Database.getInstance().getCarpCases()
-                    .findCARPCasesByDatasetAndStatusAndValidAndTimedout((CARPDataset)dataset, BaseCase.FINISHED, false, false)
+                    .findCARPCasesByDatasetAndStatusAndValidAndTimedout((CARPDataset) dataset, BaseCase.FINISHED, false, false)
                     .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                     .map(BaseCase::getUserId).collect(Collectors.toSet());
         }

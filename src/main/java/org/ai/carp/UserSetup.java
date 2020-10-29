@@ -52,7 +52,7 @@ public class UserSetup {
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
         addUsers();
-        addEmailForRoot();
+        // addEmailForRoot();
     }
 
     private static void addEmailForRoot() {
