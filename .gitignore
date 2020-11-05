@@ -24,3 +24,7 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+log/*
+
+carp-0.0.1-SNAPSHOT.jar
