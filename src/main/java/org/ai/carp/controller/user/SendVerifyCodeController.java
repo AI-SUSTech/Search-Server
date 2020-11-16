@@ -25,7 +25,7 @@ public class SendVerifyCodeController {
 
         String[] receiver = {Email.getInstance().getEmailAddress(user)};
         String[] carbonCopy = {};
-        String subject = "Verify Code for NCS judge platform";
+        String subject = "Verify Code for IMP judge platform";
         String code = VerifyCodeGeneUtils.getCode();
         String content = String.format("Your verfy code is %s", code);
         try {
