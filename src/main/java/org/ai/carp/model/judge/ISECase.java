@@ -9,6 +9,8 @@ import org.ai.carp.model.dataset.BaseDataset;
 import org.ai.carp.model.dataset.ISEDataset;
 import org.ai.carp.model.user.User;
 import org.bson.types.Binary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 
 @Document(collection = "cases_ise")
 public class ISECase extends BaseCase {
+    private static final Logger logger = LoggerFactory.getLogger(ISECase.class);
 
     private static Random random = new Random();
 
@@ -45,7 +48,12 @@ public class ISECase extends BaseCase {
 
     @JsonIgnore
     public ISEDataset getDataset() {
-        return Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        ISEDataset res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        while (res == null) {
+            logger.info("zhello");
+            res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        }
+        return res;
     }
 
     @Override

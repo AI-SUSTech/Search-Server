@@ -86,13 +86,24 @@ public class JudgeRunner {
                         List<ISECase> tmpCases = Database.getInstance().getIseCases()
                                 .findISECasesByStatusNotIn(finishedStatus, PageRequest.of(page++, 100));
                         count = tmpCases.size();
-                        tmpCases.forEach(cc -> {
-                            if (datasetCache.containsKey(cc.getDatasetName())) {
-                                cc.setDataset(datasetCache.get(cc.getDatasetName()));
+                        for (int i = 0; i < tmpCases.size(); i++) {
+                            ISECase cc = tmpCases.get(i);
+                            if (cc == null) {
+                                logger.info("cc is null");
+                            } else if (datasetCache.containsKey(cc.getDatasetName())) {
+                                BaseDataset baseDataset = datasetCache.get(cc.getDatasetName());
+                                if (baseDataset != null) {
+                                    cc.setDataset(baseDataset);
+                                } else {
+                                    datasetCache.put(cc.getDatasetName(), cc.getDataset());
+                                }
                             } else {
                                 datasetCache.put(cc.getDatasetName(), cc.getDataset());
                             }
-                        });
+                        }
+                        // tmpCases.forEach(cc -> {
+                            
+                        // });
                         deadCases.addAll(tmpCases);
                     } while (count == 100);
                     page = 0;

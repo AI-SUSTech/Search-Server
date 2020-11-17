@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.util.StringUtils;
+import java.util.Date;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,12 +35,12 @@ public class ISEJudgeFinal {
         SpringApplication app = new SpringApplication(ISEJudgeFinal.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        //disableDatasets();
-        //addDatasets();
-        //addCases();
+        disableDatasets();
+        addDatasets();
+        addCases();
         //addUserCases("11710324");
         // fixSwap();
-        addCaseBySubmitIdAndTime("5dc52181e788581b27462dbd", "2019-11-08T08:04:17.185+0000");//this is for ISE
+        // addCaseBySubmitIdAndTime("5dc52181e788581b27462dbd", "2019-11-08T08:04:17.185+0000");//this is for ISE
     }
 
 
@@ -64,7 +65,7 @@ public class ISEJudgeFinal {
                 logger.info("drop:" + c.toString());
                 return;
             }
-            c.setEnabled(false);
+            c.setEnabled(true);
             Database.getInstance().getIseDatasets().save(c);
             logger.info(c.toString());
         });
@@ -78,7 +79,7 @@ public class ISEJudgeFinal {
             return;
         }
         Scanner scanner = new Scanner(is);
-        String datasetPath = classLoader.getResource("datasets_imp_final").getPath();
+        String datasetPath = classLoader.getResource("datasets_ise_final").getPath();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             line = line.replaceAll("\r", "");
@@ -195,6 +196,7 @@ public class ISEJudgeFinal {
             ISECase submission = Database.getInstance().getIseCases()
                     .findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(u, endTime);
             if (submission == null || submission.getArchive() == null) {
+                logger.info("Record not found: " + u.getUsername());
                 continue;
             }
             for (ISEDataset dataset : datasets) {
