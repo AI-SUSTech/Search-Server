@@ -35,6 +35,7 @@ public class QuerySelfBestController {
             BaseFunction baseFunction = FunctionFactory.getCaseFunction(dataset.getType());
             bestCases = baseFunction.getBestResult(user, dataset);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new PermissionDeniedException("unknown problem type dataset");
         }
         return new QuerySelfBestResult(bestCases);

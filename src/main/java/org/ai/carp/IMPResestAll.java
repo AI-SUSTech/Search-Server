@@ -40,7 +40,7 @@ public class IMPResestAll {
         Database.getInstance().getImpDatasets().findAll().stream()
                 .filter(d -> d.getName().contains("NetHEPT"))
                 .forEach(d -> {
-                    Database.getInstance().getImpCases().findIMPCasesByDatasetOrderBySubmitTimeDesc(d)
+                    Database.getInstance().getImpCases().findIMPCasesByDatasetIdOrderBySubmitTimeDesc(d.getId())
                             .forEach(c -> {
                                 c.reset();
                                 Database.getInstance().getImpCases().save(c);

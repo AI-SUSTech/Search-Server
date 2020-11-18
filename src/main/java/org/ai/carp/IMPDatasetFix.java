@@ -117,7 +117,7 @@ public class IMPDatasetFix {
                     }
                     d.setNetwork(sb.toString());
                     logger.info(Database.getInstance().getImpDatasets().save(d).toString());
-                    Database.getInstance().getImpCases().findIMPCasesByDatasetOrderBySubmitTimeDesc(d)
+                    Database.getInstance().getImpCases().findIMPCasesByDatasetIdOrderBySubmitTimeDesc(d.getId())
                             .forEach(c -> {
                                 c.setStatus(BaseCase.WAITING);
                                 Database.getInstance().getImpCases().save(c);

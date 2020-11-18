@@ -69,7 +69,7 @@ public class IMPJudgeFinal {
         for (IMPDataset dataset : datasets) {
             //remove previous case
             List<IMPCase> impcases = Database.getInstance().getImpCases()
-                    .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
+                    .findIMPCasesByUserAndDatasetIdOrderBySubmitTimeDesc(user, dataset.getId());
             Database.getInstance().getImpCases().deleteAll(impcases);
             logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
 
@@ -93,7 +93,7 @@ public class IMPJudgeFinal {
         Database.getInstance().getImpDatasets().findAll().forEach(c -> {
             if (c.getName().contains("random")) {
                 List<IMPCase> cases = Database.getInstance().getImpCases().
-                        findIMPCasesByDatasetOrderBySubmitTimeDesc(c);
+                        findIMPCasesByDatasetIdOrderBySubmitTimeDesc(c.getId());
 
                 Database.getInstance().getImpCases().deleteAll(cases);
 
@@ -171,7 +171,7 @@ public class IMPJudgeFinal {
         for (IMPDataset dataset : datasets) {
             //remove previous case
             List<IMPCase> impcases = Database.getInstance().getImpCases()
-                    .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, dataset);
+                    .findIMPCasesByUserAndDatasetIdOrderBySubmitTimeDesc(user, dataset.getId());
             Database.getInstance().getImpCases().deleteAll(impcases);
             logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
 

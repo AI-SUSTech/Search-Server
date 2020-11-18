@@ -34,7 +34,7 @@ public class ISEJudgeFinal {
         SpringApplication app = new SpringApplication(ISEJudgeFinal.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        // disableDatasets();
+        disableDatasets();
         // addDatasets();
         addCases();
         //addUserCases("11710324");
@@ -64,7 +64,7 @@ public class ISEJudgeFinal {
                 logger.info("drop:" + c.toString());
                 return;
             }
-            c.setEnabled(true);
+            c.setEnabled(false);
             Database.getInstance().getIseDatasets().save(c);
             logger.info(c.toString());
         });

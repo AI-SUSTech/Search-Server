@@ -76,7 +76,7 @@ public class GetIMPGrades {
             // Add dataset data
             Map<String, Row> stuMap = new HashMap<>();
             Database.getInstance().getImpCases()
-                    .findIMPCasesByDatasetOrderBySubmitTimeDesc(d)
+                    .findIMPCasesByDatasetIdOrderBySubmitTimeDesc(d.getId())
                     .stream().forEach(c -> {
                 Row r;
                 if (!stuMap.containsKey(c.getUser().getUsername())) {

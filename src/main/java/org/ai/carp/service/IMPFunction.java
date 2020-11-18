@@ -1,6 +1,8 @@
 package org.ai.carp.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ai.carp.controller.judge.QuerySelfBestController;
 import org.ai.carp.model.Database;
 import org.ai.carp.model.dataset.BaseDataset;
@@ -16,6 +18,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class IMPFunction implements BaseFunction {
+
+    private static final Logger logger = LoggerFactory.getLogger(IMPFunction.class);
+
     @Override
     public BaseCase save(BaseCase baseCase) {
         return Database.getInstance().getImpCases().save((IMPCase) baseCase);
@@ -38,9 +43,13 @@ public class IMPFunction implements BaseFunction {
     @Override
     public List<BaseCase> getBestResult(User user, BaseDataset dataset) {
         List<BaseCase> bestCases;
+        logger.info(user.toString());
         bestCases = Database.getInstance().getImpCases()
                 .findIMPCasesByDatasetAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
-                        (IMPDataset) dataset, user, BaseCase.FINISHED, true,
+                        dataset.getId(), 
+                        user, 
+                        BaseCase.FINISHED, 
+                        true,
                         PageRequest.of(0, QuerySelfBestController.COUNT_BEST))
                 .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return bestCases;
@@ -50,7 +59,7 @@ public class IMPFunction implements BaseFunction {
     public List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset) {
         List<BaseCase> baseCases;
         baseCases = Database.getInstance().getImpCases()
-                .findIMPCasesByUserAndDatasetOrderBySubmitTimeDesc(user, (IMPDataset) dataset)
+                .findIMPCasesByUserAndDatasetIdOrderBySubmitTimeDesc(user, dataset.getId())
                 .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return baseCases;
     }
@@ -58,8 +67,8 @@ public class IMPFunction implements BaseFunction {
     @Override
     public List<BaseCase> queryAllDatasetOfUser(BaseDataset dataset) {
         return Database.getInstance().getImpCases()
-                .findIMPCasesByDatasetAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
-                        (IMPDataset) dataset, BaseCase.FINISHED, true)
+                .findIMPCasesByDatasetIdAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
+                        dataset.getId(), BaseCase.FINISHED, true)
                 .stream().filter(c -> c.getUser().getType() > User.ADMIN)
                 .map(c -> (BaseCase) c).collect(Collectors.toList());
     }
