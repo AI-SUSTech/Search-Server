@@ -31,7 +31,7 @@ public interface IMPCaseRepository extends MongoRepository<IMPCase, String> {
 
     List<IMPCase> findIMPCasesByDatasetIdAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(String datasetId, int status, boolean valid);
 
-    List<IMPCase> findIMPCasesByDatasetAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(String datasetId, User user, int status, boolean valid, Pageable pageable);
+    List<IMPCase> findIMPCasesByDatasetIdAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(String datasetId, User user, int status, boolean valid, Pageable pageable);
 
     int countIMPCasesByUserAndSubmitTimeAfter(User user, Date startTime);
 

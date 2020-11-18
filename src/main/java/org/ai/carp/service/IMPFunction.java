@@ -45,7 +45,7 @@ public class IMPFunction implements BaseFunction {
         List<BaseCase> bestCases;
         logger.info(user.toString());
         bestCases = Database.getInstance().getImpCases()
-                .findIMPCasesByDatasetAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
+                .findIMPCasesByDatasetIdAndUserAndStatusAndValidOrderByInfluenceDescTimeAscSubmitTimeAsc(
                         dataset.getId(), 
                         user, 
                         BaseCase.FINISHED, 
