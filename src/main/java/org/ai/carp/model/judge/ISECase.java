@@ -11,6 +11,7 @@ import org.ai.carp.model.user.User;
 import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -48,12 +49,12 @@ public class ISECase extends BaseCase {
 
     @JsonIgnore
     public ISEDataset getDataset() {
-        ISEDataset res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
-        while (res == null) {
-            logger.info("zhello");
-            res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
-        }
-        return res;
+        // ISEDataset res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        // while (res == null) {
+        //     logger.info("zhello");
+        //     res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        // }
+        return Database.getInstance().getIseDatasets().findDatasetById(datasetId);
     }
 
     @Override

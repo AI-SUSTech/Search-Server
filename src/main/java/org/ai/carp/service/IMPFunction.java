@@ -25,7 +25,7 @@ public class IMPFunction implements BaseFunction {
     public BaseCase insert(User user, BaseDataset dataset, Binary archive) {
         return Database.getInstance()
                 .getImpCases()
-                .insert(new IMPCase(user, (IMPDataset) dataset, archive));
+                .insert(new IMPCase(user, dataset.getId(), archive));
     }
 
     @Override

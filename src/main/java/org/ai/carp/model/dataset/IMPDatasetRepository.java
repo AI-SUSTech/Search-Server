@@ -6,4 +6,6 @@ public interface IMPDatasetRepository extends MongoRepository<IMPDataset, String
 
     IMPDataset findDatasetByName(String name);
 
+    IMPDataset findDatasetById(String id);
+
 }

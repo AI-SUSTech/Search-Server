@@ -17,7 +17,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.util.StringUtils;
 import java.util.Date;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -35,8 +34,8 @@ public class ISEJudgeFinal {
         SpringApplication app = new SpringApplication(ISEJudgeFinal.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        disableDatasets();
-        addDatasets();
+        // disableDatasets();
+        // addDatasets();
         addCases();
         //addUserCases("11710324");
         // fixSwap();

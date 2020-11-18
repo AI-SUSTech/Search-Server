@@ -74,7 +74,7 @@ public class IMPJudgeFinal {
             logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
 
             for (int i = 0; i < 5; i++) {
-                cases.add(new IMPCase(user, dataset, submission.getArchive()));
+                cases.add(new IMPCase(user, dataset.getId(), submission.getArchive()));
             }
         }
 
@@ -176,7 +176,7 @@ public class IMPJudgeFinal {
             logger.info(String.format("remove %d impcase of %s:%s", impcases.size(), user.getUsername(), dataset.getName()));
 
             for (int i = 0; i < 5; i++) {
-                cases.add(new IMPCase(user, dataset, submission.getArchive()));
+                cases.add(new IMPCase(user, dataset.getId(), submission.getArchive()));
             }
         }
 
@@ -205,7 +205,7 @@ public class IMPJudgeFinal {
             }
             for (IMPDataset dataset : datasets) {
                 for (int i = 0; i < 5; i++) {
-                    cases.add(new IMPCase(u, dataset, submission.getArchive()));
+                    cases.add(new IMPCase(u, dataset.getId(), submission.getArchive()));
                 }
             }
         }
