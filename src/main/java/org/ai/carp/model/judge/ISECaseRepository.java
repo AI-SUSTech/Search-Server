@@ -15,12 +15,16 @@ public interface ISECaseRepository extends MongoRepository<ISECase, String> {
     int countCARPCasesByUser(User user);
 
     ISECase findFirstByUserAndSubmitTimeBeforeOrderBySubmitTimeDesc(User user, Date endTime);
+    
+    List<ISECase> findISECasesByUserAndSubmitTimeAfter(User user, Date endTime);
+
+    List<ISECase> findISECasesBySubmitTimeAfterAndDatasetId(Date endTime, String datasetId);
 
     List<ISECase> findISECasesByDatasetIdOrderBySubmitTimeDesc(String datasetId);
 
     List<ISECase> findISECasesByUserOrderBySubmitTimeDesc(User user);
 
-    List<ISECase> findISECasesByUserAndDatasetOrderBySubmitTimeDesc(User user, ISEDataset dataset);
+    List<ISECase> findISECasesByUserAndDatasetIdOrderBySubmitTimeDesc(User user, String datasetId);
 
     List<ISECase> findISECasesByStatusNotIn(List<Integer> status, Pageable pageable);
 

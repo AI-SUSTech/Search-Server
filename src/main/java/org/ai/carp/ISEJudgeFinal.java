@@ -16,10 +16,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.util.StringUtils;
+
+import java.io.*;
 import java.util.Date;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,14 +29,15 @@ public class ISEJudgeFinal {
 
     private static final Logger logger = LoggerFactory.getLogger(ISEJudgeFinal.class);
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         SpringApplication app = new SpringApplication(ISEJudgeFinal.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        disableDatasets();
+        // exportFinalJudge();
+//        disableDatasets();
         // addDatasets();
-        addCases();
-        //addUserCases("11710324");
+//        addCases();
+        addUserCases("11810305");
         // fixSwap();
         // addCaseBySubmitIdAndTime("5dc52181e788581b27462dbd", "2019-11-08T08:04:17.185+0000");//this is for ISE
     }
@@ -130,7 +130,7 @@ public class ISEJudgeFinal {
         for (ISEDataset dataset : datasets) {
             //remove previous case
             List<ISECase> isecases = Database.getInstance().getIseCases()
-                    .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
+                    .findISECasesByUserAndDatasetIdOrderBySubmitTimeDesc(u, dataset.getId());
             Database.getInstance().getIseCases().deleteAll(isecases);
             logger.info(String.format("remove %d isecase of %s:%s", isecases.size(), u.getUsername(), dataset.getName()));
 
@@ -167,20 +167,26 @@ public class ISEJudgeFinal {
         for (ISEDataset dataset : datasets) {
             //remove previous case
             List<ISECase> isecases = Database.getInstance().getIseCases()
-                    .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(u, dataset);
-            Database.getInstance().getIseCases().deleteAll(isecases);
+                    .findISECasesByUserAndDatasetIdOrderBySubmitTimeDesc(u, dataset.getId());
+            for (int i = 0; i < isecases.size(); i++) {
+                isecases.get(i).setStatus(0);
+                Database.getInstance().getIseCases().save(isecases.get(i));
+                logger.info(isecases.get(i).toString());
+            }
+
+            // Database.getInstance().getIseCases().deleteAll(isecases);
             logger.info(String.format("remove %d isecase of %s:%s", isecases.size(), u.getUsername(), dataset.getName()));
 
             for (int i = 0; i < 5; i++) {
                 cases.add(new ISECase(u, dataset.getId(), submission.getArchive()));
             }
         }
-        Collections.shuffle(cases);
-        for (ISECase c : cases) {
-            ISECase newC = Database.getInstance().getIseCases().insert(c);
-            Database.getInstance().getLiteCases().insert(new LiteCase(c));
-            logger.info(newC.toString());
-        }
+        // Collections.shuffle(cases);
+        // for (ISECase c : cases) {
+        //     ISECase newC = Database.getInstance().getIseCases().insert(c);
+        //     Database.getInstance().getLiteCases().insert(new LiteCase(c));
+        //     logger.info(newC.toString());
+        // }
     }
 
     private static void addCases() {
@@ -210,6 +216,92 @@ public class ISEJudgeFinal {
             Database.getInstance().getLiteCases().insert(new LiteCase(c));
             logger.info(newC.toString());
         }
+    }
+
+    private static void exportFinalJudge() throws IOException {
+        // Query datasets
+        List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
+                .stream().filter(BaseDataset::isFinalJudge).collect(Collectors.toList());
+
+        Date judgeTime = new Date(120, 10, 17, 4, 47);
+        HashMap<String, Set<String>> basicFinal = new HashMap<>();
+        HashMap<String, Set<String>> bonusFinal = new HashMap<>();
+        for (ISEDataset iseDataset : datasets) {
+            HashMap<String, List<ISECase>> userISECasesMap = new HashMap<>();
+            String datasetName = iseDataset.getName();
+            List<ISECase> iseCases = Database.getInstance().getIseCases().findISECasesBySubmitTimeAfterAndDatasetId(judgeTime, iseDataset.getId());
+            for (ISECase iseCase : iseCases) {
+                if (!userISECasesMap.containsKey(iseCase.getUser().getUsername())) {
+                    userISECasesMap.put(iseCase.getUser().getUsername(), new ArrayList<>());
+                }
+                userISECasesMap.get(iseCase.getUser().getUsername()).add(iseCase);
+
+                if (!basicFinal.containsKey(iseCase.getUser().getUsername())) {
+                    basicFinal.put(iseCase.getUser().getUsername(), new HashSet<>());
+                }
+                if (!bonusFinal.containsKey(iseCase.getUser().getUsername())) {
+                    bonusFinal.put(iseCase.getUser().getUsername(), new HashSet<>());
+                }
+                HashMap<String, Set<String>> finalMap = datasetName.contains("random-graph50000-50000") ? bonusFinal : basicFinal;
+                if (iseCase.getReason().equals("Solution accepted")) {
+                    finalMap.get(iseCase.getUser().getUsername()).add(datasetName);
+                }
+                // logger.info(iseCase.toString());
+            }
+            try {
+                FileWriter writer = new FileWriter(datasetName + ".csv");
+                writer.write(getGraphHeader() + "\n");
+                userISECasesMap.forEach((username, cases) -> {
+                    try {
+                        writer.write(graphCaseContent(username, cases) + "\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                logger.info(String.format("Write file %s down", datasetName));
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        FileWriter finalFile = new FileWriter("final.csv");
+        finalFile.write("ID,valid,basic,bonus\n");
+        basicFinal.forEach((username, finalSet) -> {
+            if (!bonusFinal.containsKey(username)) {
+                logger.error("username not found: " + username);
+            }
+            int valid = bonusFinal.get(username).size() + finalSet.size();
+            String content = String.format("%s,%d,%d,%d\n", username, valid, finalSet.size(), bonusFinal.get(username).size());
+            try {
+                finalFile.write(content + "");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        finalFile.close();
+    }
+
+    private static String getGraphHeader() {
+        String res = "ID";
+        for (int i = 1; i <= 5; i++) {
+            res += String.format(",%d,Time,Reason", i);
+        }
+        return res;
+    }
+
+    private static String graphCaseContent(String userName, List<ISECase> cases) {
+        String res = userName;
+        for (ISECase iseCase : cases) {
+            res += String.format(",%s,%s,%s", iseCase.getInfluence(), iseCase.getTime(), iseCase.getReason());
+        }
+        return res;
+    }
+
+
+    private static String finalHeader() {
+        return "ID,valid,basic,bonus";
     }
 
 }

@@ -60,7 +60,7 @@ public class ISEFunction implements BaseFunction {
     public List<BaseCase> queryUserCaseOfDataset(User user, BaseDataset dataset) {
         List<BaseCase> baseCases;
         baseCases = Database.getInstance().getIseCases()
-                .findISECasesByUserAndDatasetOrderBySubmitTimeDesc(user, (ISEDataset) dataset)
+                .findISECasesByUserAndDatasetIdOrderBySubmitTimeDesc(user, dataset.getId())
                 .stream().map(c -> (BaseCase) c).collect(Collectors.toList());
         return baseCases;
     }
