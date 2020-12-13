@@ -67,17 +67,19 @@ public class SubmitController {
         }
 
         BaseDataset dataset = DatasetUtils.apiGetById(postCase.dataset);
-        switch (dataset.getType()) {
-            case BaseDataset.IMP:
-                if (Deadline.isDDL(Deadline.getImpDDL())) {
-                    throw new InvalidRequestException("IMP Deadline has passed!");
-                }
-                break;
-            case BaseDataset.ISE:
-                if (Deadline.isDDL(Deadline.getIseDDL())) {
-                    throw new InvalidRequestException("ISE Deadline has passed!");
-                }
-                break;
+        if(user.getType() != User.ADMIN) {
+            switch (dataset.getType()) {
+                case BaseDataset.IMP:
+                    if (Deadline.isDDL(Deadline.getImpDDL())) {
+                        throw new InvalidRequestException("IMP Deadline has passed!");
+                    }
+                    break;
+                case BaseDataset.ISE:
+                    if (Deadline.isDDL(Deadline.getIseDDL())) {
+                        throw new InvalidRequestException("ISE Deadline has passed!");
+                    }
+                    break;
+            }
         }
         if (!dataset.isEnabled()) {
             throw new PermissionDeniedException("Dataset is disabled!");

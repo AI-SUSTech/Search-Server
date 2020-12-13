@@ -50,11 +50,6 @@ public class IMPCase extends BaseCase {
         IMPDataset dataset = Database.getInstance().getImpDatasets().findDatasetById(datasetId);
         while (dataset == null) {
             dataset = Database.getInstance().getImpDatasets().findDatasetById(datasetId);
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         return dataset;
     }

@@ -112,10 +112,11 @@ public class JudgeRunner {
                                 .findIMPCasesByStatusNotIn(finishedStatus, PageRequest.of(page++, 100));
                         count = tmpCases.size();
                         tmpCases.forEach(cc -> {
-                            if (datasetCache.containsKey(cc.getDatasetName())) {
-                                cc.setDataset(datasetCache.get(cc.getDatasetName()));
+                            String datasetName = cc.getDatasetName();
+                            if (datasetCache.containsKey(datasetName)) {
+                                cc.setDataset(datasetCache.get(datasetName));
                             } else {
-                                datasetCache.put(cc.getDatasetName(), cc.getDataset());
+                                datasetCache.put(datasetName, cc.getDataset());
                             }
                         });
                         deadCases.addAll(tmpCases);

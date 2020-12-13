@@ -49,11 +49,10 @@ public class ISECase extends BaseCase {
 
     @JsonIgnore
     public ISEDataset getDataset() {
-        // ISEDataset res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
-        // while (res == null) {
-        //     logger.info("zhello");
-        //     res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
-        // }
+        ISEDataset res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        while (res == null) {
+            res = Database.getInstance().getIseDatasets().findDatasetById(datasetId);
+        }
         return Database.getInstance().getIseDatasets().findDatasetById(datasetId);
     }
 
