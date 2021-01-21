@@ -46,6 +46,7 @@ public class IMPJudgeFinal {
 //        addInsufficientCases();
 //        addLateSubmissionCases();
 //        deleteAllCases();
+        exportLateSubmissionGrade();
 //        exportFinalJudge();
 //        disableDatasets();
 //        addDatasets();
@@ -54,9 +55,9 @@ public class IMPJudgeFinal {
 
     /**
      * If there are some datasets named with "random" (in fact it should be the final dataset):
-     *      remove all of the cases about them and drop the dataset
+     * remove all of the cases about them and drop the dataset
      * Else:
-     *      set unable.
+     * set unable.
      */
     private static void disableDatasets() {
         Database.getInstance().getImpDatasets().findAll().forEach(c -> {
@@ -77,6 +78,7 @@ public class IMPJudgeFinal {
 
     /**
      * Add final judge datasets
+     *
      * @throws FileNotFoundException
      */
     private static void addDatasets() throws FileNotFoundException {
@@ -160,7 +162,15 @@ public class IMPJudgeFinal {
     }
 
     private static void exportFinalJudge() throws IOException {
+        exportJudgeResult(Deadline.getImpDDL());
+    }
 
+    private static void exportLateSubmissionGrade() throws IOException {
+        Date judgeTime = new Date(2021 - 1900, Calendar.JANUARY, 20);
+        exportJudgeResult(judgeTime);
+    }
+
+    private static void exportJudgeResult(Date submitTime) throws IOException {
         List<IMPDataset> datasets = Database.getInstance().getImpDatasets().findAll()
                 .stream()
                 .filter(BaseDataset::isFinalJudge)
@@ -181,17 +191,23 @@ public class IMPJudgeFinal {
 
 
         List<User> users = Database.getInstance().getUsers().findAllByType(User.USER);
-        List<HashMap<String, Double>> userResults = new ArrayList<>();
         users.forEach(user -> {
             HashMap<String, Double> userJudgeResults = new HashMap<>();
             datasets.forEach(dataset -> {
                 double max = 0;
-                List<IMPCase> judgeCases = Database.getInstance().getImpCases().findIMPCasesByDatasetIdAndUser(dataset.getId(), user);
+                List<IMPCase> judgeCases = Database.getInstance().getImpCases().findIMPCasesBySubmitTimeAfterAndDatasetIdAndUser(submitTime, dataset.getId(), user);
+                if (judgeCases.size() == 0) {
+                    return;
+                }
                 for (IMPCase judgeCase : judgeCases) {
                     max = Math.max(max, judgeCase.getInfluence());
                 }
                 userJudgeResults.put(dataset.getName(), max);
             });
+
+            if (userJudgeResults.size() == 0) {
+                return;
+            }
 
             String line = user.getUsername();
             for (String header : headers) {
@@ -258,6 +274,7 @@ public class IMPJudgeFinal {
     /**
      * Some students will re-submit the imp file after IMP DDL.
      * This method is used to add these cases
+     *
      * @throws IOException
      */
     private static void addLateSubmissionCases() throws IOException {

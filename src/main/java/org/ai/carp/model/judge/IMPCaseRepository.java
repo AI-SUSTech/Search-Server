@@ -36,6 +36,8 @@ public interface IMPCaseRepository extends MongoRepository<IMPCase, String> {
 
     List<IMPCase> findIMPCasesByDatasetIdAndUser(String datasetId, User user);
 
+    List<IMPCase> findIMPCasesBySubmitTimeAfterAndDatasetIdAndUser(Date submitTime, String datasetId, User user);
+
     int countIMPCasesByUserAndSubmitTimeAfter(User user, Date startTime);
 
 }

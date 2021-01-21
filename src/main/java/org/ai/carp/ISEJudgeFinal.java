@@ -47,11 +47,12 @@ public class ISEJudgeFinal {
         SpringApplication app = new SpringApplication(ISEJudgeFinal.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
-        addLateSubmissionCases();
-        exportFinalJudge();
-        disableDatasets();
-        addDatasets();
-        addCases();
+        exportLateSubmissionGrade();
+//        addLateSubmissionCases();
+//        exportFinalJudge();
+//        disableDatasets();
+//        addDatasets();
+//        addCases();
     }
 
     private static void disableDatasets() {
@@ -144,7 +145,37 @@ public class ISEJudgeFinal {
 
     private static boolean isBonusDataset(String datasetName) {
         for (String s : bonusDatasetsName) {
-            if (s.equals(datasetName)) {
+            if (datasetName.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static List<String> getLateSubmissionList() {
+        List<ISEDataset> datasets = Database
+                .getInstance()
+                .getIseDatasets()
+                .findAll()
+                .stream()
+                .filter(BaseDataset::isFinalJudge)
+                .filter(BaseDataset::isEnabled)
+                .collect(Collectors.toList());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        File lateSubmissionISEFolder = new File(Objects.requireNonNull(classLoader.getResource(lateSubmissionISEFolderName)).getPath());
+        File[] lateSubmissionISEs = lateSubmissionISEFolder.listFiles();
+        List<String> lateSubmissionUsers = new ArrayList<>();
+        for (File lateSubmissionISE : lateSubmissionISEs) {
+            String fileName = lateSubmissionISE.getName();
+            String username = fileName.substring(0, fileName.lastIndexOf("."));
+            lateSubmissionUsers.add(username);
+        }
+        return lateSubmissionUsers;
+    }
+
+    private static boolean isLateSubmissionUser(List<String> users, String username) {
+        for (String user : users) {
+            if (user.equals(username)) {
                 return true;
             }
         }
@@ -152,73 +183,7 @@ public class ISEJudgeFinal {
     }
 
     private static void exportFinalJudge() throws IOException {
-        // Query datasets
-        List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
-                .stream()
-                .filter(BaseDataset::isFinalJudge)
-                .filter(BaseDataset::isEnabled)
-                .collect(Collectors.toList());
-
-        Date judgeTime = Deadline.getIseDDL();
-        HashMap<String, Set<String>> basicFinal = new HashMap<>();
-        HashMap<String, Set<String>> bonusFinal = new HashMap<>();
-        for (ISEDataset iseDataset : datasets) {
-            HashMap<String, List<ISECase>> userISECasesMap = new HashMap<>();
-            String datasetName = iseDataset.getName();
-            List<ISECase> iseCases = Database.getInstance().getIseCases().
-                    findISECasesBySubmitTimeAfterAndDatasetId(judgeTime, iseDataset.getId());
-            for (ISECase iseCase : iseCases) {
-                if (!userISECasesMap.containsKey(iseCase.getUser().getUsername())) {
-                    userISECasesMap.put(iseCase.getUser().getUsername(), new ArrayList<>());
-                }
-                userISECasesMap.get(iseCase.getUser().getUsername()).add(iseCase);
-
-                if (!basicFinal.containsKey(iseCase.getUser().getUsername())) {
-                    basicFinal.put(iseCase.getUser().getUsername(), new HashSet<>());
-                }
-                if (!bonusFinal.containsKey(iseCase.getUser().getUsername())) {
-                    bonusFinal.put(iseCase.getUser().getUsername(), new HashSet<>());
-                }
-                HashMap<String, Set<String>> finalMap = isBonusDataset(datasetName) ? bonusFinal : basicFinal;
-                if (iseCase.getReason().equals("Solution accepted")) {
-                    finalMap.get(iseCase.getUser().getUsername()).add(datasetName);
-                }
-            }
-
-
-            try {
-                FileWriter writer = new FileWriter(String.format("%s.csv", datasetName));
-                writer.write(getGraphHeader() + "\n");
-                userISECasesMap.forEach((username, cases) -> {
-                    try {
-                        writer.write(graphCaseContent(username, cases) + "\n");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                logger.info(String.format("Write file %s down", datasetName));
-                writer.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        FileWriter finalFile = new FileWriter(iseFinalResultFileName);
-        finalFile.write(String.format("%s\n", finalHeader()));
-        basicFinal.forEach((username, finalSet) -> {
-            if (!bonusFinal.containsKey(username)) {
-                logger.error("username not found: " + username);
-            }
-            int valid = bonusFinal.get(username).size() + finalSet.size();
-            String content = String.format("%s,%d,%d,%d\n", username, valid, finalSet.size(), bonusFinal.get(username).size());
-            try {
-                finalFile.write(content + "");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        finalFile.close();
+        exportJudgeResultAfterTime(Deadline.getIseDDL());
     }
 
     private static String getGraphHeader() {
@@ -307,4 +272,77 @@ public class ISEJudgeFinal {
         });
     }
 
+    private static void exportJudgeResultAfterTime(Date judgeTime) throws IOException {
+        // Query datasets
+        List<ISEDataset> datasets = Database.getInstance().getIseDatasets().findAll()
+                .stream()
+                .filter(BaseDataset::isFinalJudge)
+                .filter(BaseDataset::isEnabled)
+                .collect(Collectors.toList());
+
+        HashMap<String, Set<String>> basicFinal = new HashMap<>();
+        HashMap<String, Set<String>> bonusFinal = new HashMap<>();
+        for (ISEDataset iseDataset : datasets) {
+            HashMap<String, List<ISECase>> userISECasesMap = new HashMap<>();
+            String datasetName = iseDataset.getName();
+            List<ISECase> iseCases = Database.getInstance().getIseCases().
+                    findISECasesBySubmitTimeAfterAndDatasetId(judgeTime, iseDataset.getId());
+            for (ISECase iseCase : iseCases) {
+                if (!userISECasesMap.containsKey(iseCase.getUser().getUsername())) {
+                    userISECasesMap.put(iseCase.getUser().getUsername(), new ArrayList<>());
+                }
+                userISECasesMap.get(iseCase.getUser().getUsername()).add(iseCase);
+
+                if (!basicFinal.containsKey(iseCase.getUser().getUsername())) {
+                    basicFinal.put(iseCase.getUser().getUsername(), new HashSet<>());
+                }
+                if (!bonusFinal.containsKey(iseCase.getUser().getUsername())) {
+                    bonusFinal.put(iseCase.getUser().getUsername(), new HashSet<>());
+                }
+                HashMap<String, Set<String>> finalMap = isBonusDataset(datasetName) ? bonusFinal : basicFinal;
+                if (iseCase.getReason().equals("Solution accepted")) {
+                    finalMap.get(iseCase.getUser().getUsername()).add(datasetName);
+                }
+            }
+
+
+            try {
+                FileWriter writer = new FileWriter(String.format("%s.csv", datasetName));
+                writer.write(getGraphHeader() + "\n");
+                userISECasesMap.forEach((username, cases) -> {
+                    try {
+                        writer.write(graphCaseContent(username, cases) + "\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                logger.info(String.format("Write file %s down", datasetName));
+                writer.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        FileWriter finalFile = new FileWriter(iseFinalResultFileName);
+        finalFile.write(String.format("%s\n", finalHeader()));
+        basicFinal.forEach((username, finalSet) -> {
+            if (!bonusFinal.containsKey(username)) {
+                logger.error("username not found: " + username);
+            }
+            int valid = bonusFinal.get(username).size() + finalSet.size();
+            String content = String.format("%s,%d,%d,%d\n", username, valid, finalSet.size(), bonusFinal.get(username).size());
+            try {
+                finalFile.write(content + "");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        finalFile.close();
+    }
+
+    private static void exportLateSubmissionGrade() throws IOException {
+        Date judgeTime = new Date(2021 - 1900, Calendar.JANUARY, 20);
+        exportJudgeResultAfterTime(judgeTime);
+    }
 }
